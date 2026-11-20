@@ -19,19 +19,17 @@ Khung dự án và một phần lớp `core/` đã xong, **có test xanh**. Ph�
 | `src/core/Tween.ts` | Easing (linear, outCubic, outBack, inOutQuad) + TweenRunner | 15 ✅ |
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
+| `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
 
-**51/51 test xanh.** Chạy `npm test` để kiểm.
+**75/75 test xanh, typecheck sạch.** Chạy `npm test` và `npm run typecheck` để kiểm.
 
-### 🔴 Việc tiếp theo — `src/core/Game.ts`
+Vài điểm đáng chú ý trong `Game.ts`:
 
-`tests/core/Game.test.ts` **đã viết xong nhưng đang đỏ** vì `src/core/Game.ts` chưa tồn tại.
-Đây là cố ý: file test đó là bản đặc tả chạy được. Việc cần làm là **viết `src/core/Game.ts` cho tới khi 19 test đó xanh**, không sửa test.
-
-File đó yêu cầu ba thứ:
-
-- **`FixedTimestep`** — bộ tích luỹ thời gian. Bước cố định `FIXED_DT = 1/60`. Khung hình dài hơn `MAX_FRAME_SEC = 0.25` bị chặn (tab vừa bị treo không được dồn 600 bước). Có `alpha` để nội suy lúc vẽ, có `totalSteps`, có `reset()`.
-- **`SceneManager`** — `change()` gọi `exit()` của scene cũ rồi `enter()` của scene mới. `update` / `render` / `onPointer` chỉ chạy trên scene hiện tại. Đổi scene ngay trong `update` không được làm scene mới bị update luôn trong khung hình đó.
-- **`Game`** — nhận `FrameClock` (requestAnimationFrame tiêm vào được) và một hàm lấy `CanvasRenderingContext2D`. Cập nhật N bước rồi **vẽ đúng một lần** mỗi khung hình. `stop()` phải huỷ khung hình đang chờ. `start()` gọi hai lần không được tạo hai vòng lặp. `start()` lại sau `stop()` không được dồn cục thời gian đã trôi qua.
+- Bước cập nhật cố định `FIXED_DT = 1/60`, tách hẳn khỏi nhịp vẽ — máy 120Hz không làm game chạy nhanh gấp đôi.
+- Khung hình dài hơn `MAX_FRAME_SEC = 0.25` bị chặn. Tab bị ẩn rồi hiện lại không được dồn hàng nghìn bước trong một khung ("spiral of death").
+- `start()` lại sau `stop()` quên mốc thời gian cũ — khoá máy 30 giây rồi mở lại không bị tính thành thời gian chơi.
+- `stop()` huỷ khung hình đang chờ, không rò rỉ `requestAnimationFrame`.
+- Đổi scene ngay trong `update()` không làm scene mới bị update luôn trong cùng khung hình.
 
 ### ⬜ Chưa có
 
@@ -48,7 +46,7 @@ File đó yêu cầu ba thứ:
 
 ```bash
 npm install
-npm test          # 51 xanh + 19 đỏ (Game.ts chưa viết)
+npm test          # 75 xanh
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```
