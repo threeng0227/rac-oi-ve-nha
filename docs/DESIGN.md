@@ -70,8 +70,8 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 | Font | **System font stack**, không tải font ngoài | Tiết kiệm 100–200KB và tránh FOUT. Dự phòng cần font riêng: `Be Vietnam Pro` subset Latin-Ext |
 | Âm thanh | **Chỉ hiệu ứng ngắn (SFX)**, `.webm`, ≤ 20KB/file, tổng ≤ 120KB. **Một bản nhạc nền duy nhất cho màn 5**, tải lười (lazy) *ngoài* ngân sách bundle, ≤ 400KB. Chỉ nguồn CC0. Mặc định **tắt tiếng** | Trình duyệt mobile chặn autoplay, và mặc định tắt nghĩa là đa số người chơi không nghe — không đáng đầu tư nhạc cho cả 10 màn. "Nhạc tăng nhịp" ở `GIO_CAO_DIEM` làm bằng `audio.playbackRate = 1.15`, không cần track thứ hai |
 | Test | **Vitest** cho logic thuần. Không test render | Test canvas rendering tốn công hơn giá trị thu được |
-| Hướng màn hình | **Ngang (landscape), bắt buộc.** Cầm dọc thì hiện lớp phủ "xoay ngang điện thoại" và vòng lặp dừng hẳn | Khung 16:9 vừa khít màn hình desktop, không còn dải đen hai bên. Đánh đổi: người bật khoá xoay phải tự tắt, và thao tác thành hai ngón thay vì một |
-| Kích thước gốc | **Chiều cao ảo cố định 720. Chiều rộng CO GIÃN theo tỉ lệ máy**, chặn trong khoảng 1280–1800. `DESIGN_WIDTH = 1280` chỉ là khung tham chiếu để nghĩ bố cục | Điện thoại hiện đại không còn 16:9 — màn 20:9 nằm ngang là 2.22:1. Khung cố định để lại hai dải đen mỗi bên ~230px, trông như chạy giả lập. Giãn chiều rộng thì full màn gần như mọi máy |
+| Hướng màn hình | **Cả hai. Không ép xoay.** Cầm ngang hay dọc đều chơi được, đều full màn | Nhiều người bật khoá xoay màn hình và không biết tắt ở đâu. Ép xoay là mất người chơi ngay giây đầu, trước khi họ kịp thấy game là cái gì. Bố cục bốn dải ngang không khoá tỉ lệ nên xoay được tự nhiên |
+| Kích thước gốc | **Cạnh NGẮN của khung ảo luôn 720. Cạnh dài co giãn** theo tỉ lệ máy, chặn trong 1100–1800. Cầm ngang: ~1560×720. Cầm dọc: 720×~1560 | Điện thoại hiện đại không còn 16:9. Khung cố định để lại hai dải đen mỗi bên ~230px, trông như chạy giả lập. **Không chiều nào cố định — mọi toạ độ phải qua `computeLayout()`** |
 | **Mức độ đồ hoạ** | **Tối giản.** Mỗi món rác vẽ bằng **3–6 hình cơ bản** (`roundRect`, `ellipse`, `path`), đọc được ở 40px trên điện thoại. Bối cảnh = dải màu gradient + 2–4 silhouette đặc trưng của vùng | Codex vẽ được toàn bộ bằng code, **không cần hoạ sĩ**. `render/` phải tách hẳn khỏi logic để sau thay ảnh minh hoạ xịn vào mà không đụng gameplay |
 | Repo | **`github.com/threeng0227/rac-oi-ve-nha`** — repo riêng, public | Dự án cộng đồng, không chôn trong portfolio cá nhân |
 | Tên miền | **`rac-oi-ve-nha.vercel.app`** (miễn phí) | Dùng cố định cho `og:url`. Sau mua tên miền riêng chỉ cần trỏ DNS, không sửa code |
@@ -89,52 +89,72 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 
 ### 5.1 Bố cục màn chơi
 
-Màn hình **ngang**. Gọi `W = viewport.width` — **thay đổi theo máy**, nằm trong
-khoảng 1280–1800. Chiều cao luôn là 720, nên **mọi toạ độ dọc là số cố định**,
-còn **mọi toạ độ ngang phải tính theo `W`**.
+Game chơi được **cả khi cầm ngang lẫn cầm dọc**. Bố cục là **bốn dải ngang**
+chồng lên nhau, không dải nào khoá tỉ lệ — nên xoay máy thì dải co giãn theo,
+không cần bố cục thứ hai.
+
+⚠️ **Không chiều nào cố định.** Đừng viết số cho toạ độ ngang *lẫn* dọc.
+Gọi `computeLayout(viewport)` trong `src/core/Layout.ts` và đọc mọi thứ từ đó.
 
 ```
-│◀────────────────────  W (1280 … 1800)  ────────────────────▶│
-┌─────────────────────────────────────────────────────────────┐ y=0
-│ ⏱ x=40        │      combo (giữa)      │      điểm x=W−40  │ cao 90
-├─────────────────────────────────────────────────────────────┤ y=90
-│                                                             │
-│                   KHU CẢNH (playfield)                      │
-│              rác nằm rải rác — CHẠM để nhặt                 │
-│                 rộng W, cao 440                             │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤ y=530
-│            TÚI: 6 ô, căn giữa quanh W/2          cao 60     │
-├───────────────────┬────────────────────┬────────────────────┤ y=590
-│    ♻️ TÁI CHẾ      │    🍎 THỰC PHẨM    │      🗑 KHÁC       │ cao 130
-│      W/3 rộng     │      W/3 rộng      │      W/3 rộng      │
-└───────────────────┴────────────────────┴────────────────────┘ y=720
+CẦM NGANG  (~1560 × 720)              CẦM DỌC  (720 × ~1560)
+┌──────────────────────────┐          ┌───────────────┐
+│ HUD              cao 90  │          │ HUD    cao 90 │
+├──────────────────────────┤          ├───────────────┤
+│                          │          │               │
+│      KHU CẢNH            │          │               │
+│      cao ~440            │          │   KHU CẢNH    │
+│                          │          │   cao ~1240   │
+├──────────────────────────┤          │               │
+│ TÚI 6 ô          cao 60  │          │               │
+├────────┬────────┬────────┤          │               │
+│ ♻️     │ 🍎     │ 🗑     │ cao 130  ├───────────────┤
+└────────┴────────┴────────┘          │ TÚI    cao 90 │
+                                      ├─────┬────┬────┤
+                                      │ ♻️  │ 🍎 │ 🗑 │ cao 190
+                                      └─────┴────┴────┘
 ```
 
-**Bảng tra nhanh — toạ độ ngang luôn viết theo công thức, không viết số:**
+**Mọi toạ độ lấy từ `computeLayout()`, không tự tính:**
 
-| Thành phần | Công thức |
+| Cần | Lấy từ |
 |---|---|
-| Tâm màn hình | `viewport.centerX` *(không phải `DESIGN_WIDTH / 2`)* |
-| Thùng thứ `i` (0,1,2) | `x = i * W/3`, rộng `W/3` |
-| Ô túi thứ `i` (0…5) | `x = W/2 + (i − 2.5) * 96` |
-| Đồng hồ | `x = 40` (bám mép trái) |
-| Điểm | `x = W − 40` (bám mép phải) |
-| Vùng sinh rác | `x ∈ [60, W − 60]` |
+| Bốn dải | `layout.hud` · `layout.playfield` · `layout.bag` · `layout.bins` — mỗi cái có `y` và `height` |
+| Thùng thứ `i` (0,1,2) | `layout.binX(i)`, rộng `layout.binWidth` |
+| Ô túi thứ `i` (0…5) | `layout.bagSlotX(i)`, cạnh `layout.bagSlotSize` |
+| Tâm màn hình | `layout.centerX` *(không phải `DESIGN_WIDTH / 2`)* |
+| Vùng được sinh rác | `layout.spawnArea` — đã trừ lề an toàn |
+| Mật độ rác | `layout.playfieldArea` — xem ghi chú cân bằng dưới |
+| Đang cầm dọc? | `layout.isPortrait` |
+
+Dải HUD cố định 90. Thùng và túi **dày thêm khi cầm dọc** (thùng 130→190, túi
+60→90): màn dài hơn thì ngón cái phải với tới cạnh dưới, vùng chạm mỏng là hụt liên tục.
 
 Ba thùng trải hết chiều ngang ở cạnh dưới: hai ngón cái nghỉ ở hai góc dưới,
 với tới thùng trái và thùng phải không phải nhấc tay. Thùng giữa xa hơn một
 chút — đó là lý do nhóm **Thực phẩm** (ít gặp nhất ở phần lớn màn) nằm ở giữa.
 
-> **Máy rộng hơn thì thùng rộng hơn, vùng chơi rộng hơn.** Đây là chủ ý: thùng
-> to là đích dễ trúng hơn khi kéo thả vội. Nhưng nó cũng có nghĩa là **máy rộng
-> hơi dễ hơn máy hẹp** — bài mô phỏng cân bằng ở Mục 5.6 phải chạy ở cả hai đầu
-> khoảng (W=1280 và W=1800), không chỉ một giá trị.
+> ### ⚠️ Cân bằng: mật độ rác tính theo DIỆN TÍCH, không theo số tuyệt đối
+>
+> Khu cảnh cầm dọc rộng gấp khoảng **ba lần** khu cảnh cầm ngang. Rải cùng một
+> số món rác lên hai khu đó cho ra hai game khác hẳn nhau: cầm ngang thì chật
+> cứng, cầm dọc thì thưa thớt và phải quét mắt tìm.
+>
+> Nên `initialTrashCount` và `spawnRatePerSec` ở Mục 6.1 là **giá trị cho khu
+> cảnh tham chiếu** (1280×440 = 563.200 đơn vị diện tích). Lúc chạy phải nhân
+> theo tỉ lệ:
+>
+> ```
+> hệ số = layout.playfieldArea / 563200
+> số rác thật = số rác trong bảng × hệ số
+> ```
+>
+> **Bài mô phỏng cân bằng ở Mục 5.6 phải chạy ở cả bốn trường hợp:**
+> ngang hẹp, ngang rộng, dọc hẹp, dọc dài. Chỉ kiểm một hướng là bỏ sót.
 
 > **Toàn màn hình:** game gọi Fullscreen API ở lần chạm đầu tiên để ẩn thanh địa
-> chỉ. Thanh đó ăn khoảng 130px chiều cao, làm vùng hiển thị dẹt hơn tỉ lệ thật
-> của máy và đẩy khung ảo chạm mức chặn 1800 mà vẫn còn dải đen. iPhone không hỗ
-> trợ Fullscreen API — ở đó chấp nhận còn dải đen hẹp.
+> chỉ trình duyệt. Thanh đó ăn khoảng 130px, làm vùng hiển thị dẹt hơn tỉ lệ thật
+> của máy. iPhone không hỗ trợ Fullscreen API — ở đó chấp nhận còn dải đen hẹp.
 
 ### 5.2 Vòng lặp cốt lõi
 

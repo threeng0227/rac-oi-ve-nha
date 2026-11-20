@@ -2,7 +2,7 @@
 
 Game web nhặt rác xuyên Việt — tuyên truyền phân loại rác đúng cách.
 
-Chơi ở khổ ngang trên điện thoại, hai ngón cái. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
+Chơi trên điện thoại, cầm ngang hay dọc đều được. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
 Không backend, không tài khoản, không thu thập dữ liệu người chơi.
 
 ---
@@ -16,11 +16,12 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 
 | Module | Việc nó làm | Test |
 |---|---|---|
-| `src/core/Viewport.ts` | Khung ảo cao 720 cố định, rộng co giãn 1280–1800 theo máy; letterbox; chặn DPR ở 3 | 17 ✅ |
+| `src/core/Viewport.ts` | Cạnh ngắn 720, cạnh dài co giãn 1100–1800; chạy cả ngang lẫn dọc; chặn DPR ở 3 | 22 ✅ |
 | `src/core/Tween.ts` | Easing (linear, outCubic, outBack, inOutQuad) + TweenRunner | 15 ✅ |
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
+| `src/core/Layout.ts` | Bốn dải màn chơi, vị trí thùng/túi/vùng sinh rác, cho cả hai hướng | 11 ✅ |
 | `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
 | `index.html` + `global.css` | Lớp phủ "xoay ngang điện thoại" khi cầm dọc | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
@@ -28,7 +29,7 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 | `src/render/palette.ts` | Toàn bộ màu + phép toán màu (mix, desaturate, tương phản) | 24 ✅ |
 | `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
 
-**124/124 test xanh, typecheck sạch, build 3.43 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
+**140/140 test xanh, typecheck sạch, build 3.39 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -62,15 +63,15 @@ không được vi phạm, sáu chặng theo thứ tự, luật về số liệu
 
 ```bash
 npm install
-npm test          # 124 xanh
+npm test          # 140 xanh
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```
 
 ## Quy ước bắt buộc
 
-- **Chiều cao ảo cố định 720; chiều rộng co giãn theo máy (1280–1800).** Toạ độ ngang luôn tính theo `viewport.width` / `viewport.centerX`, không bao giờ theo `DESIGN_WIDTH`.
-- **Game chỉ chạy ở khổ ngang.** Điều kiện chặn trong `global.css` và `main.ts` phải luôn khớp nhau.
+- **Không chiều nào cố định.** Cạnh ngắn khung ảo là 720, cạnh dài co giãn 1100–1800, và máy cầm ngang hay dọc đều phải chơi được. Mọi toạ độ lấy từ `computeLayout(viewport)`, không tự tính.
+- **Mật độ rác tính theo `layout.playfieldArea`**, không theo số tuyệt đối — khu cảnh dọc rộng gấp ~3 lần khu cảnh ngang.
 - **Không hardcode mã màu ở bất kỳ file nào ngoài `src/render/palette.ts`.** Hiệu ứng "xám sang màu" lúc dọn xong một vùng là phép biến đổi trên chính bộ màu đó — màu rải rác khắp nơi thì không viết được hiệu ứng ấy. Kiểm nhanh: `grep -rnE '#[0-9a-fA-F]{6}' src --include='*.ts' | grep -v palette.ts` phải không ra gì.
 - **Không hardcode chuỗi tiếng Việt** trong scene — tất cả qua `src/i18n/vi.ts`.
 - **Vòng lặp fixed timestep**, tách khỏi render. Game không được chạy nhanh hơn trên máy 120Hz.

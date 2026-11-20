@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { Input, type PointerTarget } from '../../src/core/Input';
-import { Viewport, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
+import { Viewport } from '../../src/core/Viewport';
 import type { PointerSample } from '../../src/core/Game';
 
 /** Phần tử DOM giả: ghi lại listener và cho test tự bắn sự kiện. */
@@ -61,7 +61,7 @@ describe('Input', () => {
     dom.dispatch('pointerdown', { clientX: 422, clientY: 195, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
+    expect(samples[0]?.y).toBeCloseTo(vp.height / 2, 0);
   });
 
   test('trừ đi vị trí của canvas trong trang — canvas không phải lúc nào cũng ở góc trên trái', () => {
@@ -73,7 +73,7 @@ describe('Input', () => {
     dom.dispatch('pointerdown', { clientX: 422 + 40, clientY: 195 + 100, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
+    expect(samples[0]?.y).toBeCloseTo(vp.height / 2, 0);
   });
 
   test('mỗi loại sự kiện chuyển thành đúng phase', () => {
@@ -181,6 +181,6 @@ describe('Input', () => {
     dom.dispatch('pointerdown', { clientX: 195, clientY: 422, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
+    expect(samples[0]?.y).toBeCloseTo(vp.height / 2, 0);
   });
 });

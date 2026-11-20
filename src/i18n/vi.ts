@@ -2,10 +2,8 @@
 export const vi = {
   appTitle: 'Rác Ơi Về Nhà',
   appSubtitle: 'Hành trình xuyên Việt',
-  bootHint: 'Chạm thử vào màn hình',
+  bootHint: 'Chạm thử — xoay máy kiểu gì cũng chơi được',
   bootStatus: 'Đang dựng — lớp core đã xong',
-  rotateTitle: 'Xoay ngang điện thoại',
-  rotateHint: 'Game chơi ở khổ ngang. Nếu máy đang khoá xoay, tắt khoá giúp nhé.',
 } as const;
 
 export type StringKey = keyof typeof vi;

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { applyViewportTransform, clearFrame } from '../../src/core/Renderer';
-import { Viewport, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
+import { Viewport } from '../../src/core/Viewport';
 
 function spyContext() {
   return {
@@ -67,6 +67,6 @@ describe('clearFrame', () => {
     vp.resize(915, 412, 2.625);
 
     expect(vp.width * vp.scale).toBeLessThanOrEqual(vp.cssWidth + 1e-6);
-    expect(VIRTUAL_HEIGHT * vp.scale).toBeLessThanOrEqual(vp.cssHeight + 1e-6);
+    expect(vp.height * vp.scale).toBeLessThanOrEqual(vp.cssHeight + 1e-6);
   });
 });

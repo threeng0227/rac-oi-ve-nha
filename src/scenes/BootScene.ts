@@ -2,7 +2,7 @@
  * Scene tạm để kiểm chứng toàn bộ lớp core chạy đúng trên máy thật.
  * Sẽ bị MenuScene thay thế ở bước sau.
  */
-import { VIRTUAL_HEIGHT, type Viewport } from '../core/Viewport';
+import type { Viewport } from '../core/Viewport';
 import { TweenRunner, easeInOutQuad } from '../core/Tween';
 import type { Scene, PointerSample } from '../core/Game';
 import { vi } from '../i18n/vi';
@@ -59,38 +59,43 @@ export class BootScene implements Scene {
   }
 
   render(g: CanvasRenderingContext2D): void {
-    const width = this.viewport.width;
-    const centerX = this.viewport.centerX;
+    const { width, centerX, centerY } = this.viewport;
+    const height = this.viewport.height;
 
-    const sky = g.createLinearGradient(0, 0, 0, VIRTUAL_HEIGHT);
+    const sky = g.createLinearGradient(0, 0, 0, height);
     sky.addColorStop(0, UI.backdropTop);
     sky.addColorStop(1, UI.backdropBottom);
     g.fillStyle = sky;
-    g.fillRect(0, 0, width, VIRTUAL_HEIGHT);
+    g.fillRect(0, 0, width, height);
 
     // Viền khung ảo: nhìn là biết letterbox có đúng không trên máy thật.
     g.strokeStyle = withAlpha(UI.textOnDark, 0.14);
     g.lineWidth = 4;
-    g.strokeRect(2, 2, width - 4, VIRTUAL_HEIGHT - 4);
+    g.strokeRect(2, 2, width - 4, height - 4);
 
     g.textAlign = 'center';
     g.textBaseline = 'middle';
 
     g.fillStyle = UI.textOnDark;
     g.font = '700 72px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.appTitle, centerX, VIRTUAL_HEIGHT / 2 - 70);
+    g.fillText(vi.appTitle, centerX, centerY - 70);
 
     g.fillStyle = withAlpha(UI.textOnDark, 0.72);
     g.font = '400 34px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.appSubtitle, centerX, VIRTUAL_HEIGHT / 2 - 10);
+    g.fillText(vi.appSubtitle, centerX, centerY - 10);
 
     g.fillStyle = withAlpha(UI.textOnDark, 0.25 + this.pulse * 0.55);
     g.font = '400 30px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.bootHint, centerX, VIRTUAL_HEIGHT / 2 + 62);
+    g.fillText(vi.bootHint, centerX, centerY + 62);
 
     g.fillStyle = withAlpha(UI.textOnDark, 0.38);
     g.font = '400 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(`${vi.bootStatus} · ${this.touchCount} lần chạm`, centerX, VIRTUAL_HEIGHT - 46);
+    const huong = this.viewport.isPortrait ? 'dọc' : 'ngang';
+    g.fillText(
+      `${huong} ${Math.round(width)}×${Math.round(height)} · ${this.touchCount} lần chạm`,
+      centerX,
+      height - 46,
+    );
 
     if (this.lastTouch !== null) {
       g.beginPath();

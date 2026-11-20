@@ -15,7 +15,7 @@ Những file sau đã xong, đã có test, đã chạy thật. **Không sửa, k
 ```
 src/core/Viewport.ts     src/core/Game.ts      src/core/Input.ts
 src/core/Tween.ts        src/core/Storage.ts   src/core/Random.ts
-src/core/Renderer.ts     src/render/palette.ts
+src/core/Renderer.ts     src/core/Layout.ts    src/render/palette.ts
 tests/core/*             tests/render/palette.test.ts
 ```
 
@@ -28,15 +28,17 @@ Những thứ này đã sẵn sàng dùng:
 - `TweenRunner` — 4 hàm easing
 - `SaveStore` — đọc/ghi `localStorage`, đã chịu được chế độ ẩn danh
 - `Random` — RNG có seed, có `weighted()` sẵn cho `Spawner`
+- `computeLayout()` — bốn dải, vị trí thùng, ô túi, vùng sinh rác, diện tích khu cảnh
 - `palette` — toàn bộ màu + `mix`, `desaturate`, `withAlpha`, `contrastRatio`
 
 ---
 
 ## 2. Bảy nguyên tắc không được vi phạm
 
-1. **Chiều cao ảo cố định 720, chiều rộng CO GIÃN theo máy (1280–1800).**
-   Toạ độ dọc viết số thẳng. Toạ độ ngang **luôn tính theo `viewport.width`
-   hoặc `viewport.centerX`** — xem bảng tra ở Mục 5.1 của đặc tả.
+1. **KHÔNG CHIỀU NÀO CỐ ĐỊNH.** Cạnh ngắn khung ảo là 720, cạnh dài co giãn
+   1100–1800, và **máy cầm dọc hay ngang đều phải chơi được**.
+   Mọi toạ độ lấy từ `computeLayout(viewport)` trong `src/core/Layout.ts` —
+   không tự tính, không viết số. Xem bảng tra ở Mục 5.1 của đặc tả.
    `DESIGN_WIDTH` chỉ để nghĩ bố cục, **không bao giờ dùng làm toạ độ**.
 2. **Không hardcode mã màu.** Lấy từ `src/render/palette.ts`.
    Kiểm: `grep -rnE '#[0-9a-fA-F]{6}' src --include='*.ts' | grep -v palette.ts` — phải không ra gì.
@@ -144,12 +146,17 @@ Nếu cần một fact mới mà không tìm được nguồn cấp một → đ
 - **`removeEventListener` không nhận `passive`**, chỉ nhận `capture`. TypeScript sẽ báo.
 - **Game chỉ chạy ở khổ ngang.** Đừng thiết kế gì cho khổ dọc.
 - **Rác nguy hại không bao giờ quá trọng số 5** trong `trashPool`. Nó là bài học, không phải vật cản.
-- **Đừng dùng `DESIGN_WIDTH` làm toạ độ.** Nó là 1280 nhưng khung ảo lúc chạy có thể là 1600.
-  Dùng nó để căn giữa là lệch hẳn sang trái trên điện thoại.
-- **Bài mô phỏng cân bằng phải chạy ở cả `W=1280` và `W=1800`.** Máy rộng thì thùng rộng,
-  đích dễ trúng hơn, nên hơi dễ hơn. Chỉ kiểm một giá trị là bỏ sót.
+- **Đừng dùng `DESIGN_WIDTH` làm toạ độ.** Nó là 1280 nhưng khung ảo lúc chạy có thể là
+  1560 ngang hoặc 720 dọc. Dùng nó để căn giữa là lệch hẳn.
+- **Đừng giả định máy cầm ngang.** Cầm dọc khung ảo là 720×1560 — khu cảnh cao và hẹp.
+  Mọi scene phải vẽ đúng ở cả hai hướng.
+- **Mật độ rác tính theo `layout.playfieldArea`, không theo số tuyệt đối.** Khu cảnh dọc
+  rộng gấp ~3 lần khu cảnh ngang. Rải cùng số rác lên hai khu cho ra hai game khác hẳn.
+- **Bài mô phỏng cân bằng phải chạy ở CẢ BỐN trường hợp:** ngang hẹp, ngang rộng,
+  dọc hẹp, dọc dài. Chỉ kiểm một hướng là bỏ sót.
 - **Đừng gỡ lệnh gọi Fullscreen API** ở lần chạm đầu trong `main.ts`. Không có nó thì
   thanh địa chỉ ăn mất chiều cao và dải đen quay lại.
+- **Đừng thêm lại lớp phủ ép xoay máy.** Nó từng có và đã bị gỡ có chủ ý.
 
 ---
 
