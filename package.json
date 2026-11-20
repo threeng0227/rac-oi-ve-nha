@@ -6,6 +6,7 @@
   "description": "Game web nhặt rác xuyên Việt — tuyên truyền phân loại rác",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node --experimental-strip-types scripts/verify-facts.ts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",

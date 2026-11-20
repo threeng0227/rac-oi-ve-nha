@@ -984,3 +984,19 @@ Hai chỗ trống nguy hiểm nhất đã được lấp. Thêm vào đó, tôi 
     khổ ngang, nhét ảnh ngang vào khung dọc thì hoặc cắt mất hai đầu hoặc thừa hai dải trống.
     Ảnh vuông lên Facebook và Instagram đều vừa.
 18. **Sửa "một ngón tay" thành "hai ngón cái"** ở Mục 2 — sót lại từ bố cục dọc.
+
+### Chặng 1 — dữ liệu, ngày 2026-11-20
+
+19. **Mười câu cuối màn** trong `facts.ts` là lời nhắc định tính gắn với địa danh,
+    không thêm số liệu. Tất cả để `verified: false`, nguồn rỗng để chờ soát nguồn cấp một.
+    Phụ đề màn dùng địa phương hoặc bối cảnh đã mô tả ở Mục 6.
+20. **Nhãn phân hủy chưa xác minh** vẫn lưu nguyên văn bảng 8.1 nhưng mọi nơi hiển thị
+    phải gọi `getDecomposeLabel()`, nhận câu đang xác minh. Cổng prebuild kiểm chính
+    phép chiếu này, có test cố tình làm lộ nhãn để chứng minh cổng chặn được.
+21. **Màu nền Côn Đảo** trong palette nền cũ lệch Mục 6.3. Đã viết test đối chiếu cả
+    bảng, chạy đỏ ở riêng giá trị này, rồi sửa đúng màu bảng. Không đổi phép toán màu.
+22. **Nguồn của 24 loại rác** giữ trạng thái xác minh theo bảng bàn giao, dùng liên kết
+    cấp một NOAA, EPA và CPSC. Chưa kiểm tra được truy cập mạng trong phiên này.
+    Cổng kiểm chứng chỉ xác nhận cú pháp URL, không xác nhận nội dung nguồn.
+23. **Nội dung sổ tay** giữ nguyên văn Mục 8.4, kể cả câu cốc nhựa có lượng viết bằng
+    chữ, theo yêu cầu dùng nguyên văn. Không bổ sung số liệu mới vào `harm` hoặc `tip`.

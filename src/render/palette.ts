@@ -53,7 +53,7 @@ export const LEVEL_PALETTES: Record<string, LevelPalette> = {
   'cai-rang': { sky: '#e8c97a', ground: '#8a7a4a', accent: '#d9734f', water: '#6b8a5a' },
   'giao-thua': { sky: '#1b2a4a', ground: '#2a3a5a', accent: '#e8c94f' },
   'sa-pa': { sky: '#b8d4e8', ground: '#6b8a4a', accent: '#d9a84f' },
-  'con-dao': { sky: '#4fc9d9', ground: '#a8946b', accent: '#f2a84f', water: '#2e9ab8' },
+  'con-dao': { sky: '#4fc9d9', ground: '#d9c9a8', accent: '#f2a84f', water: '#2e9ab8' },
 };
 
 const FALLBACK: LevelPalette = { sky: '#7aa8c9', ground: '#5a6b4a', accent: '#f2e8c9' };
