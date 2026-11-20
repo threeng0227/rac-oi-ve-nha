@@ -51,14 +51,28 @@ window.addEventListener('resize', fitToScreen);
 window.addEventListener('orientationchange', fitToScreen);
 window.visualViewport?.addEventListener('resize', fitToScreen);
 
+/**
+ * Cùng điều kiện với lớp phủ xoay máy trong global.css. Hai nơi phải khớp:
+ * nếu lệch, người chơi hoặc thấy lớp phủ mà game vẫn chạy ngầm tốn pin,
+ * hoặc thấy canvas mà vòng lặp đã dừng.
+ */
+const portraitPhone = window.matchMedia('(orientation: portrait) and (max-width: 900px)');
+
+/** Chỉ chạy khi tab đang hiện VÀ máy đang nằm ngang. */
+function syncRunning(): void {
+  if (document.hidden || portraitPhone.matches) game.stop();
+  else game.start();
+}
+
 // Khoá máy hoặc chuyển tab: dừng hẳn vòng lặp. Không dừng thì pin tụt
 // và lúc quay lại game phải chạy bù một cục thời gian.
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) game.stop();
-  else game.start();
+document.addEventListener('visibilitychange', syncRunning);
+portraitPhone.addEventListener('change', () => {
+  fitToScreen();
+  syncRunning();
 });
 
-game.start();
+syncRunning();
 
 console.info(
   `[Rác Ơi Về Nhà] viewport ${window.innerWidth}×${window.innerHeight} css · ` +

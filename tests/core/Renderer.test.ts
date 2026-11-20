@@ -13,7 +13,7 @@ function spyContext() {
 describe('applyViewportTransform', () => {
   test('gộp DPR, scale và lề letterbox vào đúng một ma trận', () => {
     const vp = new Viewport();
-    vp.resize(390, 844, 2);
+    vp.resize(844, 390, 2);
     const ctx = spyContext();
 
     applyViewportTransform(ctx as unknown as CanvasRenderingContext2D, vp);
@@ -24,7 +24,7 @@ describe('applyViewportTransform', () => {
 
   test('sau khi áp ma trận, vẽ ở (0,0) hệ ảo rơi đúng vào góc khung nội dung', () => {
     const vp = new Viewport();
-    vp.resize(390, 844, 2);
+    vp.resize(844, 390, 2);
 
     // Góc trên trái của khung ảo, tính bằng pixel thật.
     const expectedX = vp.dpr * vp.offsetX;
@@ -39,7 +39,7 @@ describe('applyViewportTransform', () => {
 describe('clearFrame', () => {
   test('xoá toàn bộ đệm canvas, kể cả dải letterbox ngoài khung ảo', () => {
     const vp = new Viewport();
-    vp.resize(390, 844, 2);
+    vp.resize(844, 390, 2);
     const ctx = spyContext();
 
     clearFrame(ctx as unknown as CanvasRenderingContext2D, vp, '#000000');
@@ -52,7 +52,7 @@ describe('clearFrame', () => {
 
   test('vùng xoá phủ hết đệm, không chỉ phần khung ảo', () => {
     const vp = new Viewport();
-    vp.resize(844, 390, 1); // ngang: letterbox dồn sang hai cạnh trái phải
+    vp.resize(900, 390, 1); // rộng hơn 16:9: letterbox dồn sang hai cạnh trái phải
     const ctx = spyContext();
 
     clearFrame(ctx as unknown as CanvasRenderingContext2D, vp, '#123456');
@@ -64,7 +64,7 @@ describe('clearFrame', () => {
 
   test('khung ảo luôn vừa khít trong đệm sau khi scale', () => {
     const vp = new Viewport();
-    vp.resize(412, 915, 2.625);
+    vp.resize(915, 412, 2.625);
 
     expect(VIRTUAL_WIDTH * vp.scale).toBeLessThanOrEqual(vp.cssWidth + 1e-6);
     expect(VIRTUAL_HEIGHT * vp.scale).toBeLessThanOrEqual(vp.cssHeight + 1e-6);

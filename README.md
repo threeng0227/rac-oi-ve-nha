@@ -2,7 +2,7 @@
 
 Game web nhặt rác xuyên Việt — tuyên truyền phân loại rác đúng cách.
 
-Chơi bằng một ngón tay trên điện thoại. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
+Chơi ở khổ ngang trên điện thoại, hai ngón cái. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
 Không backend, không tài khoản, không thu thập dữ liệu người chơi.
 
 ---
@@ -16,17 +16,18 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 
 | Module | Việc nó làm | Test |
 |---|---|---|
-| `src/core/Viewport.ts` | Hệ toạ độ ảo 720×1280, letterbox, chặn DPR ở 3, quy đổi toạ độ chạm | 11 ✅ |
+| `src/core/Viewport.ts` | Hệ toạ độ ảo 1280×720 (16:9), letterbox, chặn DPR ở 3, quy đổi toạ độ chạm | 13 ✅ |
 | `src/core/Tween.ts` | Easing (linear, outCubic, outBack, inOutQuad) + TweenRunner | 15 ✅ |
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
 | `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
+| `index.html` + `global.css` | Lớp phủ "xoay ngang điện thoại" khi cầm dọc | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
 | `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
 | `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
 
-**92/92 test xanh, typecheck sạch, build 2.96 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
+**94/94 test xanh, typecheck sạch, build 3.13 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -54,14 +55,15 @@ Vài điểm đáng chú ý trong `Game.ts`:
 
 ```bash
 npm install
-npm test          # 92 xanh
+npm test          # 94 xanh
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```
 
 ## Quy ước bắt buộc
 
-- **Mọi toạ độ theo hệ ảo 720×1280.** Không bao giờ hardcode pixel thật. `Viewport` lo quy đổi.
+- **Mọi toạ độ theo hệ ảo 1280×720.** Không bao giờ hardcode pixel thật. `Viewport` lo quy đổi.
+- **Game chỉ chạy ở khổ ngang.** Điều kiện chặn trong `global.css` và `main.ts` phải luôn khớp nhau.
 - **Không hardcode chuỗi tiếng Việt** trong scene — tất cả qua `src/i18n/vi.ts`.
 - **Vòng lặp fixed timestep**, tách khỏi render. Game không được chạy nhanh hơn trên máy 120Hz.
 - **Mọi `requestAnimationFrame` phải huỷ khi rời scene.** Không để rò rỉ.

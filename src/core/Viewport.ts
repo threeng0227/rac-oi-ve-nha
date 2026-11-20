@@ -2,8 +2,8 @@
  * Hệ toạ độ ảo của game. MỌI toạ độ trong code viết theo hệ này,
  * không bao giờ dùng pixel thật. Viewport lo phần quy đổi.
  */
-export const VIRTUAL_WIDTH = 720;
-export const VIRTUAL_HEIGHT = 1280;
+export const VIRTUAL_WIDTH = 1280;
+export const VIRTUAL_HEIGHT = 720;
 
 /** Chặn trên devicePixelRatio: máy 4x gấp đôi số điểm ảnh phải vẽ mà mắt gần như không phân biệt được. */
 const MAX_DPR = 3;

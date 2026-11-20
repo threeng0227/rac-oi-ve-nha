@@ -72,20 +72,20 @@ export class BootScene implements Scene {
     g.textBaseline = 'middle';
 
     g.fillStyle = '#F2FBF6';
-    g.font = '700 84px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.appTitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 90);
+    g.font = '700 72px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    g.fillText(vi.appTitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 70);
 
     g.fillStyle = 'rgba(242,251,246,0.72)';
-    g.font = '400 38px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.appSubtitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 18);
+    g.font = '400 34px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    g.fillText(vi.appSubtitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 10);
 
     g.fillStyle = `rgba(242,251,246,${0.25 + this.pulse * 0.55})`;
-    g.font = '400 32px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(vi.bootHint, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 70);
+    g.font = '400 30px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    g.fillText(vi.bootHint, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 62);
 
     g.fillStyle = 'rgba(242,251,246,0.38)';
-    g.font = '400 24px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-    g.fillText(`${vi.bootStatus} · ${this.touchCount} lần chạm`, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 70);
+    g.font = '400 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    g.fillText(`${vi.bootStatus} · ${this.touchCount} lần chạm`, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 46);
 
     if (this.lastTouch !== null) {
       g.beginPath();

@@ -70,8 +70,8 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 | Font | **System font stack**, không tải font ngoài | Tiết kiệm 100–200KB và tránh FOUT. Dự phòng cần font riêng: `Be Vietnam Pro` subset Latin-Ext |
 | Âm thanh | **Chỉ hiệu ứng ngắn (SFX)**, `.webm`, ≤ 20KB/file, tổng ≤ 120KB. **Một bản nhạc nền duy nhất cho màn 5**, tải lười (lazy) *ngoài* ngân sách bundle, ≤ 400KB. Chỉ nguồn CC0. Mặc định **tắt tiếng** | Trình duyệt mobile chặn autoplay, và mặc định tắt nghĩa là đa số người chơi không nghe — không đáng đầu tư nhạc cho cả 10 màn. "Nhạc tăng nhịp" ở `GIO_CAO_DIEM` làm bằng `audio.playbackRate = 1.15`, không cần track thứ hai |
 | Test | **Vitest** cho logic thuần. Không test render | Test canvas rendering tốn công hơn giá trị thu được |
-| Hướng màn hình | **Dọc (portrait) là chính**. Ngang thì letterbox | Người ta cầm điện thoại dọc |
-| Kích thước gốc | **Hệ toạ độ ảo 720 × 1280**, scale theo màn hình | Mọi toạ độ trong code viết theo hệ này, không bao giờ dùng px thật |
+| Hướng màn hình | **Ngang (landscape), bắt buộc.** Cầm dọc thì hiện lớp phủ "xoay ngang điện thoại" và vòng lặp dừng hẳn | Khung 16:9 vừa khít màn hình desktop, không còn dải đen hai bên. Đánh đổi: người bật khoá xoay phải tự tắt, và thao tác thành hai ngón thay vì một |
+| Kích thước gốc | **Hệ toạ độ ảo 1280 × 720** (đúng 16:9), scale theo màn hình | Mọi toạ độ trong code viết theo hệ này, không bao giờ dùng px thật |
 | **Mức độ đồ hoạ** | **Tối giản.** Mỗi món rác vẽ bằng **3–6 hình cơ bản** (`roundRect`, `ellipse`, `path`), đọc được ở 40px trên điện thoại. Bối cảnh = dải màu gradient + 2–4 silhouette đặc trưng của vùng | Codex vẽ được toàn bộ bằng code, **không cần hoạ sĩ**. `render/` phải tách hẳn khỏi logic để sau thay ảnh minh hoạ xịn vào mà không đụng gameplay |
 | Repo | **`github.com/threeng0227/rac-oi-ve-nha`** — repo riêng, public | Dự án cộng đồng, không chôn trong portfolio cá nhân |
 | Tên miền | **`rac-oi-ve-nha.vercel.app`** (miễn phí) | Dùng cố định cho `og:url`. Sau mua tên miền riêng chỉ cần trỏ DNS, không sửa code |
@@ -89,23 +89,28 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 
 ### 5.1 Bố cục màn chơi
 
-Màn hình dọc, chia ba tầng cố định (toạ độ theo hệ ảo 720×1280):
+Màn hình **ngang**, chia bốn tầng cố định (toạ độ theo hệ ảo 1280×720):
 
 ```
-┌─────────────────────────────┐  y=0
-│ HUD: thời gian · điểm · combo│  cao 120
-├─────────────────────────────┤  y=120
-│                             │
-│      KHU CẢNH (playfield)   │  cao 800
-│   rác nằm rải rác ở đây     │
-│   → CHẠM để nhặt            │
-│                             │
-├─────────────────────────────┤  y=920
-│  TÚI: [🥤][🍌][🔋][ ][ ][ ] │  cao 140  (6 ô)
-├─────────────────────────────┤  y=1060
-│   ♻️ TÁI CHẾ │ 🍎 THỰC PHẨM │ 🗑 KHÁC │  cao 220
-└─────────────────────────────┘  y=1280
+┌──────────────────────────────────────────────────────────┐ y=0
+│  HUD: thời gian · điểm · combo · thanh ô nhiễm   cao 90  │
+├──────────────────────────────────────────────────────────┤ y=90
+│                                                          │
+│                 KHU CẢNH (playfield)                     │
+│            rác nằm rải rác — CHẠM để nhặt                │
+│                      cao 440                             │
+│                                                          │
+├──────────────────────────────────────────────────────────┤ y=530
+│         TÚI: [🥤][🍌][🔋][ ][ ][ ]               cao 60  │
+├────────────────────┬───────────────────┬─────────────────┤ y=590
+│    ♻️ TÁI CHẾ       │   🍎 THỰC PHẨM    │    🗑 KHÁC      │ cao 130
+│      427 rộng      │     427 rộng      │    426 rộng     │
+└────────────────────┴───────────────────┴─────────────────┘ y=720
 ```
+
+Ba thùng trải hết chiều ngang ở cạnh dưới: hai ngón cái nghỉ ở hai góc dưới,
+với tới thùng trái và thùng phải không phải nhấc tay. Thùng giữa xa hơn một
+chút — đó là lý do nhóm **Thực phẩm** (ít gặp nhất ở phần lớn màn) nằm ở giữa.
 
 ### 5.2 Vòng lặp cốt lõi
 
@@ -117,7 +122,9 @@ Màn hình dọc, chia ba tầng cố định (toạ độ theo hệ ảo 720×1
 4. **Túi đầy 6 món → không nhặt thêm được nữa.** Đây là nguồn áp lực chính: buộc người chơi vừa nhặt vừa phân loại, không được nhặt bừa.
 5. Hết giờ → tính kết quả.
 
-> **Ghi chú thiết kế cho người implement:** Cơ chế "chạm để nhặt, kéo để phân loại" được chọn vì chơi được bằng **một ngón cái**. Không làm joystick ảo, không làm nhân vật di chuyển. Người chơi là "bàn tay", không phải nhân vật trong màn.
+> **Ghi chú thiết kế cho người implement:** Cơ chế "chạm để nhặt, kéo để phân loại" giữ nguyên ở khổ ngang, nhưng nay chơi bằng **hai ngón cái** — tay trái lo nửa màn trái, tay phải lo nửa phải. Không làm joystick ảo, không làm nhân vật di chuyển. Người chơi là "bàn tay", không phải nhân vật trong màn.
+>
+> Hệ quả cần kiểm khi cân bằng: vùng với tới của hai ngón cái ở khổ ngang rộng hơn ở khổ dọc, nên người chơi nhặt nhanh hơn. Bài mô phỏng ở Mục 5.6 phải chạy lại sau khi đổi, đừng bê nguyên con số cũ.
 
 ### 5.3 Ba thùng rác — theo đúng pháp luật Việt Nam
 
@@ -697,3 +704,17 @@ Bạn chưa nói gì về các điểm này, tôi chốt theo phán đoán. Th�
 8. **Màn 1 dạy bằng cách chơi**, không có màn hình hướng dẫn riêng; chơi lần hai trở đi thì bỏ luôn.
 9. **Bảy lời cam kết** ở Mục 11b — tôi tự viết, tông cố ý nhẹ và cụ thể.
 10. **Cổng kiểm chứng số liệu chặn con số, không chặn loại rác** — để game phát hành được mà vẫn không bịa số.
+
+### Sửa ngày 2026-11-20: đổi sang khổ ngang
+
+Nguyên yêu cầu game chơi ở khổ ngang trên điện thoại. Hệ ảo đổi từ 720×1280
+sang **1280×720**. Kéo theo:
+
+- Desktop vừa khít 16:9, không còn hai dải đen mỗi bên 656px như bố cục dọc.
+- Cầm dọc trên máy nhỏ (`orientation: portrait` và `max-width: 900px`) thì hiện
+  lớp phủ "Xoay ngang điện thoại" và **vòng lặp dừng hẳn** để đỡ tốn pin.
+  Điều kiện trong `global.css` và trong `main.ts` phải luôn khớp nhau.
+- Mất tính "mở link là chơi ngay": người bật khoá xoay màn hình sẽ phải tự tắt.
+  Lớp phủ nói rõ điều đó thay vì để họ đoán.
+- Thao tác thành **hai ngón cái** thay vì một. Mọi con số cân bằng ở Mục 5.6
+  phải chạy lại bài mô phỏng, không được bê nguyên từ bố cục dọc.

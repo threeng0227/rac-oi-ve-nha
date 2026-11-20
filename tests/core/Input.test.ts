@@ -37,10 +37,10 @@ function fakeTarget(rect = { left: 0, top: 0 }) {
   };
 }
 
-/** Viewport của iPhone 14 dọc: scale 390/720, lề trên ~75.3. */
+/** Viewport của iPhone 14 nằm ngang: scale 390/720, lề trái ~75.3. */
 function phoneViewport(): Viewport {
   const vp = new Viewport();
-  vp.resize(390, 844, 2);
+  vp.resize(844, 390, 2);
   return vp;
 }
 
@@ -51,7 +51,7 @@ describe('Input', () => {
     const dom = fakeTarget();
     new Input(vp, (s) => samples.push(s)).attach(dom.target);
 
-    dom.dispatch('pointerdown', { clientX: 195, clientY: 422, pointerId: 1 });
+    dom.dispatch('pointerdown', { clientX: 422, clientY: 195, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
     expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
@@ -63,7 +63,7 @@ describe('Input', () => {
     const dom = fakeTarget({ left: 40, top: 100 });
     new Input(vp, (s) => samples.push(s)).attach(dom.target);
 
-    dom.dispatch('pointerdown', { clientX: 195 + 40, clientY: 422 + 100, pointerId: 1 });
+    dom.dispatch('pointerdown', { clientX: 422 + 40, clientY: 195 + 100, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
     expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
@@ -159,9 +159,9 @@ describe('Input', () => {
     const dom = fakeTarget();
     new Input(phoneViewport(), (s) => samples.push(s)).attach(dom.target);
 
-    dom.dispatch('pointerdown', { clientX: 195, clientY: 2, pointerId: 1 });
+    dom.dispatch('pointerdown', { clientX: 2, clientY: 195, pointerId: 1 });
 
-    expect(samples[0]?.y).toBeLessThan(0);
+    expect(samples[0]?.x).toBeLessThan(0);
   });
 
   test('đổi kích thước màn hình rồi thì toạ độ tính theo viewport mới', () => {
@@ -170,8 +170,8 @@ describe('Input', () => {
     const dom = fakeTarget();
     new Input(vp, (s) => samples.push(s)).attach(dom.target);
 
-    vp.resize(844, 390, 2); // xoay ngang
-    dom.dispatch('pointerdown', { clientX: 422, clientY: 195, pointerId: 1 });
+    vp.resize(390, 844, 2); // người chơi xoay máy về dọc
+    dom.dispatch('pointerdown', { clientX: 195, clientY: 422, pointerId: 1 });
 
     expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
     expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
