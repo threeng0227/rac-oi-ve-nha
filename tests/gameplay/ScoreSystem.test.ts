@@ -203,6 +203,7 @@ describe('ScoreSystem', () => {
     expect(result.cleanliness).toBe(1 / 4);
     expect(result.score).toBe(before - 2);
     expect(result.remainingCount).toBe(2);
+    expect(result.hazardRemainingCount).toBe(0);
   });
 
   test('loại trừ rác năm giây cuối, bị gió cuốn và nguy hại bằng tập hợp không trừ lặp', () => {
@@ -232,6 +233,7 @@ describe('ScoreSystem', () => {
     system.pick(bag);
     const result = system.finish([bag, bag]);
     expect(result.score).toBe(65);
+    expect(result.hazardRemainingCount).toBe(2);
     expect(result.cleanliness).toBe(0);
     expect(result.remainingCount).toBe(2);
     expect(system.finish([])).toBe(result);

@@ -10,6 +10,7 @@ export interface LevelResult {
   readonly mistakes: number;
   readonly hazardMistakes: number;
   readonly remainingCount: number;
+  readonly hazardRemainingCount: number;
 }
 
 interface ScoredItem {
@@ -117,6 +118,7 @@ export class ScoreSystem {
     let eligible = 0;
     let bagCount = 0;
     let remainingCount = 0;
+    let hazardRemainingCount = 0;
     let penalty = 0;
     for (const [id, item] of this.items) {
       // Tập hợp loại trừ tránh trừ lặp một món vừa nguy hại, vừa sinh muộn hoặc bị gió cuốn.
@@ -124,7 +126,7 @@ export class ScoreSystem {
       if (item.sorted || item.escaped) continue;
       remainingCount++;
       if (bagIds.has(id)) bagCount++;
-      if (item.hazard) penalty += 20;
+      if (item.hazard) { penalty += 20; hazardRemainingCount++; }
       else if (!bagIds.has(id)) penalty += 2;
     }
     this.changePoints(-penalty);
@@ -146,6 +148,7 @@ export class ScoreSystem {
       mistakes: this.wrong,
       hazardMistakes: this.hazardWrong,
       remainingCount,
+      hazardRemainingCount,
     });
     return this.result;
   }

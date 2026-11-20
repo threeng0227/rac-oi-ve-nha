@@ -16,6 +16,13 @@ function makeLayout(width: number, height: number): Layout {
 const layouts = [[1100, 720], [1800, 720], [720, 1100], [720, 1800]].map(([width, height]) => makeLayout(width!, height!));
 
 describe('Spawner', () => {
+  test('hệ số sự kiện nhân tốc độ trong đúng khoảng thời gian cập nhật', () => {
+    const layout = layouts[0]!;
+    const spawner = new Spawner({ ...level, spawnRatePerSec: 2 }, new Random(1));
+    const items = spawner.update(2, 82, layout, 5);
+    const expected = Math.floor(2 * layout.playfieldArea / 563200 * 1.6 * 5);
+    expect(items).toHaveLength(expected);
+  });
   test('10.000 mẫu có seed phân bố đúng trọng số của tám loại màn Hà Nội', () => {
     const spawner = new Spawner(level, new Random(4242));
     const counts = new Map<string, number>();

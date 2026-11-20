@@ -96,7 +96,7 @@ export const LEVELS: readonly LevelDef[] = [
   },
   {
     id: 'concert', order: 5, ...LEVEL_TEXT.concert,
-    durationSec: 60, initialTrashCount: 6, spawnRatePerSec: 0.40,
+    durationSec: 60, initialTrashCount: 6, spawnRatePerSec: 0.30,
     trashPool: [
       { typeId: 'coc-nhua', weight: 35 },
       { typeId: 'ao-mua-giay', weight: 20 },
@@ -138,7 +138,7 @@ export const LEVELS: readonly LevelDef[] = [
   },
   {
     id: 'giao-thua', order: 8, ...LEVEL_TEXT['giao-thua'],
-    durationSec: 75, initialTrashCount: 10, spawnRatePerSec: 0.45,
+    durationSec: 75, initialTrashCount: 10, spawnRatePerSec: 0.42,
     trashPool: [
       { typeId: 'lon-nhom', weight: 25 },
       { typeId: 'que-xien-tre', weight: 20 },
@@ -167,7 +167,7 @@ export const LEVELS: readonly LevelDef[] = [
   },
   {
     id: 'con-dao', order: 10, ...LEVEL_TEXT['con-dao'],
-    durationSec: 85, initialTrashCount: 10, spawnRatePerSec: 0.48,
+    durationSec: 85, initialTrashCount: 10, spawnRatePerSec: 0.47,
     trashPool: [
       { typeId: 'tui-nilon', weight: 25 },
       { typeId: 'ong-hut-nhua', weight: 20 },

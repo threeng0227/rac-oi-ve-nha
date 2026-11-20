@@ -43,11 +43,11 @@ export class Spawner {
   }
 
   /** elapsedSec is the end of this update interval. */
-  update(dt: number, elapsedSec: number, layout: Layout): TrashItem[] {
+  update(dt: number, elapsedSec: number, layout: Layout, multiplier = 1): TrashItem[] {
     if (dt <= 0) return [];
     const start = Math.max(0, elapsedSec - dt);
     const end = Math.max(0, elapsedSec);
-    const scaledRate = this.level.spawnRatePerSec * layout.playfieldArea / REFERENCE_AREA;
+    const scaledRate = this.level.spawnRatePerSec * layout.playfieldArea / REFERENCE_AREA * multiplier;
     this.credit += scaledRate * (this.activeTimeUntil(end) - this.activeTimeUntil(start));
     const count = Math.floor(this.credit + 1e-9);
     this.credit -= count;

@@ -5,6 +5,7 @@ import type { TrashItem } from '../gameplay/TrashItem';
 import { BIN_TEXT, vi } from '../i18n/vi';
 import { BIN_COLORS, UI, mix, withAlpha } from './palette';
 import { drawTrashSprite } from './sprites';
+import { drawEvents, drawHazardOutline } from './EventView';
 
 const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
@@ -17,18 +18,20 @@ export class LevelView {
     this.backdrop(g, session);
     this.hud(g, session);
     for (const item of session.items) {
-      if (item.state === 'ground') this.item(g, item, item.x, item.y);
+      if (item.state === 'ground') this.item(g, item, item.x, item.y, session);
     }
+    drawEvents(g, session, this.viewport);
     this.bag(g, session);
     this.bins(g, session);
     for (const item of session.items) {
-      if (item.state === 'flying' || item.state === 'dragging') this.item(g, item, item.x, item.y);
+      if (item.state === 'flying' || item.state === 'dragging') this.item(g, item, item.x, item.y, session);
     }
     if (session.tutorial !== 'done') this.tutorial(g, session);
     if (session.feedback) {
       const color = session.feedback.kind === 'error' ? UI.danger : UI.highlight;
       this.message(g, session.feedback.text, session.layout,
-        session.layout.bag.y - this.fontSize(14) * 2.1, color);
+        session.feedback.knowledge ? session.layout.playfield.y + session.layout.playfield.height / 2 :
+          session.layout.bag.y - this.fontSize(14) * 2.1, color);
     }
     g.restore();
   }
@@ -94,7 +97,11 @@ export class LevelView {
       g.font = `400 ${font}px ${FONT}`;
       g.fillStyle = withAlpha(UI.textOnDark, 0.76);
       g.fillText(vi.score(session.score.score), l.spawnArea.x, l.hud.y + l.hud.height * 0.68);
+      g.textAlign = 'center';
+      g.fillStyle = session.score.pollution >= 70 ? UI.danger : UI.warning;
+      g.fillText(vi.pollution(session.score.pollution), l.centerX, l.hud.y + l.hud.height * 0.68);
       g.textAlign = 'right';
+      g.fillStyle = withAlpha(UI.textOnDark, 0.76);
       g.fillText(vi.combo(session.score.combo, session.score.multiplier), l.width - l.spawnArea.x, l.hud.y + l.hud.height * 0.68);
       g.fillStyle = UI.hairline;
       g.fillRect(l.spawnArea.x, l.hud.y + l.hud.height * 0.9, l.spawnArea.width, l.hud.height * 0.06);
@@ -120,6 +127,7 @@ export class LevelView {
         const center = session.slotCenter(index);
         const size = Math.min(l.bagSlotSize * 0.7, l.bag.height * 0.76);
         drawTrashSprite(g, item.sprite, center.x, center.y, size);
+        if (item.type.bin === 'hazard') drawHazardOutline(g, center.x, center.y, size, session);
       }
     }
   }
@@ -146,13 +154,14 @@ export class LevelView {
     }
   }
 
-  private item(g: CanvasRenderingContext2D, item: TrashItem, x: number, y: number): void {
+  private item(g: CanvasRenderingContext2D, item: TrashItem, x: number, y: number, session: LevelSession): void {
     const size = Math.max(item.size, 40 / this.viewport.scale);
     g.fillStyle = withAlpha(UI.letterbox, 0.22);
     g.beginPath();
     g.ellipse(x, y + size * 0.38, size * 0.44, size * 0.11, 0, 0, Math.PI * 2);
     g.fill();
     drawTrashSprite(g, item.sprite, x, y, size);
+    if (item.type.bin === 'hazard') drawHazardOutline(g, x, y, size, session);
   }
 
   private tutorial(g: CanvasRenderingContext2D, session: LevelSession): void {

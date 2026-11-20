@@ -6,7 +6,7 @@ import { ResultScene } from '../../src/scenes/ResultScene';
 
 const result: LevelResult = {
   score: 420, stars: 3, cleanliness: 1, failed: false,
-  correctCount: 20, totalSpawned: 20, mistakes: 0, hazardMistakes: 0, remainingCount: 0,
+  correctCount: 20, totalSpawned: 20, mistakes: 0, hazardMistakes: 0, remainingCount: 0, hazardRemainingCount: 0,
 };
 
 function scene(viewport = new Viewport()) {

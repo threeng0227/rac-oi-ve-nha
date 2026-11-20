@@ -3,7 +3,7 @@ import type { Viewport } from '../core/Viewport';
 import { FACTS } from '../data/facts';
 import type { LevelDef } from '../data/levels';
 import type { LevelResult } from '../gameplay/ScoreSystem';
-import { RESULT_TEXT, vi } from '../i18n/vi';
+import { HAZARD_TEXT, RESULT_TEXT, vi } from '../i18n/vi';
 import { UI, mix, withAlpha } from './palette';
 
 export type ResultAction = 'replay' | 'map' | 'share' | 'pledge';
@@ -84,7 +84,7 @@ export class ResultView {
     g.fillText(RESULT_TEXT.correct(result.correctCount), l.centerX, card.y + font * 10.6);
 
     const fact = FACTS.find(fact => fact.id === level.factOnComplete)?.text ?? '';
-    const message = result.failed ? RESULT_TEXT.failedHint : fact;
+    const message = result.failed ? RESULT_TEXT.failedHint : result.hazardRemainingCount ? HAZARD_TEXT.pendingAtEnd : fact;
     this.paragraph(g, message, card, card.y + font * 13.1, font, UI.textOnDark);
     if (!result.failed && result.stars === 0) {
       g.fillStyle = color;

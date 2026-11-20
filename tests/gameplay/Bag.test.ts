@@ -14,6 +14,23 @@ function addSettled(bag: Bag, id: number): TrashItem {
 }
 
 describe('Bag', () => {
+  test('tối đa hai món nguy hại kể cả đang bay hoặc đang kéo, vẫn nhận rác thường', () => {
+    const bag = new Bag();
+    const hazard = TRASH_TYPES.find(type => type.bin === 'hazard')!;
+    const first = new TrashItem(1, hazard, 0, 0);
+    const second = new TrashItem(2, hazard, 0, 0);
+    const third = new TrashItem(3, hazard, 0, 0);
+    expect(bag.tryAdd(first)).toBe(0);
+    expect(bag.tryAdd(second)).toBe(1);
+    expect(bag.tryAdd(third)).toBeNull();
+    bag.settle(first);
+    bag.beginDrag(0, 9);
+    expect(bag.tryAdd(third)).toBeNull();
+    expect(third.state).toBe('ground');
+    expect(bag.tryAdd(makeItem(4))).toBe(2);
+    bag.removeDragged(9);
+    expect(bag.tryAdd(third)).toBe(0);
+  });
   test('chỉ có sáu ô, giữ ô ngay lúc bay và từ chối món thứ bảy', () => {
     const bag = new Bag();
     expect(bag.slots).toHaveLength(6);

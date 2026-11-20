@@ -1039,3 +1039,21 @@ tế, Lighthouse và ảnh preview chia sẻ chưa được kiểm tra trong phi
 32. Côn Đảo ở khổ dọc dài chỉ đạt 635/1.000 lượt ba sao khi tốc độ sinh 0,50.
     Giảm xuống 0,48 cho 970/1.000 lượt, các ngưỡng sao giữ nguyên. Giá trị này thay
     thế giá trị khởi điểm ở bảng 6.1. Các màn còn lại vượt ngưỡng trong bộ cơ sở.
+
+### Chặng 4 — sự kiện và rác nguy hại
+
+33. Tám sự kiện dùng lịch có cảnh báo trước hai giây, dời sự kiện sau tới ít nhất
+    ba giây sau khi sự kiện trước kết thúc. Nhân vật có vùng chạm tối thiểu 44 CSS px.
+    Bác ve chai chỉ nhận tái chế, đồ khác trả lại túi. Người ném rác chỉ nhặt lại
+    những món còn trên sàn, các món đã nằm trong túi vẫn do người chơi phân loại.
+34. Hộp thu gom hiện 15 giây, quay lại sau 10 giây nếu còn rác nguy hại trong túi.
+    Rác nguy hại mới xuất hiện trong lúc chờ cũng xếp yêu cầu cho lần quay lại.
+    Yêu cầu mới không gia hạn cửa sổ hiện có. Hiệu ứng trượt vào dài 300ms, bỏ khi
+    người chơi chọn giảm chuyển động. Túi giữ tối đa hai món nguy hại.
+35. Bộ mô phỏng hiện dùng `LevelSession.onPointer` thực, bao gồm tám sự kiện và
+    chu kỳ hộp thực. Hai ngón tay cho phép quãng kéo diễn ra cùng thời gian phản
+    xạ của thao tác kế tiếp, tối đa hai pointer và cách mọi quyết định ít nhất
+    400ms. Người chơi giữ một vài món trong túi rồi chọn quãng kéo ngắn nhất.
+36. Sau khi đưa sự kiện vào mô phỏng, giảm tốc độ sinh concert từ 0,40 xuống 0,30,
+    giao thừa từ 0,45 xuống 0,42, Côn Đảo từ 0,48 xuống 0,47. Mọi ngưỡng sao và
+    số rác sự kiện giữ nguyên. Các giá trị này thay thế bảng khởi điểm Mục 6.1.

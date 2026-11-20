@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { Viewport } from '../../src/core/Viewport';
 import { LevelSession } from '../../src/gameplay/LevelSession';
+import { LEVELS } from '../../src/data/levels';
 
 function session(skipTutorial = true): LevelSession {
   const viewport = new Viewport();
@@ -24,6 +25,49 @@ function drop(game: LevelSession, slot: number, binIndex: number, pointer = 1): 
 }
 
 describe('LevelSession — normal pointer entry points', () => {
+  test('rác nguy hại vào hộp đúng, vào thùng thường bị phạt và vẫn kéo lại được', () => {
+    const viewport = new Viewport();
+    const level = { ...LEVELS[0]!, initialTrashCount: 1, events: [], spawnRatePerSec: 0,
+      trashPool: [{ typeId: 'pin-aa' as const, weight: 1 }] };
+    const game = new LevelSession(viewport, { level, skipTutorial: true });
+    pick(game);
+    drop(game, 0, 0);
+    expect(game.score.pollution).toBe(20);
+    expect(game.bag.count).toBe(1);
+    expect(game.collector.visible).toBe(true);
+    const from = game.slotCenter(0);
+    const to = game.collector.bounds(game.layout);
+    game.onPointer({ phase: 'down', ...from, id: 1 });
+    game.onPointer({ phase: 'up', x: to.x + to.width / 2, y: to.y + to.height / 2, id: 1 });
+    expect(game.bag.count).toBe(0);
+    expect(game.score.score).toBe(50);
+  });
+
+  test('hộp quay lại sau mười giây khi túi còn pin, nhặt pin thứ ba bị từ chối', () => {
+    const viewport = new Viewport();
+    const game = new LevelSession(viewport, { skipTutorial: true });
+    game.spawnTrash(3, 'hazard');
+    for (const item of game.items.filter(t => t.type.bin === 'hazard')) {
+      game.onPointer({ phase: 'down', x: item.x, y: item.y, id: item.id + 10 });
+      game.update(0.4);
+    }
+    expect(game.bag.slots.filter(t => t?.type.bin === 'hazard')).toHaveLength(2);
+    game.update(15);
+    expect(game.collector.visible).toBe(false);
+    game.update(10);
+    expect(game.collector.visible).toBe(true);
+  });
+
+  test('sự kiện ném rác được chạm xử lý qua cùng đường vào pointer', () => {
+    const viewport = new Viewport();
+    const game = new LevelSession(viewport, { skipTutorial: true,
+      level: { ...LEVELS[0]!, initialTrashCount: 0, spawnRatePerSec: 0, events: [{ eventId: 'NEM_RAC', atSec: 2 }] } });
+    game.update(2);
+    expect(game.events.active?.id).toBe('NEM_RAC');
+    const target = game.eventTarget!;
+    game.onPointer({ phase: 'down', x: target.x + target.width / 2, y: target.y + target.height / 2, id: 9 });
+    expect(game.score.score).toBe(30);
+  });
   test('nhặt và phân loại qua pointer cập nhật điểm, sai làm tăng ô nhiễm', () => {
     const game = session();
     pick(game);

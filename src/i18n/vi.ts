@@ -16,6 +16,7 @@ export const vi = {
   wrongBin: (name: string, bin: string) => `${name} thuộc nhóm ${bin}`,
   sorted: (name: string, label: string) => label ? `${name} · ${label}` : name,
   score: (score: number) => `${score} điểm`,
+  pollution: (value: number) => `Ô nhiễm ${Math.round(value)}%`,
   combo: (combo: number, multiplier: number) => `Chuỗi ${combo} · ×${multiplier}`,
   seconds: (seconds: number) => `${seconds}s`,
 } as const;
@@ -238,4 +239,25 @@ export const RESULT_TEXT = {
   cleanliness: (value: number) => `Độ sạch ${Math.round(value * 100)}%`,
   correct: (count: number) => `Phân loại đúng ${count} món`,
   stars: (count: number) => '★'.repeat(count) + '☆'.repeat(3 - count),
+} as const;
+
+export const EVENT_TEXT = {
+  MUA_BAO: 'Mưa bão ập tới!',
+  GIO_MUA: 'Gió mùa về!',
+  CUU_SINH_VAT: 'Cứu nó với!',
+  BAC_VE_CHAI: 'Bác ve chai đi ngang',
+  NEM_RAC: 'Ơ kìa!',
+  GIO_CAO_DIEM: 'Đám đông vừa tan!',
+  PIN_ROI: 'Cẩn thận — rác nguy hại!',
+  BAI_RAC_TU_PHAT: 'Bãi rác tự phát!',
+  retrieved: 'Quay lại nhặt rồi. Lần sau bỏ đúng thùng nhé.',
+  rejected: 'Bác chỉ nhận rác tái chế thôi nhé.',
+  tapsRemaining: (count: number) => `Chạm thêm ${count} lần`,
+} as const;
+
+export const HAZARD_TEXT = {
+  collector: 'Hộp thu gom',
+  waitCollector: 'Đợi hộp thu gom quay lại',
+  wrongSort: 'Pin KHÔNG thuộc thùng nào cả. Pin phải mang tới điểm thu gom riêng.',
+  pendingAtEnd: 'Pin vẫn còn trong túi — ngoài đời cũng vậy, nhiều nhà để pin cũ trong ngăn kéo hàng năm trời.',
 } as const;

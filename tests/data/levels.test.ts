@@ -10,12 +10,12 @@ const EXPECTED = [
   ['ha-long', 75, 6, 0.35],
   ['hoi-an', 75, 6, 0.40],
   ['da-lat', 75, 8, 0.45],
-  ['concert', 60, 6, 0.40],
+  ['concert', 60, 6, 0.30],
   ['nhieu-loc', 75, 8, 0.45],
   ['cai-rang', 75, 8, 0.50],
-  ['giao-thua', 75, 10, 0.45],
+  ['giao-thua', 75, 10, 0.42],
   ['sa-pa', 80, 8, 0.45],
-  ['con-dao', 85, 10, 0.48],
+  ['con-dao', 85, 10, 0.47],
 ] as const;
 
 const POOLS = [

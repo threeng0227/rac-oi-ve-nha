@@ -11,7 +11,7 @@ const SCREENS = [
   { name: 'portrait tall', width: 720, height: 1800 },
 ] as const;
 
-describe('balance — 400ms perfect player, baseline before event systems', () => {
+describe('balance — 400ms perfect player through production level sessions', () => {
   test('seeded runs repeat the same result and actually process two actions per item', () => {
     const viewport = new Viewport();
     viewport.resize(1100, 720, 1);
@@ -19,10 +19,22 @@ describe('balance — 400ms perfect player, baseline before event systems', () =
     const first = simulatePerfectPlayer(LEVELS[0]!, layout, 2026);
     expect(first).toEqual(simulatePerfectPlayer(LEVELS[0]!, layout, 2026));
     expect(first.actions).toBeGreaterThan(0);
-    expect(first.actions).toBe(first.pickedCount + first.sortedCount);
+    expect(first.peakBagCount).toBeGreaterThan(1);
+    expect(first.actions).toBe(first.pickedCount + first.sortedCount + first.eventActions);
     expect(first.result.correctCount).toBe(first.sortedCount);
     expect(first.result.mistakes).toBe(0);
     expect(first.result.totalSpawned).toBeGreaterThan(LEVELS[0]!.initialTrashCount);
+  });
+
+  test('production event taps and hazardous collection consume player actions', () => {
+    const viewport = new Viewport();
+    viewport.resize(1100, 720, 1);
+    const layout = computeLayout(viewport);
+    const rescue = simulatePerfectPlayer(LEVELS.find(level => level.id === 'ha-long')!, layout, 1);
+    expect(rescue.eventActions).toBe(5);
+    const hazard = simulatePerfectPlayer(LEVELS.find(level => level.id === 'concert')!, layout, 1);
+    expect(hazard.hazardSorted).toBeGreaterThanOrEqual(2);
+    expect(hazard.result.hazardMistakes).toBe(0);
   });
 
   test('a short round cannot skip the second reaction and an overloaded round fails', () => {
@@ -35,7 +47,9 @@ describe('balance — 400ms perfect player, baseline before event systems', () =
     expect(shortRun.sortedCount).toBe(0);
     expect(shortRun.result.stars).toBe(0);
     const overloaded = { ...LEVELS[0]!, initialTrashCount: 100, spawnRatePerSec: 4 };
-    expect(simulatePerfectPlayer(overloaded, layout, 1).result.stars).toBeLessThan(3);
+    const overloadedRun = simulatePerfectPlayer(overloaded, layout, 1);
+    expect(overloadedRun.result.stars).toBeLessThan(3);
+    expect(overloadedRun.overlappingActions).toBeGreaterThan(0);
   });
 
   for (const screen of SCREENS) {

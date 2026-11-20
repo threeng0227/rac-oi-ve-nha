@@ -19,6 +19,7 @@ export class Bag {
 
   tryAdd(item: TrashItem): number | null {
     if (item.state !== 'ground' || this.contents.some((entry) => entry?.id === item.id)) return null;
+    if (item.type.bin === 'hazard' && this.contents.filter(entry => entry?.type.bin === 'hazard').length >= 2) return null;
     const slot = this.contents.indexOf(null);
     if (slot === -1) return null;
     this.contents[slot] = item;
