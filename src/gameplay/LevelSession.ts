@@ -4,7 +4,7 @@ import { Random } from '../core/Random';
 import { TweenRunner, easeOutCubic } from '../core/Tween';
 import type { Viewport } from '../core/Viewport';
 import { LEVELS, type LevelDef } from '../data/levels';
-import { TRASH_TYPES, getDecomposeLabel } from '../data/trashTypes';
+import { TRASH_TYPES, getDecomposeLabel, type TrashId } from '../data/trashTypes';
 import { BIN_TEXT, HAZARD_TEXT, vi } from '../i18n/vi';
 import { Bag } from './Bag';
 import { Bin, NORMAL_BIN_IDS } from './Bin';
@@ -20,6 +20,7 @@ export interface SessionOptions {
   reducedMotion?: boolean;
   onComplete?: (result: LevelResult) => void;
   level?: LevelDef;
+  onDiscover?: (typeId: TrashId) => void;
 }
 
 export interface Feedback {
@@ -45,6 +46,8 @@ export class LevelSession {
   animationSec = 0;
   result: LevelResult | null = null;
   veChaiSold = 0;
+  readonly correctTypeIds = new Set<TrashId>();
+  private completionAge = 0;
   feedback: Feedback | null = null;
   private feedbackSec = 0;
   private readonly spawner: Spawner;
@@ -52,6 +55,7 @@ export class LevelSession {
   private readonly flights = new Map<TrashItem, number>();
   private active = true;
   private readonly onComplete: ((result: LevelResult) => void) | undefined;
+  private readonly onDiscover: ((typeId: TrashId) => void) | undefined;
   private currentLayout: Layout;
 
   constructor(private readonly viewport: Viewport, options: SessionOptions = {}) {
@@ -61,6 +65,7 @@ export class LevelSession {
     this.rng = new Random(options.seed ?? Date.now());
     this.events = new EventSystem(this.level.events, this.rng);
     this.onComplete = options.onComplete;
+    this.onDiscover = options.onDiscover;
     this.reducedMotion = options.reducedMotion ?? false;
     this.spawner = new Spawner(this.level, this.rng);
     this.tutorial = options.skipTutorial || this.level.id !== 'ha-noi' ? 'done' : 'pick';
@@ -79,6 +84,13 @@ export class LevelSession {
   get minTargetSize(): number { return 44 / this.viewport.scale; }
   get eventTarget(): Rect | null { return this.events.active?.target?.(this) ?? null; }
   get eventId() { return this.events.active?.id ?? null; }
+  get revealProgress(): number {
+    if (!this.result || this.result.failed || this.result.stars === 0) return 0;
+    return this.reducedMotion ? 1 : Math.min(1, this.completionAge / 2);
+  }
+  get resultReady(): boolean {
+    return this.result !== null && (this.result.failed || this.result.stars === 0 || this.revealProgress === 1);
+  }
   get remainingSec(): number { return Math.max(0, Math.ceil(this.level.durationSec - this.elapsedSec)); }
 
   slotBounds(index: number): Rect {
@@ -105,7 +117,8 @@ export class LevelSession {
     this.tweens.update(dt);
     this.feedbackSec = Math.max(0, this.feedbackSec - dt);
     if (this.feedbackSec === 0) this.feedback = null;
-    if (this.tutorial !== 'done' || this.finished) return;
+    if (this.finished) { this.completionAge += dt; return; }
+    if (this.tutorial !== 'done') return;
     const elapsed = Math.min(this.level.durationSec, this.elapsedSec + dt);
     const step = elapsed - this.elapsedSec;
     this.score.update(step, this.items.filter(item => item.state === 'ground').length);
@@ -185,6 +198,7 @@ export class LevelSession {
       this.bag.removeDragged(pointerId);
       this.items.splice(this.items.indexOf(item), 1);
       this.score.sort(item, true);
+      this.discover(item.type.id);
       this.notify({ text: `${item.type.harm} ${item.type.tip}`, kind: 'success', knowledge: true });
       return;
     }
@@ -193,6 +207,7 @@ export class LevelSession {
       this.bag.removeDragged(pointerId);
       this.items.splice(this.items.indexOf(item), 1);
       this.score.sort(item, true, 2);
+      this.discover(item.type.id);
       this.veChaiSold++;
       this.notify({ text: vi.sorted(item.label, getDecomposeLabel(item.type)), kind: 'success' });
       return;
@@ -211,10 +226,17 @@ export class LevelSession {
     this.bag.removeDragged(pointerId);
     this.items.splice(this.items.indexOf(item), 1);
     this.notify({ text: vi.sorted(item.label, getDecomposeLabel(item.type)), kind: 'success', binId: bin.id });
+    this.discover(item.type.id);
     if (this.tutorial === 'sort') {
       this.tutorial = 'done';
       this.addItems(this.spawner.initial(this.layout));
     } else this.score.sort(item, true);
+  }
+
+  private discover(typeId: TrashId): void {
+    if (this.correctTypeIds.has(typeId)) return;
+    this.correctTypeIds.add(typeId);
+    this.onDiscover?.(typeId);
   }
 
   private addItems(items: TrashItem[]): void {

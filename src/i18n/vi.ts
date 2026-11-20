@@ -261,3 +261,25 @@ export const HAZARD_TEXT = {
   wrongSort: 'Pin KHÔNG thuộc thùng nào cả. Pin phải mang tới điểm thu gom riêng.',
   pendingAtEnd: 'Pin vẫn còn trong túi — ngoài đời cũng vậy, nhiều nhà để pin cũ trong ngăn kéo hàng năm trời.',
 } as const;
+
+export const NAV_TEXT = {
+  play: 'Chơi',
+  handbook: 'Sổ tay',
+  soundOff: 'Âm thanh đang tắt',
+  soundOn: 'Âm thanh đang bật',
+  back: 'Quay lại',
+  map: 'Hành trình xuyên Việt',
+  previous: 'Trước',
+  next: 'Sau',
+  close: 'Danh sách',
+  source: 'Nguồn',
+  locked: '🔒',
+  unknown: '?',
+  hoangSa: 'Hoàng Sa',
+  truongSa: 'Trường Sa',
+  harm: 'Tác hại',
+  tip: 'Làm đúng',
+  collected: (count: number) => `Đã sưu tập ${count}/24`,
+  page: (page: number, count: number) => `${page}/${count}`,
+  stars: (count: number) => '★'.repeat(count) + '☆'.repeat(3 - count),
+} as const;

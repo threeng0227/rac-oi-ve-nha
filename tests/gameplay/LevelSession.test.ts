@@ -25,6 +25,20 @@ function drop(game: LevelSession, slot: number, binIndex: number, pointer = 1): 
 }
 
 describe('LevelSession — normal pointer entry points', () => {
+  test('màn đạt sao đổi màu trong hai giây, chỉ mở kết quả sau khi chuyển xong', () => {
+    const viewport = new Viewport();
+    const game = new LevelSession(viewport, { skipTutorial: true,
+      level: { ...LEVELS[0]!, initialTrashCount: 0, spawnRatePerSec: 0, events: [] } });
+    game.update(90);
+    expect(game.result?.stars).toBe(3);
+    expect(game.revealProgress).toBe(0);
+    expect(game.resultReady).toBe(false);
+    game.update(1);
+    expect(game.revealProgress).toBeCloseTo(0.5);
+    game.update(1);
+    expect(game.resultReady).toBe(true);
+    expect(game.revealProgress).toBe(1);
+  });
   test('rác nguy hại vào hộp đúng, vào thùng thường bị phạt và vẫn kéo lại được', () => {
     const viewport = new Viewport();
     const level = { ...LEVELS[0]!, initialTrashCount: 1, events: [], spawnRatePerSec: 0,
@@ -105,6 +119,7 @@ describe('LevelSession — normal pointer entry points', () => {
     expect(game.score.pollution).toBe(0);
     drop(game, 0, 1);
     expect(game.score.correctCount).toBe(0);
+    expect(game.correctTypeIds.has('vo-chuoi')).toBe(true);
     expect(game.score.totalSpawned).toBe(game.items.length);
   });
   test('chỉ báo hoàn thành một lần để ghi dấu lượt chơi cho lần tải sau', () => {

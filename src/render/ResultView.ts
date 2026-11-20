@@ -71,21 +71,23 @@ export class ResultView {
       l.centerX, card.y + font * 1.5);
     g.font = `400 ${font}px ${FONT}`;
     g.fillStyle = withAlpha(UI.textOnDark, 0.78);
-    g.fillText(level.name, l.centerX, card.y + font * 2.9);
+    const nameLines = this.wrap(g, level.name, card.width - font * 2.4);
+    nameLines.forEach((line, index) => g.fillText(line, l.centerX, card.y + font * (2.9 + index * 1.2)));
+    const offset = (nameLines.length - 1) * font * 0.9;
     g.fillStyle = UI.warning;
     g.font = `700 ${font * 2.2}px ${FONT}`;
-    g.fillText(RESULT_TEXT.stars(result.stars), l.centerX, card.y + font * 5.1);
+    g.fillText(RESULT_TEXT.stars(result.stars), l.centerX, card.y + font * 5.1 + offset);
     g.fillStyle = UI.textOnDark;
     g.font = `700 ${font * 1.8}px ${FONT}`;
-    g.fillText(RESULT_TEXT.score(result.score), l.centerX, card.y + font * 7.5);
+    g.fillText(RESULT_TEXT.score(result.score), l.centerX, card.y + font * 7.5 + offset);
     g.font = `500 ${font}px ${FONT}`;
     g.fillStyle = withAlpha(UI.textOnDark, 0.83);
-    g.fillText(RESULT_TEXT.cleanliness(result.cleanliness), l.centerX, card.y + font * 9.2);
-    g.fillText(RESULT_TEXT.correct(result.correctCount), l.centerX, card.y + font * 10.6);
+    g.fillText(RESULT_TEXT.cleanliness(result.cleanliness), l.centerX, card.y + font * 9.2 + offset);
+    g.fillText(RESULT_TEXT.correct(result.correctCount), l.centerX, card.y + font * 10.6 + offset);
 
     const fact = FACTS.find(fact => fact.id === level.factOnComplete)?.text ?? '';
     const message = result.failed ? RESULT_TEXT.failedHint : result.hazardRemainingCount ? HAZARD_TEXT.pendingAtEnd : fact;
-    this.paragraph(g, message, card, card.y + font * 13.1, font, UI.textOnDark);
+    this.paragraph(g, message, card, card.y + font * 13.1 + offset, font, UI.textOnDark);
     if (!result.failed && result.stars === 0) {
       g.fillStyle = color;
       g.fillText(RESULT_TEXT.retryHint, l.centerX, card.y + card.height - font * 5.5);
@@ -103,7 +105,12 @@ export class ResultView {
   }
 
   private paragraph(g: CanvasRenderingContext2D, text: string, card: Rect, top: number, font: number, color: string): void {
-    const maxWidth = card.width - font * 2.4;
+    const lines = this.wrap(g, text, card.width - font * 2.4);
+    g.fillStyle = color;
+    lines.forEach((text, index) => g.fillText(text, card.x + card.width / 2, top + index * font * 1.4));
+  }
+
+  private wrap(g: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
     const lines: string[] = [];
     let line = '';
     for (const word of text.split(' ')) {
@@ -112,8 +119,7 @@ export class ResultView {
       else line = next;
     }
     if (line) lines.push(line);
-    g.fillStyle = color;
-    lines.forEach((text, index) => g.fillText(text, card.x + card.width / 2, top + index * font * 1.4));
+    return lines;
   }
 
   private button(g: CanvasRenderingContext2D, layout: Layout, action: ResultAction): void {

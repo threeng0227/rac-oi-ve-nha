@@ -3,8 +3,8 @@ import { Game, type FrameClock } from './core/Game';
 import { Input } from './core/Input';
 import { Viewport } from './core/Viewport';
 import { applyViewportTransform, clearFrame } from './core/Renderer';
-import { LevelScene } from './scenes/LevelScene';
-import { ResultScene } from './scenes/ResultScene';
+import { Journey } from './scenes/Journey';
+import { ProgressStore } from './gameplay/ProgressStore';
 import { SaveStore, detectBackend } from './core/Storage';
 import { UI } from './render/palette';
 
@@ -44,17 +44,11 @@ const game = new Game(clock, () => {
 });
 
 const store = new SaveStore(detectBackend());
-const save = store.load();
-game.scenes.change(new LevelScene(viewport, {
-  skipTutorial: save.levels['ha-noi'] !== undefined,
+const progress = new ProgressStore(store);
+new Journey(game, viewport, progress, {
   reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  onComplete: () => {
-    // Ghi dấu lượt chơi để lần sau bỏ hướng dẫn, phần sao/điểm nối ở Chặng 3–5.
-    const latest = store.load();
-    latest.levels['ha-noi'] ??= { stars: 0, bestScore: 0, cleared: false };
-    store.save(latest);
-  },
-}), game);
+  openSource: url => window.open(url, '_blank', 'noopener,noreferrer'),
+}).start();
 
 /**
  * Vào toàn màn hình ở lần chạm đầu tiên.
@@ -91,7 +85,7 @@ canvas.addEventListener('lostpointercapture', (event) => {
 
 function cancelPointers(): void {
   const scene = game.scenes.current;
-  if (scene instanceof LevelScene || scene instanceof ResultScene) scene.cancelPointers();
+  if (scene && 'cancelPointers' in scene && typeof scene.cancelPointers === 'function') scene.cancelPointers();
 }
 window.addEventListener('blur', cancelPointers);
 

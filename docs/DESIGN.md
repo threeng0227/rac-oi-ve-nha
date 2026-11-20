@@ -1057,3 +1057,17 @@ tế, Lighthouse và ảnh preview chia sẻ chưa được kiểm tra trong phi
 36. Sau khi đưa sự kiện vào mô phỏng, giảm tốc độ sinh concert từ 0,40 xuống 0,30,
     giao thừa từ 0,45 xuống 0,42, Côn Đảo từ 0,48 xuống 0,47. Mọi ngưỡng sao và
     số rác sự kiện giữ nguyên. Các giá trị này thay thế bảng khởi điểm Mục 6.1.
+
+### Chặng 5 — hành trình và lưu tiến trình
+
+37. Menu có Chơi, Sổ tay và bật/tắt tiếng. Bản đồ chọn màn bằng danh sách phân
+    trang bốn màn để các địa điểm gần nhau vẫn dễ chạm. Đường bờ biển giản lược
+    theo kinh/vĩ độ, có Hoàng Sa và Trường Sa. Concert tạm đặt tại TP.HCM vì đặc
+    tả không chỉ định địa điểm, các màn còn lại theo địa danh đã ghi.
+38. Sao và điểm tốt nhất lấy max độc lập qua các lần chơi. Đạt ít nhất một sao
+    mới mở màn tiếp theo. Thẻ sổ tay lưu ngay khi phân loại đúng, kể cả vỏ chuối
+    hướng dẫn, không đợi kết thúc màn. Lưu trữ bị chặn vẫn giữ tiến trình trong phiên.
+39. Sổ tay chia sáu thẻ mỗi trang, ba cột. Thẻ khoá chỉ có bóng và dấu hỏi, thẻ
+    mở có nhãn phân hủy đã qua bộ lọc, tác hại, cách làm và nút mở nguồn.
+40. Màn đạt sao chuyển xám sang màu trong hai giây trước khi mở kết quả. Chế độ
+    giảm chuyển động chuyển màu tức thì. Mỗi bối cảnh và mọi sprite vẽ bằng Canvas.

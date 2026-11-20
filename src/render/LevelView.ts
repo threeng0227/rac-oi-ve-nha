@@ -6,6 +6,7 @@ import { BIN_TEXT, vi } from '../i18n/vi';
 import { BIN_COLORS, UI, mix, withAlpha } from './palette';
 import { drawTrashSprite } from './sprites';
 import { drawEvents, drawHazardOutline } from './EventView';
+import { drawBackdrop } from './backdrops';
 
 const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
@@ -15,7 +16,7 @@ export class LevelView {
   render(g: CanvasRenderingContext2D, session: LevelSession): void {
     g.save();
     g.textBaseline = 'middle';
-    this.backdrop(g, session);
+    drawBackdrop(g, session.layout, session.level.backdrop, session.revealProgress);
     this.hud(g, session);
     for (const item of session.items) {
       if (item.state === 'ground') this.item(g, item, item.x, item.y, session);
@@ -40,46 +41,6 @@ export class LevelView {
     return Math.max(24, cssPixels / this.viewport.scale);
   }
 
-  private backdrop(g: CanvasRenderingContext2D, session: LevelSession): void {
-    const l = session.layout;
-    const p = session.level.palette;
-    const sky = g.createLinearGradient(0, l.playfield.y, 0, l.bag.y);
-    sky.addColorStop(0, mix(p.sky, UI.textOnDark, 0.35));
-    sky.addColorStop(1, mix(p.ground, UI.textOnDark, 0.15));
-    g.fillStyle = sky;
-    g.fillRect(0, l.playfield.y, l.width, l.playfield.height);
-    const streetY = l.playfield.y + l.playfield.height * 0.43;
-    g.fillStyle = mix(p.ground, UI.letterbox, 0.15);
-    g.fillRect(0, streetY, l.width, l.bag.y - streetY);
-    const houses = [0.2, 0.29, 0.24];
-    for (const [index, heightRatio] of houses.entries()) {
-      const x = l.width * (0.05 + index * 0.33);
-      const width = l.width * 0.24;
-      const height = l.playfield.height * heightRatio;
-      const top = streetY - height;
-      g.fillStyle = mix(p.accent, p.ground, 0.35 + index * 0.1);
-      g.fillRect(x, top, width, height);
-      g.fillStyle = mix(p.ground, UI.letterbox, 0.4);
-      g.beginPath();
-      g.moveTo(x - width * 0.06, top);
-      g.lineTo(x + width / 2, top - height * 0.16);
-      g.lineTo(x + width * 1.06, top);
-      g.closePath();
-      g.fill();
-      g.fillStyle = withAlpha(UI.letterbox, 0.28);
-      for (const column of [0.17, 0.61]) {
-        g.fillRect(x + width * column, top + height * 0.19, width * 0.22, height * 0.24);
-      }
-      g.fillRect(x + width * 0.38, top + height * 0.58, width * 0.25, height * 0.42);
-    }
-    g.strokeStyle = withAlpha(UI.textOnDark, 0.08);
-    g.lineWidth = 2;
-    for (const fraction of [0.65, 0.85]) {
-      const y = l.playfield.y + l.playfield.height * fraction;
-      g.beginPath(); g.moveTo(0, y); g.lineTo(l.width, y); g.stroke();
-    }
-  }
-
   private hud(g: CanvasRenderingContext2D, session: LevelSession): void {
     const l = session.layout;
     const font = this.fontSize(14);
@@ -88,10 +49,19 @@ export class LevelView {
     g.fillStyle = UI.textOnDark;
     g.textAlign = 'left';
     g.font = `700 ${Math.max(32, font)}px ${FONT}`;
-    g.fillText(session.level.name, l.spawnArea.x, l.hud.y + l.hud.height * 0.35);
+    const time = vi.seconds(session.remainingSec);
+    const titleWidth = l.spawnArea.width - g.measureText(time).width - font * 1.2;
+    let title = session.level.name;
+    if (g.measureText(title).width > titleWidth) g.font = `700 ${font}px ${FONT}`;
+    if (g.measureText(title).width > titleWidth) {
+      while (title && g.measureText(`${title}…`).width > titleWidth) title = title.slice(0, -1);
+      title += '…';
+    }
+    g.fillText(title, l.spawnArea.x, l.hud.y + l.hud.height * 0.35);
     g.textAlign = 'right';
+    g.font = `700 ${Math.max(32, font)}px ${FONT}`;
     g.fillStyle = UI.warning;
-    g.fillText(vi.seconds(session.remainingSec), l.width - l.spawnArea.x, l.hud.y + l.hud.height * 0.35);
+    g.fillText(time, l.width - l.spawnArea.x, l.hud.y + l.hud.height * 0.35);
     if (session.tutorial === 'done') {
       g.textAlign = 'left';
       g.font = `400 ${font}px ${FONT}`;

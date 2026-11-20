@@ -3,6 +3,11 @@ import type { Viewport } from '../core/Viewport';
 import { LevelSession, type SessionOptions } from '../gameplay/LevelSession';
 import { LevelView } from '../render/LevelView';
 import { ResultScene } from './ResultScene';
+import type { LevelResult } from '../gameplay/ScoreSystem';
+
+export interface LevelSceneOptions extends SessionOptions {
+  onResult?: (result: LevelResult) => void;
+}
 
 /** Điều phối vòng đời, tương tác và phần vẽ của màn Hà Nội. */
 export class LevelScene implements Scene {
@@ -10,7 +15,7 @@ export class LevelScene implements Scene {
   private readonly view: LevelView;
   private game: Game | undefined;
 
-  constructor(private readonly viewport: Viewport, private readonly options: SessionOptions = {}) {
+  constructor(private readonly viewport: Viewport, private readonly options: LevelSceneOptions = {}) {
     this.session = new LevelSession(viewport, options);
     this.view = new LevelView(viewport);
   }
@@ -18,7 +23,8 @@ export class LevelScene implements Scene {
   enter(game?: Game): void { this.game = game; }
   update(dt: number): void {
     this.session.update(dt);
-    if (this.session.result && this.game) {
+    if (this.session.resultReady && this.session.result && this.game) {
+      if (this.options.onResult) { this.options.onResult(this.session.result); return; }
       const game = this.game;
       game.scenes.change(new ResultScene(this.viewport, this.session.level, this.session.result, {
         replay: () => game.scenes.change(new LevelScene(this.viewport, {
