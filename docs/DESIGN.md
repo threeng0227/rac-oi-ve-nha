@@ -21,7 +21,7 @@ Vấn đề với tuyên truyền kiểu cũ: khẩu hiệu, poster, bài giản
 ## 2. Mục tiêu / Không phải mục tiêu / Thất bại
 
 ### Mục tiêu
-- Chơi được bằng **một ngón tay trên điện thoại**, không cần hướng dẫn dài.
+- Chơi được bằng **hai ngón cái, máy cầm ngang**, không cần hướng dẫn dài.
 - Mỗi màn **60–90 giây**. Hết màn muốn chơi màn tiếp.
 - Kiến thức về rác **gài vào trong lúc chơi**, không phải màn hình text bắt đọc.
 - Có **lý do quay lại**: bản đồ mở khóa dần, sổ tay rác sưu tập dần.
@@ -261,6 +261,77 @@ export interface LevelDef {
 }
 ```
 
+
+### 6.1 Số liệu từng màn — giá trị khởi điểm
+
+> ⚠️ **Đây là giá trị khởi điểm, không phải chân lý.** Bài mô phỏng cân bằng ở Mục 5.6
+> là trọng tài. Màn nào người chơi hoàn hảo không đạt 3 sao ≥95% thì **giảm
+> `spawnRatePerSec` màn đó**, không hạ ngưỡng sao.
+
+**Cách các con số này được chọn:** mỗi món rác tốn hai thao tác (chạm nhặt + kéo phân
+loại). Với phản xạ 400ms và quãng kéo trung bình, người chơi khá xử lý được khoảng
+**0,8 món/giây** trong thời gian ngắn, nhưng không giữ được nhịp đó cả màn. Nên tốc độ
+sinh trung bình giữ dưới **0,55/giây**, phần căng thẳng đến từ **sự kiện dồn rác** chứ
+không từ việc tăng đều — tăng đều chỉ làm người chơi mệt, dồn cục mới làm người chơi nhớ.
+
+| # | Màn | `durationSec` | `initialTrashCount` | `spawnRatePerSec` | Tổng rác ước tính |
+|---|---|---|---|---|---|
+| 1 | Phố cổ Hà Nội | **90** | 4 | 0.25 | ~26 |
+| 2 | Vịnh Hạ Long | 75 | 6 | 0.35 | ~32 |
+| 3 | Phố cổ Hội An | 75 | 6 | 0.40 | ~36 |
+| 4 | Đà Lạt | 75 | 8 | 0.45 | ~42 |
+| 5 | **Đêm nhạc hội** | **60** | 6 | 0.40 | ~46 *(có dồn cục)* |
+| 6 | Kênh Nhiêu Lộc | 75 | 8 | 0.45 | ~58 *(có bãi rác)* |
+| 7 | Chợ nổi Cái Răng | 75 | 8 | 0.50 | ~46 |
+| 8 | Giao thừa Nguyễn Huệ | 75 | 10 | 0.45 | ~56 *(có dồn cục)* |
+| 9 | Ruộng bậc thang Sa Pa | 80 | 8 | 0.45 | ~44 |
+| 10 | **Côn Đảo** | 85 | 10 | 0.50 | ~60 *(hai sự kiện)* |
+
+Màn 1 dài 90 giây nhưng rác thưa nhất — người mới cần thời gian chứ không cần dễ.
+Màn 5 ngắn nhất (60 giây) vì nó là màn dồn dập, kéo dài sẽ thành mệt chứ không còn đã.
+
+### 6.2 Trọng số rác và lịch sự kiện từng màn
+
+Trọng số là số tương đối trong cùng một màn, không phải phần trăm.
+
+| # | `trashPool` (`typeId` : trọng số) | `events` (`eventId` @ giây) |
+|---|---|---|
+| 1 | `coc-nhua` 30 · `giay-bao` 20 · `vo-chuoi` 20 · `tui-nilon` 15 · `lon-nhom` 5 · `chai-nhua-pet` 5 · `tan-thuoc-la` 3 · `vo-trai-cay` 2 | `NEM_RAC` @ 55 |
+| 2 | `chai-nhua-pet` 30 · `hop-xop` 20 · `tui-nilon` 20 · `luoi-danh-ca` 12 · `chai-thuy-tinh` 10 · `ong-hut-nhua` 8 | `MUA_BAO` @ 20 · `CUU_SINH_VAT` @ 50 *(rùa)* |
+| 3 | `tui-nilon` 25 · `coc-nhua` 20 · `ong-hut-nhua` 20 · `giay-bao` 15 *(variant hoa đăng)* · `vo-trai-cay` 12 · `chai-nhua-pet` 8 | `GIO_MUA` @ 35 |
+| 4 | `coc-nhua` 25 · `lon-nhom` 20 · `vo-trai-cay` 20 *(variant vỏ bắp)* · `khau-trang-y-te` 15 · `chai-nhua-pet` 12 · `giay-bao` 8 | `BAC_VE_CHAI` @ 30 |
+| 5 | `coc-nhua` 35 · `ao-mua-giay` 20 · `chai-nhua-pet` 18 · `giay-bao` 12 *(variant băng rôn)* · `lon-nhom` 10 · `lightstick` 5 | `PIN_ROI` @ 18 · `GIO_CAO_DIEM` @ 40 |
+| 6 | `hop-xop` 28 · `tui-nilon` 25 · `chai-nhua-pet` 18 · `coc-nhua` 15 · `ao-mua-giay` 8 · `bia-carton` 6 | `BAI_RAC_TU_PHAT` @ 30 |
+| 7 | `vo-trai-cay` 30 · `la-chuoi` 20 · `ba-mia` 18 · `tui-nilon` 15 · `thuc-an-thua` 10 · `hop-xop` 7 | `GIO_MUA` @ 40 |
+| 8 | `lon-nhom` 25 · `que-xien-tre` 20 · `vo-hat-dua` 18 · `giay-bao` 15 · `coc-nhua` 10 · `bia-carton` 7 · `bong-den` 5 | `PIN_ROI` @ 20 · `GIO_CAO_DIEM` @ 45 |
+| 9 | `chai-nhua-pet` 28 · `tui-nilon` 22 · `khau-trang-y-te` 20 · `giay-bao` 14 · `lon-nhom` 11 · `pin-aa` 5 | `MUA_BAO` @ 25 · `PIN_ROI` @ 55 |
+| 10 | `tui-nilon` 25 · `ong-hut-nhua` 20 · `chai-nhua-pet` 18 · `luoi-danh-ca` 15 · `hop-xop` 12 · `chai-thuy-tinh` 6 · `pin-aa` 4 | `CUU_SINH_VAT` @ 25 *(rùa)* · `BAI_RAC_TU_PHAT` @ 55 |
+
+**Ba quy tắc khi chỉnh bảng này:**
+
+1. **Rác nguy hại không bao giờ quá trọng số 5.** Nó là bài học, không phải vật cản. Gặp hai lần một màn là đủ nhớ, gặp năm lần là ức chế.
+2. **Sự kiện cách nhau tối thiểu 20 giây** và không đặt trong 10 giây cuối — lúc đó `Spawner` đang giảm dần về 0, dồn rác vào đó là phạt oan người chơi.
+3. **Mỗi màn chỉ nên có 4–7 loại rác.** Nhiều hơn thì người chơi không kịp học loại nào ra loại nào, và sổ tay mở quá nhanh mất cảm giác sưu tập.
+
+### 6.3 Màu tạm từng màn
+
+Chưa làm `docs/ART.md`, nên đây là giá trị tạm để `LevelDef.palette` có cái mà điền.
+**Không coi đây là định hướng mỹ thuật** — sẽ thay khi có bảng màu thật.
+
+| # | `sky` | `ground` | `accent` | `water` |
+|---|---|---|---|---|
+| 1 | `#C9A227` | `#6B5B4A` | `#D96B4A` | — |
+| 2 | `#5FB3D9` | `#3E6B5A` | `#F2E8C9` | `#2E7DA8` |
+| 3 | `#E8A33D` | `#8A5A3B` | `#D94F4F` | `#4A6B7A` |
+| 4 | `#8FC5E8` | `#4A6B3A` | `#E88FB0` | `#3A7A9A` |
+| 5 | `#2A1B4A` | `#1A1030` | `#E84FA0` | — |
+| 6 | `#7AA8C9` | `#5A6B4A` | `#C9D94F` | `#4A7A6B` |
+| 7 | `#E8C97A` | `#8A7A4A` | `#D9734F` | `#6B8A5A` |
+| 8 | `#1B2A4A` | `#2A3A5A` | `#E8C94F` | — |
+| 9 | `#B8D4E8` | `#6B8A4A` | `#D9A84F` | — |
+| 10 | `#4FC9D9` | `#D9C9A8` | `#F2A84F` | `#2E9AB8` |
+
+
 ---
 
 ## 7. Tám tình huống bất ngờ (EventSystem)
@@ -412,6 +483,136 @@ Build **fail** khi và chỉ khi: một `TrashType` có `verified: false` **mà*
 
 ---
 
+### 8.4 Nội dung 24 thẻ — viết sẵn, dùng nguyên văn
+
+Đây là **phần tuyên truyền thật sự của game**. Không để người implement tự viết lại.
+
+**Quy tắc tông chữ:**
+- Câu `harm` nói **hậu quả cụ thể**, không nói "gây ô nhiễm môi trường" chung chung.
+- Câu `tip` phải là **việc làm được trong tuần này**, không phải lời kêu gọi.
+- Không dấu chấm than. Không "hãy". Không "chúng ta cần".
+- `harm` và `tip` **không được chứa con số** nào ngoài những số đã qua cổng kiểm chứng ở Mục 9.
+
+---
+
+#### ♻️ Nhóm TÁI CHẾ
+
+**1. `chai-nhua-pet` — Chai nhựa PET** · ~450 năm
+- *Tác hại:* Vỡ vụn dần thành vi nhựa. Cá nuốt phải, rồi quay lại mâm cơm nhà mình.
+- *Làm đúng:* Đổ hết nước, bóp dẹp cho đỡ tốn chỗ. Nắp chai làm từ loại nhựa khác — tháo ra để riêng.
+
+**2. `lon-nhom` — Lon nhôm** · 80–200 năm
+- *Tác hại:* Nằm ngoài môi trường cả trăm năm, trong khi nhôm tái chế được gần như vô hạn mà không mất chất.
+- *Làm đúng:* Đổ cạn, bóp dẹp. Lon nhôm là thứ ve chai được giá nhất — đừng để nó lẫn vào rác thường.
+
+**3. `chai-thuy-tinh` — Chai thủy tinh** · gần như không phân hủy sinh học
+- *Tác hại:* Không phân hủy, chỉ vỡ thành mảnh nhỏ dần. Mảnh vỡ trên bãi biển cắt chân người và chân chim.
+- *Làm đúng:* Để nguyên chai, đừng đập. Chai vỡ vừa nguy hiểm cho người thu gom vừa khó tái chế hơn.
+
+**4. `giay-bao` — Giấy báo** · 2–6 tuần
+- *Tác hại:* Tự nó phân hủy nhanh. Vấn đề là dính dầu mỡ thì làm hỏng cả mẻ giấy tái chế.
+- *Làm đúng:* Giữ khô. Giấy ướt hoặc dính thức ăn thì bỏ nhóm Khác, đừng bỏ nhầm vào tái chế.
+
+**5. `bia-carton` — Bìa carton** · 2–3 tháng ⚠️
+- *Tác hại:* Chiếm chỗ khổng lồ ở bãi chôn lấp dù thừa sức tái chế.
+- *Làm đúng:* Gỡ băng keo, xếp dẹp. Thùng dính dầu mỡ như hộp pizza thì không tái chế được.
+
+---
+
+#### 🍎 Nhóm THỰC PHẨM
+
+**6. `vo-chuoi` — Vỏ chuối** · 2–5 tuần
+- *Tác hại:* Bản thân nó vô hại. Sai ở chỗ lẫn vào rác tái chế thì làm bẩn cả mẻ.
+- *Làm đúng:* Bỏ nhóm Thực phẩm. Nhà có chậu cây thì vỏ chuối ủ làm phân rất tốt.
+
+**7. `vo-trai-cay` — Vỏ trái cây** · 2–5 tuần
+- *Tác hại:* Phân hủy nhanh, nhưng bị chôn kín trong túi nilon thì sinh khí mê-tan — một khí nhà kính mạnh hơn CO₂ nhiều lần.
+- *Làm đúng:* Bỏ nhóm Thực phẩm, đừng gói trong túi nilon rồi mới bỏ.
+
+**8. `thuc-an-thua` — Thức ăn thừa** · 2–4 tuần
+- *Tác hại:* Là thành phần nặng nhất trong rác sinh hoạt. Trộn lẫn thì cả xe rác không còn gì tái chế được.
+- *Làm đúng:* Gạn bớt nước trước khi bỏ — nước rỉ rác là thứ gây mùi và ngấm xuống mạch nước.
+
+**9. `la-chuoi` — Lá chuối gói hàng** · 1–3 tháng ⚠️
+- *Tác hại:* Gần như không có. Nó chỉ sai khi bị bỏ nhầm nhóm.
+- *Làm đúng:* Bỏ nhóm Thực phẩm. Gói hàng bằng lá chuối là cách cũ mà đúng.
+
+**10. `ba-mia` — Bã mía** · 1–3 tháng ⚠️
+- *Tác hại:* Lượng lớn, ướt và nặng. Lẫn vào rác tái chế là hỏng cả mẻ.
+- *Làm đúng:* Bỏ nhóm Thực phẩm. Bã mía ép khô còn làm được hộp đựng thay hộp xốp.
+
+**11. `vo-hat-dua` — Vỏ hạt dưa** · 1–3 tháng ⚠️
+- *Tác hại:* Nhỏ nên hay bị nhổ thẳng xuống đất. Một người thì không sao, cả phố đi bộ cùng làm thì thành một lớp rác.
+- *Làm đúng:* Bỏ nhóm Thực phẩm. Đi chơi Tết thì cầm theo một cái túi nhỏ.
+
+---
+
+#### 🗑 Nhóm KHÁC
+
+**12. `tui-nilon` — Túi nilon** · 10–20 năm
+- *Tác hại:* Trôi ra biển, rùa nhầm là sứa và nuốt. Trên cạn thì bịt cống, và đó là một lý do phố ngập sau mưa.
+- *Làm đúng:* Bỏ nhóm Khác. Tốt hơn: để sẵn một túi vải trong cốp xe.
+
+**13. `hop-xop` — Hộp xốp đựng cơm** · 50 năm+
+- *Tác hại:* Vỡ vụn thành hạt trắng li ti, chim và cá nuốt nhầm là thức ăn. Gần như không nơi nào tái chế.
+- *Làm đúng:* Bỏ nhóm Khác. Mua cơm mang về thì mang hộp riêng — quán nào cũng đồng ý.
+
+**14. `coc-nhua` — Cốc nhựa** · ~50 năm
+- *Tác hại:* Một ly trà sữa gồm ly, nắp, ống hút và túi đựng — bốn món nhựa cho hai mươi phút uống.
+- *Làm đúng:* Bỏ nhóm Khác. Nói trước "không lấy ống hút, không lấy túi" lúc gọi nước.
+
+**15. `tan-thuoc-la` — Tàn thuốc lá** · 1–5 năm
+- *Tác hại:* Đầu lọc làm bằng nhựa chứ không phải bông. Ngấm nicotine và kim loại nặng ra nước.
+- *Làm đúng:* Bỏ nhóm Khác. Đừng búng xuống cống — cống chảy thẳng ra sông.
+
+**16. `ta-bim` — Tã bỉm** · ~450 năm
+- *Tác hại:* Vừa là nhựa vừa là chất thải sinh học. Không tái chế được, và là nguồn lây bệnh cho người đi thu gom.
+- *Làm đúng:* Gói kín rồi bỏ nhóm Khác.
+
+**17. `luoi-danh-ca` — Lưới đánh cá** · ~600 năm
+- *Tác hại:* Dân biển gọi là "lưới ma". Nó trôi dưới nước hàng chục năm và vẫn tiếp tục bắt cá, rùa, cá heo — bắt mà không ai thu.
+- *Làm đúng:* Lưới hỏng mang về bờ, không thả lại biển. Nhiều nơi đã thu mua lưới cũ để tái chế.
+
+**18. `ong-hut-nhua` — Ống hút nhựa** · ~200 năm ⚠️
+- *Tác hại:* Quá nhỏ để máy phân loại nhặt ra, nên gần như luôn đi thẳng ra bãi rác hoặc ra biển.
+- *Làm đúng:* Bỏ nhóm Khác. Hoặc đơn giản hơn: uống thẳng từ ly.
+
+**19. `khau-trang-y-te` — Khẩu trang y tế** · ~450 năm ⚠️
+- *Tác hại:* Lớp giữa là nhựa polypropylene chứ không phải vải. Dây đeo thắt vào chân chim và cổ cá.
+- *Làm đúng:* Cắt đôi dây đeo rồi bỏ nhóm Khác. Đừng bỏ vào thùng tái chế.
+
+**20. `que-xien-tre` — Que xiên tre, đũa dùng một lần** ⚠️
+- *Tác hại:* Tre thì phân hủy được, nhưng đầu nhọn đâm thủng túi rác và đâm vào tay người thu gom.
+- *Làm đúng:* Bẻ đôi hoặc bọc lại trước khi bỏ nhóm Khác.
+
+**21. `ao-mua-giay` — Áo mưa giấy dùng một lần** ⚠️
+- *Tác hại:* Tên là giấy nhưng làm bằng nhựa PE mỏng. Dùng một lần, rách ngay, và không tái chế được.
+- *Làm đúng:* Bỏ nhóm Khác. Một cái áo mưa tử tế mặc được vài năm.
+
+---
+
+#### ☢️ Nhóm NGUY HẠI — không thuộc thùng nào
+
+**22. `pin-aa` — Pin tiểu AA/AAA**
+- *Tác hại:* Chứa kim loại nặng, rò rỉ ra đất và nước. Nguy hơn: pin bị ép trong xe rác rất dễ chập và bốc cháy.
+- *Làm đúng:* KHÔNG bỏ vào thùng nào cả. Gom vào một hộp riêng ở nhà, đầy thì mang tới điểm thu gom pin.
+
+**23. `lightstick` — Gậy phát sáng**
+- *Tác hại:* Bên trong là pin cúc. Trẻ con nuốt phải pin cúc có thể bị bỏng thực quản chỉ trong vài giờ.
+- *Làm đúng:* Tháo pin ra, mang pin tới điểm thu gom. Phần vỏ nhựa bỏ nhóm Khác.
+
+**24. `bong-den` — Bóng đèn huỳnh quang**
+- *Tác hại:* Chứa thủy ngân. Vỡ trong phòng kín thì hơi thủy ngân phát tán ra không khí trong nhà.
+- *Làm đúng:* KHÔNG bỏ vào thùng nào. Bọc kỹ rồi mang tới điểm thu gom chất thải nguy hại.
+
+---
+
+> **Về nguồn:** cổng kiểm chứng ở Mục 8.3 chỉ soi `decomposeLabel`. Câu `harm` và `tip`
+> là mô tả định tính đã được thừa nhận rộng rãi, không cần nguồn cấp một — **nhưng
+> cũng không được chứa con số**. Thấy ai thêm số vào hai trường đó thì chặn lại.
+
+---
+
 ## 9. ⚠️ Quy tắc về số liệu — ĐỌC KỸ, ĐÂY LÀ GAME TUYÊN TRUYỀN
 
 Đã kiểm tra nguồn. Dưới đây là kết luận bắt buộc tuân theo:
@@ -508,7 +709,7 @@ rac-oi-ve-nha/
    │  └─ particles.ts         # bụi, nước bắn, confetti, mưa
    ├─ ui/
    │  ├─ Button.ts  Modal.ts  Toast.ts  ProgressBar.ts  StarRow.ts
-   │  └─ ShareCard.ts         # vẽ ảnh 1080×1350 ra canvas ngoài màn hình
+   │  └─ ShareCard.ts         # vẽ ảnh 1080×1080 ra canvas ngoài màn hình
    ├─ i18n/
    │  └─ vi.ts                # ⚠️ MỌI chuỗi hiển thị nằm ở đây, không hardcode
    └─ styles/global.css
@@ -564,7 +765,7 @@ Mục tiêu: **cầm điện thoại đưa bạn bè chơi thử được**.
 ### M3 — Đủ bộ & đánh bóng
 - [ ] 5 màn còn lại: Nhiêu Lộc, Cái Răng, Giao thừa, Sa Pa, Côn Đảo
 - [ ] 3 sự kiện còn lại: `GIO_MUA`, `CUU_SINH_VAT`, `BAI_RAC_TU_PHAT`
-- [ ] `ShareCard`: xuất ảnh 1080×1350, Web Share API + nút tải về
+- [ ] `ShareCard`: xuất ảnh **1080×1080 (vuông)**, Web Share API + nút tải về
 - [ ] `PledgeScene`: chọn 1–3 cam kết, hiện trên thẻ chia sẻ
 - [ ] Âm thanh (CC0) + nút tắt tiếng, mặc định tắt
 - [ ] Thẻ Open Graph để link share lên Facebook có ảnh đẹp
@@ -718,3 +919,24 @@ sang **1280×720**. Kéo theo:
   Lớp phủ nói rõ điều đó thay vì để họ đoán.
 - Thao tác thành **hai ngón cái** thay vì một. Mọi con số cân bằng ở Mục 5.6
   phải chạy lại bài mô phỏng, không được bê nguyên từ bố cục dọc.
+
+### Bổ sung ngày 2026-11-20: số liệu màn chơi và nội dung sổ tay
+
+Hai chỗ trống nguy hiểm nhất đã được lấp. Thêm vào đó, tôi tự quyết mấy điểm sau:
+
+11. **Số liệu 10 màn** (Mục 6.1–6.2) — tôi tự đặt, dựa trên giả định người chơi khá
+    xử lý được ~0,8 món/giây và tốc độ sinh trung bình giữ dưới 0,55/giây. Căng thẳng
+    đến từ sự kiện dồn rác chứ không từ việc tăng đều. **Bài mô phỏng là trọng tài,
+    không phải bảng này.**
+12. **Rác nguy hại trọng số tối đa 5** — gặp hai lần một màn là đủ nhớ, năm lần là ức chế.
+13. **Mỗi màn 4–7 loại rác** — nhiều hơn thì người chơi không kịp học loại nào ra loại nào.
+14. **Màn 1 dài 90 giây nhưng rác thưa nhất** — người mới cần thời gian, không cần dễ.
+    Màn 5 ngắn nhất 60 giây vì kéo dài màn dồn dập sẽ thành mệt chứ không còn đã.
+15. **Nội dung 24 thẻ sổ tay** (Mục 8.4) — tôi tự viết toàn bộ. Tông cố ý: nói hậu quả
+    cụ thể thay vì "gây ô nhiễm môi trường", và câu khuyên phải làm được trong tuần này.
+16. **`harm` và `tip` không được chứa con số** — chỉ `decomposeLabel` mới qua cổng kiểm
+    chứng, nên số lọt vào hai trường kia là số không ai soi.
+17. **Thẻ chia sẻ đổi sang 1080×1080 vuông** (trước là 1080×1350 dọc) — game đã thành
+    khổ ngang, nhét ảnh ngang vào khung dọc thì hoặc cắt mất hai đầu hoặc thừa hai dải trống.
+    Ảnh vuông lên Facebook và Instagram đều vừa.
+18. **Sửa "một ngón tay" thành "hai ngón cái"** ở Mục 2 — sót lại từ bố cục dọc.
