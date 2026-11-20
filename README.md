@@ -53,6 +53,11 @@ Vài điểm đáng chú ý trong `Game.ts`:
 
 ---
 
+## Giao việc cho agent
+
+Đọc `docs/CODEX-BRIEF.md` — bản giao việc đầy đủ: nền đã có, bảy nguyên tắc
+không được vi phạm, sáu chặng theo thứ tự, luật về số liệu, và các cạm bẫy đã biết.
+
 ## Chạy thử
 
 ```bash
