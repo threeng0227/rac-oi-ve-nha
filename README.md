@@ -7,9 +7,10 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 
 ---
 
-## Trạng thái hiện tại — M1 đang dở
+## Trạng thái hiện tại — M1 bước 1 đã xong
 
-Khung dự án và một phần lớp `core/` đã xong, **có test xanh**. Phần còn lại chưa làm.
+`npm run dev` chạy được, hiện canvas có nền, tiêu đề, và một vòng tròn bám theo ngón tay
+để kiểm chứng luồng chạm hoạt động trên máy thật.
 
 ### ✅ Đã xong
 
@@ -20,8 +21,12 @@ Khung dự án và một phần lớp `core/` đã xong, **có test xanh**. Ph�
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
+| `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
+| `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
+| `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
+| `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
 
-**75/75 test xanh, typecheck sạch.** Chạy `npm test` và `npm run typecheck` để kiểm.
+**92/92 test xanh, typecheck sạch, build 2.96 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -31,14 +36,17 @@ Vài điểm đáng chú ý trong `Game.ts`:
 - `stop()` huỷ khung hình đang chờ, không rò rỉ `requestAnimationFrame`.
 - Đổi scene ngay trong `update()` không làm scene mới bị update luôn trong cùng khung hình.
 
-### ⬜ Chưa có
+### ⬜ Chưa có — M1 bước 2 trở đi
 
-- `src/core/Input.ts` — gộp touch + mouse thành một luồng `PointerSample`
-- `src/core/Renderer.ts`, `src/core/Audio.ts`
-- `index.html`, `src/main.ts` — điểm vào, tạo canvas
-- Toàn bộ `scenes/`, `gameplay/`, `data/`, `render/`, `ui/`, `i18n/`
+- `src/core/Audio.ts`
+- `src/gameplay/` — `TrashItem`, `Bag`, `Bin`, `Spawner`, `ScoreSystem`, `EventSystem`
+- `src/data/` — `trashTypes.ts` (24 loại), `levels.ts`, `facts.ts`, `pledges.ts`
+- `src/scenes/` — `MenuScene`, `MapScene`, `LevelScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
+- `src/render/` — `sprites.ts`, `backdrops.ts`, `particles.ts`
+- `src/ui/` — `Button`, `Modal`, `Toast`, `ProgressBar`, `StarRow`, `ShareCard`
+- `scripts/verify-facts.ts`
 
-**Tiêu chí xong M1 bước 1:** `npm run dev` chạy được, hiện canvas trống có màu nền, console log đúng kích thước viewport trên cả desktop lẫn điện thoại.
+**Việc kế tiếp:** `LevelScene` với một màn Phố cổ Hà Nội, 8 loại rác đầu tiên, 3 thùng, nhặt bằng chạm và phân loại bằng kéo thả. Xem Mục 5 trong `docs/DESIGN.md`.
 
 ---
 
@@ -46,7 +54,7 @@ Vài điểm đáng chú ý trong `Game.ts`:
 
 ```bash
 npm install
-npm test          # 75 xanh
+npm test          # 92 xanh
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```

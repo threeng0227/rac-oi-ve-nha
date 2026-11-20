@@ -1,0 +1,34 @@
+:root {
+  --letterbox: #06120D;
+  color-scheme: dark;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--letterbox);
+  /* Chặn kéo-để-tải-lại trên iOS: lúc kéo rác xuống thùng rất dễ dính. */
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+#game {
+  display: block;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Không có dòng này thì mọi thao tác kéo bị trình duyệt hiểu là cuộn trang. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
