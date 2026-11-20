@@ -71,7 +71,7 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 | Âm thanh | **Chỉ hiệu ứng ngắn (SFX)**, `.webm`, ≤ 20KB/file, tổng ≤ 120KB. **Một bản nhạc nền duy nhất cho màn 5**, tải lười (lazy) *ngoài* ngân sách bundle, ≤ 400KB. Chỉ nguồn CC0. Mặc định **tắt tiếng** | Trình duyệt mobile chặn autoplay, và mặc định tắt nghĩa là đa số người chơi không nghe — không đáng đầu tư nhạc cho cả 10 màn. "Nhạc tăng nhịp" ở `GIO_CAO_DIEM` làm bằng `audio.playbackRate = 1.15`, không cần track thứ hai |
 | Test | **Vitest** cho logic thuần. Không test render | Test canvas rendering tốn công hơn giá trị thu được |
 | Hướng màn hình | **Ngang (landscape), bắt buộc.** Cầm dọc thì hiện lớp phủ "xoay ngang điện thoại" và vòng lặp dừng hẳn | Khung 16:9 vừa khít màn hình desktop, không còn dải đen hai bên. Đánh đổi: người bật khoá xoay phải tự tắt, và thao tác thành hai ngón thay vì một |
-| Kích thước gốc | **Hệ toạ độ ảo 1280 × 720** (đúng 16:9), scale theo màn hình | Mọi toạ độ trong code viết theo hệ này, không bao giờ dùng px thật |
+| Kích thước gốc | **Chiều cao ảo cố định 720. Chiều rộng CO GIÃN theo tỉ lệ máy**, chặn trong khoảng 1280–1800. `DESIGN_WIDTH = 1280` chỉ là khung tham chiếu để nghĩ bố cục | Điện thoại hiện đại không còn 16:9 — màn 20:9 nằm ngang là 2.22:1. Khung cố định để lại hai dải đen mỗi bên ~230px, trông như chạy giả lập. Giãn chiều rộng thì full màn gần như mọi máy |
 | **Mức độ đồ hoạ** | **Tối giản.** Mỗi món rác vẽ bằng **3–6 hình cơ bản** (`roundRect`, `ellipse`, `path`), đọc được ở 40px trên điện thoại. Bối cảnh = dải màu gradient + 2–4 silhouette đặc trưng của vùng | Codex vẽ được toàn bộ bằng code, **không cần hoạ sĩ**. `render/` phải tách hẳn khỏi logic để sau thay ảnh minh hoạ xịn vào mà không đụng gameplay |
 | Repo | **`github.com/threeng0227/rac-oi-ve-nha`** — repo riêng, public | Dự án cộng đồng, không chôn trong portfolio cá nhân |
 | Tên miền | **`rac-oi-ve-nha.vercel.app`** (miễn phí) | Dùng cố định cho `og:url`. Sau mua tên miền riêng chỉ cần trỏ DNS, không sửa code |
@@ -89,28 +89,52 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 
 ### 5.1 Bố cục màn chơi
 
-Màn hình **ngang**, chia bốn tầng cố định (toạ độ theo hệ ảo 1280×720):
+Màn hình **ngang**. Gọi `W = viewport.width` — **thay đổi theo máy**, nằm trong
+khoảng 1280–1800. Chiều cao luôn là 720, nên **mọi toạ độ dọc là số cố định**,
+còn **mọi toạ độ ngang phải tính theo `W`**.
 
 ```
-┌──────────────────────────────────────────────────────────┐ y=0
-│  HUD: thời gian · điểm · combo · thanh ô nhiễm   cao 90  │
-├──────────────────────────────────────────────────────────┤ y=90
-│                                                          │
-│                 KHU CẢNH (playfield)                     │
-│            rác nằm rải rác — CHẠM để nhặt                │
-│                      cao 440                             │
-│                                                          │
-├──────────────────────────────────────────────────────────┤ y=530
-│         TÚI: [🥤][🍌][🔋][ ][ ][ ]               cao 60  │
-├────────────────────┬───────────────────┬─────────────────┤ y=590
-│    ♻️ TÁI CHẾ       │   🍎 THỰC PHẨM    │    🗑 KHÁC      │ cao 130
-│      427 rộng      │     427 rộng      │    426 rộng     │
-└────────────────────┴───────────────────┴─────────────────┘ y=720
+│◀────────────────────  W (1280 … 1800)  ────────────────────▶│
+┌─────────────────────────────────────────────────────────────┐ y=0
+│ ⏱ x=40        │      combo (giữa)      │      điểm x=W−40  │ cao 90
+├─────────────────────────────────────────────────────────────┤ y=90
+│                                                             │
+│                   KHU CẢNH (playfield)                      │
+│              rác nằm rải rác — CHẠM để nhặt                 │
+│                 rộng W, cao 440                             │
+│                                                             │
+├─────────────────────────────────────────────────────────────┤ y=530
+│            TÚI: 6 ô, căn giữa quanh W/2          cao 60     │
+├───────────────────┬────────────────────┬────────────────────┤ y=590
+│    ♻️ TÁI CHẾ      │    🍎 THỰC PHẨM    │      🗑 KHÁC       │ cao 130
+│      W/3 rộng     │      W/3 rộng      │      W/3 rộng      │
+└───────────────────┴────────────────────┴────────────────────┘ y=720
 ```
+
+**Bảng tra nhanh — toạ độ ngang luôn viết theo công thức, không viết số:**
+
+| Thành phần | Công thức |
+|---|---|
+| Tâm màn hình | `viewport.centerX` *(không phải `DESIGN_WIDTH / 2`)* |
+| Thùng thứ `i` (0,1,2) | `x = i * W/3`, rộng `W/3` |
+| Ô túi thứ `i` (0…5) | `x = W/2 + (i − 2.5) * 96` |
+| Đồng hồ | `x = 40` (bám mép trái) |
+| Điểm | `x = W − 40` (bám mép phải) |
+| Vùng sinh rác | `x ∈ [60, W − 60]` |
 
 Ba thùng trải hết chiều ngang ở cạnh dưới: hai ngón cái nghỉ ở hai góc dưới,
 với tới thùng trái và thùng phải không phải nhấc tay. Thùng giữa xa hơn một
 chút — đó là lý do nhóm **Thực phẩm** (ít gặp nhất ở phần lớn màn) nằm ở giữa.
+
+> **Máy rộng hơn thì thùng rộng hơn, vùng chơi rộng hơn.** Đây là chủ ý: thùng
+> to là đích dễ trúng hơn khi kéo thả vội. Nhưng nó cũng có nghĩa là **máy rộng
+> hơi dễ hơn máy hẹp** — bài mô phỏng cân bằng ở Mục 5.6 phải chạy ở cả hai đầu
+> khoảng (W=1280 và W=1800), không chỉ một giá trị.
+
+> **Toàn màn hình:** game gọi Fullscreen API ở lần chạm đầu tiên để ẩn thanh địa
+> chỉ. Thanh đó ăn khoảng 130px chiều cao, làm vùng hiển thị dẹt hơn tỉ lệ thật
+> của máy và đẩy khung ảo chạm mức chặn 1800 mà vẫn còn dải đen. iPhone không hỗ
+> trợ Fullscreen API — ở đó chấp nhận còn dải đen hẹp.
 
 ### 5.2 Vòng lặp cốt lõi
 

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { Input, type PointerTarget } from '../../src/core/Input';
-import { Viewport, VIRTUAL_WIDTH, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
+import { Viewport, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
 import type { PointerSample } from '../../src/core/Game';
 
 /** Phần tử DOM giả: ghi lại listener và cho test tự bắn sự kiện. */
@@ -37,15 +37,22 @@ function fakeTarget(rect = { left: 0, top: 0 }) {
   };
 }
 
-/** Viewport của iPhone 14 nằm ngang: scale 390/720, lề trái ~75.3. */
+/** iPhone 14 nằm ngang. Khung ảo giãn theo tỉ lệ máy nên vừa khít, không letterbox. */
 function phoneViewport(): Viewport {
   const vp = new Viewport();
   vp.resize(844, 390, 2);
   return vp;
 }
 
+/** Cửa sổ vuông: hẹp hơn 16:9 nên có letterbox trên dưới. */
+function boxedViewport(): Viewport {
+  const vp = new Viewport();
+  vp.resize(800, 800, 2);
+  return vp;
+}
+
 describe('Input', () => {
-  test('chạm giữa canvas trả về đúng tâm hệ ảo', () => {
+  test('chạm giữa canvas trả về đúng tâm khung ảo', () => {
     const vp = phoneViewport();
     const samples: PointerSample[] = [];
     const dom = fakeTarget();
@@ -53,8 +60,8 @@ describe('Input', () => {
 
     dom.dispatch('pointerdown', { clientX: 422, clientY: 195, pointerId: 1 });
 
-    expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
+    expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
+    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
   });
 
   test('trừ đi vị trí của canvas trong trang — canvas không phải lúc nào cũng ở góc trên trái', () => {
@@ -65,8 +72,8 @@ describe('Input', () => {
 
     dom.dispatch('pointerdown', { clientX: 422 + 40, clientY: 195 + 100, pointerId: 1 });
 
-    expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
+    expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
+    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
   });
 
   test('mỗi loại sự kiện chuyển thành đúng phase', () => {
@@ -157,11 +164,11 @@ describe('Input', () => {
   test('chạm vào dải letterbox vẫn báo lên, toạ độ nằm ngoài khung ảo', () => {
     const samples: PointerSample[] = [];
     const dom = fakeTarget();
-    new Input(phoneViewport(), (s) => samples.push(s)).attach(dom.target);
+    new Input(boxedViewport(), (s) => samples.push(s)).attach(dom.target);
 
-    dom.dispatch('pointerdown', { clientX: 2, clientY: 195, pointerId: 1 });
+    dom.dispatch('pointerdown', { clientX: 400, clientY: 2, pointerId: 1 });
 
-    expect(samples[0]?.x).toBeLessThan(0);
+    expect(samples[0]?.y).toBeLessThan(0);
   });
 
   test('đổi kích thước màn hình rồi thì toạ độ tính theo viewport mới', () => {
@@ -173,7 +180,7 @@ describe('Input', () => {
     vp.resize(390, 844, 2); // người chơi xoay máy về dọc
     dom.dispatch('pointerdown', { clientX: 195, clientY: 422, pointerId: 1 });
 
-    expect(samples[0]?.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 3);
-    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
+    expect(samples[0]?.x).toBeCloseTo(vp.centerX, 0);
+    expect(samples[0]?.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 0);
   });
 });

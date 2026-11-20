@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { applyViewportTransform, clearFrame } from '../../src/core/Renderer';
-import { Viewport, VIRTUAL_WIDTH, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
+import { Viewport, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
 
 function spyContext() {
   return {
@@ -52,12 +52,12 @@ describe('clearFrame', () => {
 
   test('vùng xoá phủ hết đệm, không chỉ phần khung ảo', () => {
     const vp = new Viewport();
-    vp.resize(900, 390, 1); // rộng hơn 16:9: letterbox dồn sang hai cạnh trái phải
+    vp.resize(5120, 1440, 1); // 32:9, vượt mức chặn nên letterbox quay lại hai bên
     const ctx = spyContext();
 
     clearFrame(ctx as unknown as CanvasRenderingContext2D, vp, '#123456');
 
-    const contentWidth = VIRTUAL_WIDTH * vp.scale;
+    const contentWidth = vp.width * vp.scale;
     expect(vp.canvasWidth).toBeGreaterThan(contentWidth);
     expect(ctx.fillRect).toHaveBeenCalledWith(0, 0, vp.canvasWidth, vp.canvasHeight);
   });
@@ -66,7 +66,7 @@ describe('clearFrame', () => {
     const vp = new Viewport();
     vp.resize(915, 412, 2.625);
 
-    expect(VIRTUAL_WIDTH * vp.scale).toBeLessThanOrEqual(vp.cssWidth + 1e-6);
+    expect(vp.width * vp.scale).toBeLessThanOrEqual(vp.cssWidth + 1e-6);
     expect(VIRTUAL_HEIGHT * vp.scale).toBeLessThanOrEqual(vp.cssHeight + 1e-6);
   });
 });

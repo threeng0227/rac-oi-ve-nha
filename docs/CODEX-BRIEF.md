@@ -34,7 +34,10 @@ Những thứ này đã sẵn sàng dùng:
 
 ## 2. Bảy nguyên tắc không được vi phạm
 
-1. **Toạ độ luôn theo hệ ảo 1280×720.** Không hardcode pixel thật. `Viewport` lo quy đổi.
+1. **Chiều cao ảo cố định 720, chiều rộng CO GIÃN theo máy (1280–1800).**
+   Toạ độ dọc viết số thẳng. Toạ độ ngang **luôn tính theo `viewport.width`
+   hoặc `viewport.centerX`** — xem bảng tra ở Mục 5.1 của đặc tả.
+   `DESIGN_WIDTH` chỉ để nghĩ bố cục, **không bao giờ dùng làm toạ độ**.
 2. **Không hardcode mã màu.** Lấy từ `src/render/palette.ts`.
    Kiểm: `grep -rnE '#[0-9a-fA-F]{6}' src --include='*.ts' | grep -v palette.ts` — phải không ra gì.
 3. **Mọi chuỗi tiếng Việt nằm ở `src/i18n/vi.ts`.** Không viết thẳng vào scene.
@@ -141,6 +144,12 @@ Nếu cần một fact mới mà không tìm được nguồn cấp một → đ
 - **`removeEventListener` không nhận `passive`**, chỉ nhận `capture`. TypeScript sẽ báo.
 - **Game chỉ chạy ở khổ ngang.** Đừng thiết kế gì cho khổ dọc.
 - **Rác nguy hại không bao giờ quá trọng số 5** trong `trashPool`. Nó là bài học, không phải vật cản.
+- **Đừng dùng `DESIGN_WIDTH` làm toạ độ.** Nó là 1280 nhưng khung ảo lúc chạy có thể là 1600.
+  Dùng nó để căn giữa là lệch hẳn sang trái trên điện thoại.
+- **Bài mô phỏng cân bằng phải chạy ở cả `W=1280` và `W=1800`.** Máy rộng thì thùng rộng,
+  đích dễ trúng hơn, nên hơi dễ hơn. Chỉ kiểm một giá trị là bỏ sót.
+- **Đừng gỡ lệnh gọi Fullscreen API** ở lần chạm đầu trong `main.ts`. Không có nó thì
+  thanh địa chỉ ăn mất chiều cao và dải đen quay lại.
 
 ---
 

@@ -1,68 +1,125 @@
 import { describe, expect, test } from 'vitest';
-import { Viewport, VIRTUAL_WIDTH, VIRTUAL_HEIGHT } from '../../src/core/Viewport';
+import {
+  Viewport,
+  VIRTUAL_HEIGHT,
+  DESIGN_WIDTH,
+  MIN_VIRTUAL_WIDTH,
+  MAX_VIRTUAL_WIDTH,
+} from '../../src/core/Viewport';
 
-describe('Viewport', () => {
-  test('hệ toạ độ ảo là 1280 × 720 — khổ ngang, đúng 16:9', () => {
-    expect(VIRTUAL_WIDTH).toBe(1280);
-    expect(VIRTUAL_HEIGHT).toBe(720);
-    expect(VIRTUAL_WIDTH / VIRTUAL_HEIGHT).toBeCloseTo(16 / 9, 6);
-  });
-
-  test('điện thoại xoay ngang: scale bám theo chiều cao, thừa dồn sang hai cạnh trái phải', () => {
+describe('Viewport — khung co giãn theo máy', () => {
+  test('chiều cao hệ ảo luôn cố định 720', () => {
     const vp = new Viewport();
-    vp.resize(844, 390, 1); // iPhone 14 nằm ngang
 
-    expect(vp.scale).toBeCloseTo(390 / 720, 6);
-    const contentWidth = VIRTUAL_WIDTH * vp.scale;
-    expect(vp.offsetX).toBeCloseTo((844 - contentWidth) / 2, 6);
-    expect(vp.offsetY).toBeCloseTo(0, 6);
+    for (const [w, h] of [[844, 390], [1920, 1080], [2560, 1080], [390, 844]] as const) {
+      vp.resize(w, h, 1);
+      expect(vp.height).toBe(VIRTUAL_HEIGHT);
+    }
   });
 
-  test('màn hình 16:9 vừa khít, không còn dải đen nào', () => {
+  test('màn hình 16:9 cho đúng khung tham chiếu 1280', () => {
     const vp = new Viewport();
     vp.resize(1920, 1080, 1);
 
-    expect(vp.scale).toBeCloseTo(1.5, 6);
-    expect(vp.offsetX).toBeCloseTo(0, 6);
-    expect(vp.offsetY).toBeCloseTo(0, 6);
+    expect(vp.width).toBe(DESIGN_WIDTH);
   });
 
-  test('màn hình rộng hơn 16:9 (21:9) thì letterbox dồn sang hai cạnh', () => {
+  test('màn hình rộng hơn thì khung ảo rộng ra theo — đó là cách hết dải đen', () => {
     const vp = new Viewport();
-    vp.resize(2560, 1080, 1);
+    vp.resize(1280, 591, 1); // điện thoại 20:9 nằm ngang, đã ẩn thanh địa chỉ
 
-    expect(vp.scale).toBeCloseTo(1080 / 720, 6);
+    expect(vp.width).toBeGreaterThan(DESIGN_WIDTH);
+    expect(vp.width).toBe(Math.round(VIRTUAL_HEIGHT * (1280 / 591)));
+  });
+
+  test('máy càng rộng thì không còn letterbox nhìn thấy được', () => {
+    const vp = new Viewport();
+    vp.resize(1280, 591, 1);
+
+    // Không ép bằng đúng 0: chiều rộng khung ảo làm tròn về số nguyên nên còn
+    // sai số dưới một pixel. Dưới 1px là mắt không thấy, đó mới là yêu cầu thật.
+    expect(Math.abs(vp.offsetX)).toBeLessThan(1);
+    expect(Math.abs(vp.offsetY)).toBeLessThan(1);
+  });
+
+  test('khung ảo không hẹp hơn 1280 — cửa sổ dẹt không được bóp vùng chơi', () => {
+    const vp = new Viewport();
+    vp.resize(800, 800, 1); // vuông, hẹp hơn 16:9
+
+    expect(vp.width).toBe(MIN_VIRTUAL_WIDTH);
+  });
+
+  test('khung ảo không rộng quá 1800 — màn siêu rộng không được kéo dãn vô hạn', () => {
+    const vp = new Viewport();
+    vp.resize(5120, 1440, 1); // 32:9
+
+    expect(vp.width).toBe(MAX_VIRTUAL_WIDTH);
+  });
+
+  test('hẹp hơn 16:9 thì letterbox dồn lên trên dưới', () => {
+    const vp = new Viewport();
+    vp.resize(800, 800, 1);
+
+    expect(vp.offsetX).toBeCloseTo(0, 6);
+    expect(vp.offsetY).toBeGreaterThan(0);
+  });
+
+  test('rộng quá mức chặn thì letterbox quay lại hai bên', () => {
+    const vp = new Viewport();
+    vp.resize(5120, 1440, 1);
+
     expect(vp.offsetX).toBeGreaterThan(0);
     expect(vp.offsetY).toBeCloseTo(0, 6);
   });
 
-  test('cầm dọc thì scale bám theo chiều rộng, thừa dồn lên trên dưới', () => {
+  test('centerX luôn là tâm khung ảo hiện tại, không phải tâm khung tham chiếu', () => {
     const vp = new Viewport();
-    vp.resize(390, 844, 1);
+    vp.resize(1280, 591, 1);
 
-    expect(vp.scale).toBeCloseTo(390 / 1280, 6);
-    const contentHeight = VIRTUAL_HEIGHT * vp.scale;
-    expect(vp.offsetX).toBeCloseTo(0, 6);
-    expect(vp.offsetY).toBeCloseTo((844 - contentHeight) / 2, 6);
+    expect(vp.centerX).toBeCloseTo(vp.width / 2, 6);
+    expect(vp.centerX).not.toBeCloseTo(DESIGN_WIDTH / 2, 0);
   });
 
-  test('chạm vào giữa màn hình trả về đúng tâm hệ ảo', () => {
+  test('chạm vào giữa màn hình trả về đúng tâm khung ảo', () => {
     const vp = new Viewport();
-    vp.resize(844, 390, 1);
+    vp.resize(1280, 591, 1);
 
-    const p = vp.toVirtual(422, 195);
+    const p = vp.toVirtual(640, 295.5);
 
-    expect(p.x).toBeCloseTo(VIRTUAL_WIDTH / 2, 4);
-    expect(p.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 4);
+    expect(p.x).toBeCloseTo(vp.centerX, 3);
+    expect(p.y).toBeCloseTo(VIRTUAL_HEIGHT / 2, 3);
   });
 
-  test('chạm vào vùng letterbox trả về toạ độ ngoài khung ảo', () => {
+  test('chạm sát bốn góc rơi đúng bốn góc khung ảo', () => {
     const vp = new Viewport();
-    vp.resize(844, 390, 1);
+    vp.resize(1280, 591, 1);
 
-    const p = vp.toVirtual(2, 195); // sát mép trái, nằm trong dải đen
+    // Sai số dưới nửa đơn vị ảo là do làm tròn chiều rộng khung — mắt không thấy.
+    expect(vp.toVirtual(0, 0).x).toBeCloseTo(0, 0);
+    expect(vp.toVirtual(0, 0).y).toBeCloseTo(0, 0);
+    expect(vp.toVirtual(1280, 591).x).toBeCloseTo(vp.width, 0);
+    expect(vp.toVirtual(1280, 591).y).toBeCloseTo(VIRTUAL_HEIGHT, 0);
+  });
 
-    expect(p.x).toBeLessThan(0);
+  test('khung ảo luôn vừa trong vùng hiển thị, không bao giờ tràn ra ngoài', () => {
+    const vp = new Viewport();
+
+    for (const [w, h] of [[1280, 591], [844, 390], [1920, 1080], [5120, 1440], [800, 800], [390, 844]] as const) {
+      vp.resize(w, h, 1);
+      expect(vp.width * vp.scale, `${w}×${h}`).toBeLessThanOrEqual(w + 1e-6);
+      expect(VIRTUAL_HEIGHT * vp.scale, `${w}×${h}`).toBeLessThanOrEqual(h + 1e-6);
+    }
+  });
+
+  test('toVirtual là phép nghịch đảo của toScreen', () => {
+    const vp = new Viewport();
+    vp.resize(915, 412, 2.625);
+
+    const screen = vp.toScreen(vp.centerX, 360);
+    const back = vp.toVirtual(screen.x, screen.y);
+
+    expect(back.x).toBeCloseTo(vp.centerX, 4);
+    expect(back.y).toBeCloseTo(360, 4);
   });
 
   test('kích thước đệm canvas nhân theo devicePixelRatio', () => {
@@ -89,32 +146,12 @@ describe('Viewport', () => {
     expect(Number.isInteger(vp.canvasHeight)).toBe(true);
   });
 
-  test('toVirtual là phép nghịch đảo của toScreen', () => {
-    const vp = new Viewport();
-    vp.resize(915, 412, 2.625);
-
-    const screen = vp.toScreen(640, 360);
-    const back = vp.toVirtual(screen.x, screen.y);
-
-    expect(back.x).toBeCloseTo(640, 4);
-    expect(back.y).toBeCloseTo(360, 4);
-  });
-
-  test('khung ảo luôn vừa trong vùng hiển thị, không bao giờ tràn ra ngoài', () => {
-    const vp = new Viewport();
-
-    for (const [w, h] of [[844, 390], [1920, 1080], [2560, 1080], [1366, 768], [390, 844]] as const) {
-      vp.resize(w, h, 1);
-      expect(VIRTUAL_WIDTH * vp.scale).toBeLessThanOrEqual(w + 1e-6);
-      expect(VIRTUAL_HEIGHT * vp.scale).toBeLessThanOrEqual(h + 1e-6);
-    }
-  });
-
   test('màn hình rộng 0 không làm scale thành 0 hay NaN', () => {
     const vp = new Viewport();
     vp.resize(0, 0, 1);
 
     expect(vp.scale).toBeGreaterThan(0);
     expect(Number.isFinite(vp.scale)).toBe(true);
+    expect(Number.isFinite(vp.width)).toBe(true);
   });
 });

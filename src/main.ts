@@ -41,10 +41,37 @@ const game = new Game(clock, () => {
   return ctx;
 });
 
-game.scenes.change(new BootScene(), game);
+game.scenes.change(new BootScene(viewport), game);
 
-const input = new Input(viewport, (sample) => game.scenes.onPointer(sample));
+/**
+ * Vào toàn màn hình ở lần chạm đầu tiên.
+ *
+ * Thanh địa chỉ trình duyệt ăn mất khoảng 130px chiều cao, làm vùng hiển thị
+ * dẹt hơn tỉ lệ thật của máy — khung ảo giãn kịch mức chặn mà vẫn còn dải đen
+ * hai bên. Ẩn nó đi thì khung ảo khớp đúng tỉ lệ máy và hết dải đen.
+ *
+ * Phải gọi từ trong một thao tác của người dùng, nên bám vào lần chạm đầu.
+ * iPhone không hỗ trợ Fullscreen API — ở đó lệnh này lặng lẽ không làm gì,
+ * game vẫn chơi được, chỉ là còn dải đen hẹp.
+ */
+let fullscreenTried = false;
+function enterFullscreenOnce(): void {
+  if (fullscreenTried) return;
+  fullscreenTried = true;
+  if (document.fullscreenElement !== null) return;
+  void document.documentElement.requestFullscreen?.({ navigationUI: 'hide' }).catch(() => {
+    // Người dùng từ chối, hoặc trình duyệt không cho. Không phải lỗi.
+  });
+}
+
+const input = new Input(viewport, (sample) => {
+  if (sample.phase === 'down') enterFullscreenOnce();
+  game.scenes.onPointer(sample);
+});
 input.attach(canvas);
+
+// Vào/ra toàn màn hình làm đổi kích thước vùng hiển thị.
+document.addEventListener('fullscreenchange', fitToScreen);
 
 window.addEventListener('resize', fitToScreen);
 window.addEventListener('orientationchange', fitToScreen);
