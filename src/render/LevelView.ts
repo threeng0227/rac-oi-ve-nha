@@ -1,4 +1,4 @@
-import type { Layout, Rect } from '../core/Layout';
+import type { Layout } from '../core/Layout';
 import type { Viewport } from '../core/Viewport';
 import type { LevelSession } from '../gameplay/LevelSession';
 import type { TrashItem } from '../gameplay/TrashItem';
@@ -10,16 +10,6 @@ const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 
 export class LevelView {
   constructor(private readonly viewport: Viewport) {}
-
-  replayBounds(layout: Layout): Rect {
-    const width = Math.min(380, layout.spawnArea.width * 0.72);
-    return {
-      x: layout.centerX - width / 2,
-      y: layout.playfield.y + layout.playfield.height / 2 + this.fontSize(14) * 0.6,
-      width,
-      height: Math.max(72, 44 / this.viewport.scale),
-    };
-  }
 
   render(g: CanvasRenderingContext2D, session: LevelSession): void {
     g.save();
@@ -40,7 +30,6 @@ export class LevelView {
       this.message(g, session.feedback.text, session.layout,
         session.layout.bag.y - this.fontSize(14) * 2.1, color);
     }
-    if (session.finished) this.finished(g, session);
     g.restore();
   }
 
@@ -104,7 +93,13 @@ export class LevelView {
       g.textAlign = 'left';
       g.font = `400 ${font}px ${FONT}`;
       g.fillStyle = withAlpha(UI.textOnDark, 0.76);
-      g.fillText(vi.playHint, l.spawnArea.x, l.hud.y + l.hud.height * 0.76);
+      g.fillText(vi.score(session.score.score), l.spawnArea.x, l.hud.y + l.hud.height * 0.68);
+      g.textAlign = 'right';
+      g.fillText(vi.combo(session.score.combo, session.score.multiplier), l.width - l.spawnArea.x, l.hud.y + l.hud.height * 0.68);
+      g.fillStyle = UI.hairline;
+      g.fillRect(l.spawnArea.x, l.hud.y + l.hud.height * 0.9, l.spawnArea.width, l.hud.height * 0.06);
+      g.fillStyle = session.score.pollution >= 70 ? UI.danger : UI.warning;
+      g.fillRect(l.spawnArea.x, l.hud.y + l.hud.height * 0.9, l.spawnArea.width * session.score.pollution / 100, l.hud.height * 0.06);
     }
   }
 
@@ -232,31 +227,4 @@ export class LevelView {
     return lines;
   }
 
-  private finished(g: CanvasRenderingContext2D, session: LevelSession): void {
-    const l = session.layout;
-    const button = this.replayBounds(l);
-    const font = this.fontSize(14);
-    const width = Math.min(700, l.spawnArea.width);
-    const top = button.y - font * 4.8;
-    g.fillStyle = withAlpha(UI.letterbox, 0.7);
-    g.fillRect(0, l.hud.y, l.width, l.height);
-    g.fillStyle = UI.backdropTop;
-    g.beginPath();
-    g.roundRect(l.centerX - width / 2, top, width, font * 7 + button.height, 22);
-    g.fill();
-    g.textAlign = 'center';
-    g.fillStyle = UI.textOnDark;
-    g.font = `700 ${Math.max(36, this.fontSize(18))}px ${FONT}`;
-    g.fillText(vi.timeUp, l.centerX, top + font * 1.45);
-    g.font = `400 ${font}px ${FONT}`;
-    g.fillText(vi.sortedCount(session.sortedCount), l.centerX, top + font * 3);
-    g.fillStyle = UI.highlight;
-    g.beginPath(); g.roundRect(button.x, button.y, button.width, button.height, 14); g.fill();
-    g.fillStyle = UI.letterbox;
-    g.font = `700 ${font}px ${FONT}`;
-    g.fillText(vi.replay, l.centerX, button.y + button.height / 2);
-    g.fillStyle = withAlpha(UI.textOnDark, 0.75);
-    g.font = `400 ${font}px ${FONT}`;
-    g.fillText(vi.replayHint, l.centerX, button.y + button.height + font * 1.1);
-  }
 }

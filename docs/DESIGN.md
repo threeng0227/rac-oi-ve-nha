@@ -1023,3 +1023,19 @@ Hai chỗ trống nguy hiểm nhất đã được lấp. Thêm vào đó, tôi 
 nhặt/kéo/thả qua `PointerSample`, thay đổi hướng và huỷ tween. Đã kiểm tra bằng
 trình duyệt ở khổ 844×390 và 390×844. Checklist thiết bị thật, chế độ ẩn danh thực
 tế, Lighthouse và ảnh preview chia sẻ chưa được kiểm tra trong phiên này.
+
+### Chặng 3 — điểm và cân bằng
+
+29. Hệ số combo lấy từ chuỗi đúng trước món hiện tại. Năm món đầu ×1, món thứ
+    sáu ×2. Các tập rác sinh muộn, bị gió cuốn và nguy hại được loại theo hợp để
+    không trừ cùng một món nhiều lần. Hướng dẫn không tính điểm hoặc độ sạch.
+30. Màn thua dùng lời nhắc nhẹ về túi đầy và thả đúng nhóm, giữ nút chơi lại ngay
+    trên màn kết quả. Ô nhiễm chạm 100% chốt thua ngay và không hồi phục sau đó.
+31. Bộ mô phỏng chạy 1.000 seed × 10 màn × 4 khổ máy, phản xạ 400ms cho mỗi thao
+    tác nhặt và kéo, bay vào túi 300ms, tốc độ kéo 1.000 đơn vị ảo/giây. Bước mô
+    phỏng 50ms làm tròn thời gian hoàn thành thao tác lên. Đây là kiểm tra cơ sở
+    với Spawner, Bag và ScoreSystem thực. Chặng 4 sẽ kiểm lại với sự kiện và hộp
+    thu gom thực thay cho hộp luôn có sẵn trong mô phỏng cơ sở.
+32. Côn Đảo ở khổ dọc dài chỉ đạt 635/1.000 lượt ba sao khi tốc độ sinh 0,50.
+    Giảm xuống 0,48 cho 970/1.000 lượt, các ngưỡng sao giữ nguyên. Giá trị này thay
+    thế giá trị khởi điểm ở bảng 6.1. Các màn còn lại vượt ngưỡng trong bộ cơ sở.

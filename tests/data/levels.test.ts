@@ -15,7 +15,7 @@ const EXPECTED = [
   ['cai-rang', 75, 8, 0.50],
   ['giao-thua', 75, 10, 0.45],
   ['sa-pa', 80, 8, 0.45],
-  ['con-dao', 85, 10, 0.50],
+  ['con-dao', 85, 10, 0.48],
 ] as const;
 
 const POOLS = [

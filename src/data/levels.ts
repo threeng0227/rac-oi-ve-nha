@@ -167,7 +167,7 @@ export const LEVELS: readonly LevelDef[] = [
   },
   {
     id: 'con-dao', order: 10, ...LEVEL_TEXT['con-dao'],
-    durationSec: 85, initialTrashCount: 10, spawnRatePerSec: 0.50,
+    durationSec: 85, initialTrashCount: 10, spawnRatePerSec: 0.48,
     trashPool: [
       { typeId: 'tui-nilon', weight: 25 },
       { typeId: 'ong-hut-nhua', weight: 20 },

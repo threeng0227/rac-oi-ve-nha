@@ -4,6 +4,7 @@ import { Input } from './core/Input';
 import { Viewport } from './core/Viewport';
 import { applyViewportTransform, clearFrame } from './core/Renderer';
 import { LevelScene } from './scenes/LevelScene';
+import { ResultScene } from './scenes/ResultScene';
 import { SaveStore, detectBackend } from './core/Storage';
 import { UI } from './render/palette';
 
@@ -90,7 +91,7 @@ canvas.addEventListener('lostpointercapture', (event) => {
 
 function cancelPointers(): void {
   const scene = game.scenes.current;
-  if (scene instanceof LevelScene) scene.cancelPointers();
+  if (scene instanceof LevelScene || scene instanceof ResultScene) scene.cancelPointers();
 }
 window.addEventListener('blur', cancelPointers);
 

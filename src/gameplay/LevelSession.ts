@@ -3,19 +3,21 @@ import { computeLayout, type Layout, type Rect } from '../core/Layout';
 import { Random } from '../core/Random';
 import { TweenRunner, easeOutCubic } from '../core/Tween';
 import type { Viewport } from '../core/Viewport';
-import { LEVELS } from '../data/levels';
+import { LEVELS, type LevelDef } from '../data/levels';
 import { getDecomposeLabel } from '../data/trashTypes';
 import { BIN_TEXT, vi } from '../i18n/vi';
 import { Bag } from './Bag';
 import { Bin, NORMAL_BIN_IDS } from './Bin';
 import { Spawner } from './Spawner';
 import type { TrashItem } from './TrashItem';
+import { ScoreSystem, type LevelResult } from './ScoreSystem';
 
 export interface SessionOptions {
   skipTutorial?: boolean;
   seed?: number;
   reducedMotion?: boolean;
-  onComplete?: () => void;
+  onComplete?: (result: LevelResult) => void;
+  level?: LevelDef;
 }
 
 export interface Feedback {
@@ -26,7 +28,8 @@ export interface Feedback {
 
 /** Trạng thái màn chơi độc lập với canvas và trình duyệt. */
 export class LevelSession {
-  readonly level = LEVELS[0]!;
+  readonly level: LevelDef;
+  readonly score: ScoreSystem;
   readonly bag = new Bag();
   readonly bins = NORMAL_BIN_IDS.map((id, index) => new Bin(id, index));
   readonly items: TrashItem[] = [];
@@ -34,23 +37,25 @@ export class LevelSession {
   tutorial: 'pick' | 'sort' | 'done';
   elapsedSec = 0;
   animationSec = 0;
-  sortedCount = 0;
+  result: LevelResult | null = null;
   feedback: Feedback | null = null;
   private feedbackSec = 0;
   private readonly spawner: Spawner;
   private readonly tweens = new TweenRunner();
   private readonly flights = new Map<TrashItem, number>();
   private active = true;
-  private readonly onComplete: (() => void) | undefined;
+  private readonly onComplete: ((result: LevelResult) => void) | undefined;
   private currentLayout: Layout;
 
   constructor(private readonly viewport: Viewport, options: SessionOptions = {}) {
     this.currentLayout = computeLayout(viewport);
+    this.level = options.level ?? LEVELS[0]!;
+    this.score = new ScoreSystem(this.level.durationSec);
     this.onComplete = options.onComplete;
     this.reducedMotion = options.reducedMotion ?? false;
     this.spawner = new Spawner(this.level, new Random(options.seed ?? Date.now()));
-    this.tutorial = options.skipTutorial ? 'done' : 'pick';
-    if (this.tutorial === 'done') this.items.push(...this.spawner.initial(this.layout));
+    this.tutorial = options.skipTutorial || this.level.id !== 'ha-noi' ? 'done' : 'pick';
+    if (this.tutorial === 'done') this.addItems(this.spawner.initial(this.layout));
     else {
       const banana = this.spawner.create('vo-chuoi', this.layout);
       banana.x = this.layout.centerX;
@@ -60,7 +65,8 @@ export class LevelSession {
   }
 
   get layout(): Layout { return this.currentLayout; }
-  get finished(): boolean { return this.elapsedSec >= this.level.durationSec; }
+  get finished(): boolean { return this.result !== null; }
+  get sortedCount(): number { return this.score.correctCount; }
   get remainingSec(): number { return Math.max(0, Math.ceil(this.level.durationSec - this.elapsedSec)); }
 
   slotBounds(index: number): Rect {
@@ -89,12 +95,11 @@ export class LevelSession {
     if (this.feedbackSec === 0) this.feedback = null;
     if (this.tutorial !== 'done' || this.finished) return;
     const elapsed = Math.min(this.level.durationSec, this.elapsedSec + dt);
-    this.items.push(...this.spawner.update(elapsed - this.elapsedSec, elapsed, this.layout));
+    const step = elapsed - this.elapsedSec;
+    this.score.update(step, this.items.filter(item => item.state === 'ground').length);
     this.elapsedSec = elapsed;
-    if (this.finished) {
-      this.cancelPointers();
-      this.onComplete?.();
-    }
+    this.addItems(this.spawner.update(step, elapsed, this.layout));
+    if (this.score.failed || elapsed >= this.level.durationSec) this.complete();
   }
 
   onPointer(sample: PointerSample): void {
@@ -144,6 +149,7 @@ export class LevelSession {
       return;
     }
     if (this.tutorial === 'pick') this.tutorial = 'sort';
+    else if (this.tutorial === 'done') this.score.pick(item);
     const from = { x: item.x, y: item.y };
     this.flights.set(item, slot);
     this.tweens.add({
@@ -163,7 +169,11 @@ export class LevelSession {
     const bin = this.bins.find(b => b.contains(x, y, this.layout));
     if (!bin || !bin.accepts(item)) {
       this.bag.cancelDrag(pointerId);
-      if (bin) this.notify({ text: vi.wrongBin(item.label, BIN_TEXT[item.type.bin].name), kind: 'error', binId: bin.id });
+      if (bin) {
+        this.notify({ text: vi.wrongBin(item.label, BIN_TEXT[item.type.bin].name), kind: 'error', binId: bin.id });
+        if (this.tutorial === 'done') this.score.sort(item, false);
+        if (this.score.failed) this.complete();
+      }
       return;
     }
     this.bag.removeDragged(pointerId);
@@ -171,8 +181,20 @@ export class LevelSession {
     this.notify({ text: vi.sorted(item.label, getDecomposeLabel(item.type)), kind: 'success', binId: bin.id });
     if (this.tutorial === 'sort') {
       this.tutorial = 'done';
-      this.items.push(...this.spawner.initial(this.layout));
-    } else this.sortedCount++;
+      this.addItems(this.spawner.initial(this.layout));
+    } else this.score.sort(item, true);
+  }
+
+  private addItems(items: TrashItem[]): void {
+    this.items.push(...items);
+    for (const item of items) this.score.registerSpawn(item, this.elapsedSec);
+  }
+
+  private complete(): void {
+    if (this.finished) return;
+    this.cancelPointers();
+    this.result = this.score.finish(this.bag.slots.filter((item): item is TrashItem => item !== null));
+    this.onComplete?.(this.result);
   }
 
   private syncLayout(): void {

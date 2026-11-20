@@ -15,6 +15,8 @@ export const vi = {
   sortedCount: (count: number) => `Đã phân loại ${count} món`,
   wrongBin: (name: string, bin: string) => `${name} thuộc nhóm ${bin}`,
   sorted: (name: string, label: string) => label ? `${name} · ${label}` : name,
+  score: (score: number) => `${score} điểm`,
+  combo: (combo: number, multiplier: number) => `Chuỗi ${combo} · ×${multiplier}`,
   seconds: (seconds: number) => `${seconds}s`,
 } as const;
 
@@ -222,4 +224,18 @@ export const DECOMPOSE_TEXT = {
   "pin-aa": "",
   "lightstick": "",
   "bong-den": "",
+} as const;
+
+export const RESULT_TEXT = {
+  completeTitle: 'Dọn xong rồi',
+  failedTitle: 'Nghỉ tay một chút nhé',
+  failedHint: 'Túi đầy thì phân loại trước. Dọn bớt rác trên sàn để thanh ô nhiễm hạ xuống.',
+  retryHint: 'Thử lại để phố sạch hơn nhé',
+  map: 'Bản đồ',
+  share: 'Chia sẻ',
+  pledge: 'Lời cam kết',
+  score: (score: number) => `${score} điểm`,
+  cleanliness: (value: number) => `Độ sạch ${Math.round(value * 100)}%`,
+  correct: (count: number) => `Phân loại đúng ${count} món`,
+  stars: (count: number) => '★'.repeat(count) + '☆'.repeat(3 - count),
 } as const;

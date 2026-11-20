@@ -24,6 +24,45 @@ function drop(game: LevelSession, slot: number, binIndex: number, pointer = 1): 
 }
 
 describe('LevelSession — normal pointer entry points', () => {
+  test('nhặt và phân loại qua pointer cập nhật điểm, sai làm tăng ô nhiễm', () => {
+    const game = session();
+    pick(game);
+    expect(game.score.score).toBe(5);
+    const item = game.bag.slots[0]!;
+    const correct = ['recycle', 'food', 'other'].indexOf(item.type.bin);
+    drop(game, 0, (correct + 1) % 3);
+    expect(game.score.score).toBe(0);
+    expect(game.score.pollution).toBe(8);
+    drop(game, 0, correct);
+    expect(game.score.score).toBe(10);
+    expect(game.score.combo).toBe(1);
+  });
+
+  test('ô nhiễm đầy kết thúc ngay, callback chỉ chạy một lần và không nhận thêm thao tác', () => {
+    const game = session();
+    pick(game);
+    const item = game.bag.slots[0]!;
+    const wrong = (['recycle', 'food', 'other'].indexOf(item.type.bin) + 1) % 3;
+    for (let i = 0; i < 13; i++) drop(game, 0, wrong);
+    expect(game.finished).toBe(true);
+    expect(game.result?.failed).toBe(true);
+    expect(game.elapsedSec).toBeLessThan(90);
+    expect(game.result?.stars).toBe(0);
+    const score = game.score.score;
+    game.update(10);
+    expect(game.score.score).toBe(score);
+  });
+
+  test('hướng dẫn không cộng điểm, ô nhiễm hoặc mẫu số độ sạch', () => {
+    const game = session(false);
+    pick(game);
+    drop(game, 0, 0);
+    expect(game.score.score).toBe(0);
+    expect(game.score.pollution).toBe(0);
+    drop(game, 0, 1);
+    expect(game.score.correctCount).toBe(0);
+    expect(game.score.totalSpawned).toBe(game.items.length);
+  });
   test('chỉ báo hoàn thành một lần để ghi dấu lượt chơi cho lần tải sau', () => {
     const viewport = new Viewport();
     let completed = 0;
