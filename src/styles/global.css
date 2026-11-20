@@ -1,5 +1,8 @@
+/* CSS không import được TypeScript, nên mấy màu dưới đây BUỘC phải lặp lại
+   giá trị trong src/render/palette.ts. Sửa một bên thì sửa cả hai.
+   Chỉ có lớp phủ xoay máy và nền trang dùng tới — game vẽ trong canvas. */
 :root {
-  --letterbox: #06120D;
+  --letterbox: #06120d;
   color-scheme: dark;
 }
 

@@ -6,9 +6,7 @@ import { VIRTUAL_WIDTH, VIRTUAL_HEIGHT } from '../core/Viewport';
 import { TweenRunner, easeInOutQuad } from '../core/Tween';
 import type { Scene, PointerSample } from '../core/Game';
 import { vi } from '../i18n/vi';
-
-const SKY_TOP = '#0E2A1F';
-const SKY_BOTTOM = '#1D5C42';
+import { UI, withAlpha } from '../render/palette';
 
 export class BootScene implements Scene {
   private readonly tweens = new TweenRunner();
@@ -58,41 +56,41 @@ export class BootScene implements Scene {
 
   render(g: CanvasRenderingContext2D): void {
     const sky = g.createLinearGradient(0, 0, 0, VIRTUAL_HEIGHT);
-    sky.addColorStop(0, SKY_TOP);
-    sky.addColorStop(1, SKY_BOTTOM);
+    sky.addColorStop(0, UI.backdropTop);
+    sky.addColorStop(1, UI.backdropBottom);
     g.fillStyle = sky;
     g.fillRect(0, 0, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
     // Viền khung ảo: nhìn là biết letterbox có đúng không trên máy thật.
-    g.strokeStyle = 'rgba(255,255,255,0.14)';
+    g.strokeStyle = withAlpha(UI.textOnDark, 0.14);
     g.lineWidth = 4;
     g.strokeRect(2, 2, VIRTUAL_WIDTH - 4, VIRTUAL_HEIGHT - 4);
 
     g.textAlign = 'center';
     g.textBaseline = 'middle';
 
-    g.fillStyle = '#F2FBF6';
+    g.fillStyle = UI.textOnDark;
     g.font = '700 72px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     g.fillText(vi.appTitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 70);
 
-    g.fillStyle = 'rgba(242,251,246,0.72)';
+    g.fillStyle = withAlpha(UI.textOnDark, 0.72);
     g.font = '400 34px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     g.fillText(vi.appSubtitle, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 - 10);
 
-    g.fillStyle = `rgba(242,251,246,${0.25 + this.pulse * 0.55})`;
+    g.fillStyle = withAlpha(UI.textOnDark, 0.25 + this.pulse * 0.55);
     g.font = '400 30px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     g.fillText(vi.bootHint, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2 + 62);
 
-    g.fillStyle = 'rgba(242,251,246,0.38)';
+    g.fillStyle = withAlpha(UI.textOnDark, 0.38);
     g.font = '400 22px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
     g.fillText(`${vi.bootStatus} · ${this.touchCount} lần chạm`, VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT - 46);
 
     if (this.lastTouch !== null) {
       g.beginPath();
       g.arc(this.lastTouch.x, this.lastTouch.y, 46, 0, Math.PI * 2);
-      g.fillStyle = 'rgba(126,231,169,0.30)';
+      g.fillStyle = withAlpha(UI.highlight, 0.3);
       g.fill();
-      g.strokeStyle = '#7EE7A9';
+      g.strokeStyle = UI.highlight;
       g.lineWidth = 3;
       g.stroke();
     }

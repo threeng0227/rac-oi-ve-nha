@@ -4,8 +4,7 @@ import { Input } from './core/Input';
 import { Viewport } from './core/Viewport';
 import { applyViewportTransform, clearFrame } from './core/Renderer';
 import { BootScene } from './scenes/BootScene';
-
-const LETTERBOX_COLOR = '#06120D';
+import { UI } from './render/palette';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#game');
 if (canvas === null) throw new Error('Không tìm thấy <canvas id="game">');
@@ -37,7 +36,7 @@ const ctx = canvas.getContext('2d', { alpha: false });
 
 const game = new Game(clock, () => {
   if (ctx === null) return null;
-  clearFrame(ctx, viewport, LETTERBOX_COLOR);
+  clearFrame(ctx, viewport, UI.letterbox);
   applyViewportTransform(ctx, viewport);
   return ctx;
 });

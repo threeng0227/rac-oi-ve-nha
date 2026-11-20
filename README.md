@@ -25,9 +25,10 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 | `index.html` + `global.css` | Lớp phủ "xoay ngang điện thoại" khi cầm dọc | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
 | `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
+| `src/render/palette.ts` | Toàn bộ màu + phép toán màu (mix, desaturate, tương phản) | 24 ✅ |
 | `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
 
-**94/94 test xanh, typecheck sạch, build 3.13 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
+**120/120 test xanh, typecheck sạch, build 3.28 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -40,6 +41,7 @@ Vài điểm đáng chú ý trong `Game.ts`:
 ### ⬜ Chưa có — M1 bước 2 trở đi
 
 - `src/core/Audio.ts`
+- `docs/ART.md` — hướng dẫn vẽ (đã hoãn; `palette.ts` đã sẵn chỗ để điền màu thật)
 - `src/gameplay/` — `TrashItem`, `Bag`, `Bin`, `Spawner`, `ScoreSystem`, `EventSystem`
 - `src/data/` — `trashTypes.ts` (24 loại), `levels.ts`, `facts.ts`, `pledges.ts`
 - `src/scenes/` — `MenuScene`, `MapScene`, `LevelScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
@@ -55,7 +57,7 @@ Vài điểm đáng chú ý trong `Game.ts`:
 
 ```bash
 npm install
-npm test          # 94 xanh
+npm test          # 120 xanh
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```
@@ -64,6 +66,7 @@ npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 
 - **Mọi toạ độ theo hệ ảo 1280×720.** Không bao giờ hardcode pixel thật. `Viewport` lo quy đổi.
 - **Game chỉ chạy ở khổ ngang.** Điều kiện chặn trong `global.css` và `main.ts` phải luôn khớp nhau.
+- **Không hardcode mã màu ở bất kỳ file nào ngoài `src/render/palette.ts`.** Hiệu ứng "xám sang màu" lúc dọn xong một vùng là phép biến đổi trên chính bộ màu đó — màu rải rác khắp nơi thì không viết được hiệu ứng ấy. Kiểm nhanh: `grep -rnE '#[0-9a-fA-F]{6}' src --include='*.ts' | grep -v palette.ts` phải không ra gì.
 - **Không hardcode chuỗi tiếng Việt** trong scene — tất cả qua `src/i18n/vi.ts`.
 - **Vòng lặp fixed timestep**, tách khỏi render. Game không được chạy nhanh hơn trên máy 120Hz.
 - **Mọi `requestAnimationFrame` phải huỷ khi rời scene.** Không để rò rỉ.
