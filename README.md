@@ -7,10 +7,20 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 
 ---
 
-## Trạng thái hiện tại — M1 bước 1 đã xong
+## Trạng thái hiện tại — Chặng 2, chờ chơi thử
 
-`npm run dev` chạy được, hiện canvas có nền, tiêu đề, và một vòng tròn bám theo ngón tay
-để kiểm chứng luồng chạm hoạt động trên máy thật.
+`npm run dev` mở thẳng màn Phố cổ Hà Nội. Lượt đầu có hướng dẫn chạm vỏ chuối,
+kéo vào thùng Thực phẩm, rồi bắt đầu màn 90 giây. Túi có 6 ô, ba thùng nhận kéo
+thả, thả sai hoặc huỷ thao tác thì rác trở về ô cũ. Hết giờ có nút chơi lại.
+
+Chặng 1 có đủ 24 loại rác, 10 màn, 10 câu cuối màn, 7 cam kết và cổng kiểm chứng
+ở `prebuild`. Các nhãn chưa xác minh được ẩn qua `getDecomposeLabel()`.
+
+**193 test xanh, typecheck sạch.** Đã kiểm tra giao diện
+trình duyệt ở 844×390 và 390×844. Cần chơi thử trên iPhone Safari và Chrome Android
+thật trước khi tiếp tục Chặng 3, theo điểm dừng trong `docs/CODEX-BRIEF.md`.
+
+### Nền M1 bước 1
 
 ### ✅ Đã xong
 
@@ -23,13 +33,13 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
 | `src/core/Layout.ts` | Bốn dải màn chơi, vị trí thùng/túi/vùng sinh rác, cho cả hai hướng | 11 ✅ |
 | `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
-| `index.html` + `global.css` | Lớp phủ "xoay ngang điện thoại" khi cầm dọc | — |
+| `index.html` + `global.css` | Canvas toàn màn hình, chặn cuộn khi kéo | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
 | `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
 | `src/render/palette.ts` | Toàn bộ màu + phép toán màu (mix, desaturate, tương phản) | 24 ✅ |
 | `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
 
-**140/140 test xanh, typecheck sạch, build 3.39 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
+Nền bàn giao có **140/140 test xanh**, typecheck sạch và build khoảng 3.4 KB gzip.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -39,18 +49,17 @@ Vài điểm đáng chú ý trong `Game.ts`:
 - `stop()` huỷ khung hình đang chờ, không rò rỉ `requestAnimationFrame`.
 - Đổi scene ngay trong `update()` không làm scene mới bị update luôn trong cùng khung hình.
 
-### ⬜ Chưa có — M1 bước 2 trở đi
+### Phần tiếp theo sau khi chơi thử
 
 - `src/core/Audio.ts`
 - `docs/ART.md` — hướng dẫn vẽ (đã hoãn; `palette.ts` đã sẵn chỗ để điền màu thật)
-- `src/gameplay/` — `TrashItem`, `Bag`, `Bin`, `Spawner`, `ScoreSystem`, `EventSystem`
-- `src/data/` — `trashTypes.ts` (24 loại), `levels.ts`, `facts.ts`, `pledges.ts`
-- `src/scenes/` — `MenuScene`, `MapScene`, `LevelScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
-- `src/render/` — `sprites.ts`, `backdrops.ts`, `particles.ts`
+- `src/gameplay/` — `ScoreSystem`, `EventSystem`
+- `src/scenes/` — `MenuScene`, `MapScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
+- `src/render/` — mở rộng sprite, `backdrops.ts`, `particles.ts`
 - `src/ui/` — `Button`, `Modal`, `Toast`, `ProgressBar`, `StarRow`, `ShareCard`
-- `scripts/verify-facts.ts`
 
-**Việc kế tiếp:** `LevelScene` với một màn Phố cổ Hà Nội, 8 loại rác đầu tiên, 3 thùng, nhặt bằng chạm và phân loại bằng kéo thả. Xem Mục 5 trong `docs/DESIGN.md`.
+**Việc kế tiếp:** người giao việc chơi thử Chặng 2, rồi mới làm điểm số và bộ mô
+phỏng cân bằng ở Chặng 3. Các mục còn lại theo đúng thứ tự bản giao việc.
 
 ---
 
@@ -63,7 +72,7 @@ không được vi phạm, sáu chặng theo thứ tự, luật về số liệu
 
 ```bash
 npm install
-npm test          # 140 xanh
+npm test
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```

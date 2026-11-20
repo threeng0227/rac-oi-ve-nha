@@ -5,6 +5,24 @@ export const vi = {
   appSubtitle: 'Hành trình xuyên Việt',
   bootHint: 'Chạm thử — xoay máy kiểu gì cũng chơi được',
   bootStatus: 'Đang dựng — lớp core đã xong',
+  tutorialPick: 'Chạm vào vỏ chuối để nhặt',
+  tutorialSort: 'Kéo vỏ chuối từ túi vào thùng Thực phẩm',
+  playHint: 'Chạm để nhặt · Kéo từ túi xuống thùng',
+  bagFull: 'Túi đầy rồi — kéo rác xuống thùng để có chỗ nhé',
+  timeUp: 'Phố cổ cảm ơn bạn',
+  replay: 'Chơi lại',
+  replayHint: 'Thử thêm một lượt nhé',
+  sortedCount: (count: number) => `Đã phân loại ${count} món`,
+  wrongBin: (name: string, bin: string) => `${name} thuộc nhóm ${bin}`,
+  sorted: (name: string, label: string) => label ? `${name} · ${label}` : name,
+  seconds: (seconds: number) => `${seconds}s`,
+} as const;
+
+export const BIN_TEXT = {
+  recycle: { name: 'Tái chế', icon: '♻' },
+  food: { name: 'Thực phẩm', icon: '♧' },
+  other: { name: 'Khác', icon: '▤' },
+  hazard: { name: 'Nguy hại', icon: '☢' },
 } as const;
 
 export type StringKey = keyof typeof vi;

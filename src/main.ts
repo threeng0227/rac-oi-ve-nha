@@ -3,7 +3,8 @@ import { Game, type FrameClock } from './core/Game';
 import { Input } from './core/Input';
 import { Viewport } from './core/Viewport';
 import { applyViewportTransform, clearFrame } from './core/Renderer';
-import { BootScene } from './scenes/BootScene';
+import { LevelScene } from './scenes/LevelScene';
+import { SaveStore, detectBackend } from './core/Storage';
 import { UI } from './render/palette';
 
 const canvas = document.querySelector<HTMLCanvasElement>('#game');
@@ -41,7 +42,18 @@ const game = new Game(clock, () => {
   return ctx;
 });
 
-game.scenes.change(new BootScene(viewport), game);
+const store = new SaveStore(detectBackend());
+const save = store.load();
+game.scenes.change(new LevelScene(viewport, {
+  skipTutorial: save.levels['ha-noi'] !== undefined,
+  reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  onComplete: () => {
+    // Ghi dấu lượt chơi để lần sau bỏ hướng dẫn, phần sao/điểm nối ở Chặng 3–5.
+    const latest = store.load();
+    latest.levels['ha-noi'] ??= { stars: 0, bestScore: 0, cleared: false };
+    store.save(latest);
+  },
+}), game);
 
 /**
  * Vào toàn màn hình ở lần chạm đầu tiên.
@@ -70,6 +82,18 @@ const input = new Input(viewport, (sample) => {
 });
 input.attach(canvas);
 
+// Giữ pointer khi kéo ra ngoài canvas, trình duyệt vẫn gửi up/cancel về đúng nơi.
+canvas.addEventListener('pointerdown', (event) => canvas.setPointerCapture(event.pointerId));
+canvas.addEventListener('lostpointercapture', (event) => {
+  game.scenes.onPointer({ phase: 'cancel', id: event.pointerId, x: 0, y: 0 });
+});
+
+function cancelPointers(): void {
+  const scene = game.scenes.current;
+  if (scene instanceof LevelScene) scene.cancelPointers();
+}
+window.addEventListener('blur', cancelPointers);
+
 // Vào/ra toàn màn hình làm đổi kích thước vùng hiển thị.
 document.addEventListener('fullscreenchange', fitToScreen);
 
@@ -80,7 +104,7 @@ window.visualViewport?.addEventListener('resize', fitToScreen);
 // Khoá máy hoặc chuyển tab: dừng hẳn vòng lặp. Không dừng thì pin tụt
 // và lúc quay lại game phải chạy bù một cục thời gian.
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) game.stop();
+  if (document.hidden) { cancelPointers(); game.stop(); }
   else game.start();
 });
 

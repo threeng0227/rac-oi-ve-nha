@@ -1000,3 +1000,26 @@ Hai chỗ trống nguy hiểm nhất đã được lấp. Thêm vào đó, tôi 
     Cổng kiểm chứng chỉ xác nhận cú pháp URL, không xác nhận nội dung nguồn.
 23. **Nội dung sổ tay** giữ nguyên văn Mục 8.4, kể cả câu cốc nhựa có lượng viết bằng
     chữ, theo yêu cầu dùng nguyên văn. Không bổ sung số liệu mới vào `harm` hoặc `tip`.
+
+### Chặng 2 — màn chơi thử, ngày 2026-11-20
+
+24. **Thả sai thùng hoặc thả ra ngoài** trả món về đúng ô túi cũ để người chơi thử
+    lại. Huỷ pointer, mất focus, ẩn tab và xoay máy cũng trả món đang kéo về ô.
+    Ô được giữ ngay từ lúc bắt đầu bay vào túi, tránh hai ngón nhận cùng một ô.
+25. **Hướng dẫn Hà Nội** dừng đồng hồ và sinh rác cho tới khi phân loại đúng vỏ
+    chuối. Chơi lại trong cùng phiên bỏ hướng dẫn. Bản lưu đã có `ha-noi` cũng bỏ
+    hướng dẫn theo Mục 11b. Hết lượt đầu ghi dấu `ha-noi` với sao/điểm bằng không,
+    `cleared: false` nếu chưa có mục này. Lượt sau giữ dữ liệu hiện có. Việc lưu
+    tiến trình kết nối đầy đủ ở Chặng 5.
+26. **Kết thúc bản chơi thử Chặng 2** hiện số món đã phân loại và nút chơi lại.
+    Đây là bộ đếm thao tác để chơi thử. Điểm, sao và màn kết quả theo Chặng 3.
+27. **Vùng chạm** dùng tối thiểu 44 CSS px qua `viewport.scale`. Ô túi mở rộng vùng
+    chạm lên phía khu cảnh khi dải túi quá mỏng. Sprite trên sàn vẽ tối thiểu
+    40 CSS px. Tôn trọng giảm chuyển động bằng cách bỏ nhịp rung và chuyển bay tức thì.
+28. **Tải lại giữa màn** bắt đầu lại màn đó. Chặng 2 chỉ đọc bản lưu để quyết định
+    bỏ hướng dẫn và ghi dấu lượt chơi đã kết thúc.
+
+Đã kiểm tra tự động dữ liệu, cổng kiểm chứng, túi, vùng chạm, trọng số 10.000 mẫu,
+nhặt/kéo/thả qua `PointerSample`, thay đổi hướng và huỷ tween. Đã kiểm tra bằng
+trình duyệt ở khổ 844×390 và 390×844. Checklist thiết bị thật, chế độ ẩn danh thực
+tế, Lighthouse và ảnh preview chia sẻ chưa được kiểm tra trong phiên này.
