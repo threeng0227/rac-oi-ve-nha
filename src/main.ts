@@ -5,6 +5,7 @@ import { Viewport } from './core/Viewport';
 import { applyViewportTransform, clearFrame } from './core/Renderer';
 import { Journey } from './scenes/Journey';
 import { ProgressStore } from './gameplay/ProgressStore';
+import { AudioManager } from './core/Audio';
 import { SaveStore, detectBackend } from './core/Storage';
 import { UI } from './render/palette';
 
@@ -45,8 +46,13 @@ const game = new Game(clock, () => {
 
 const store = new SaveStore(detectBackend());
 const progress = new ProgressStore(store);
+const audio = new AudioManager();
+audio.setMuted(progress.data.settings.muted);
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 new Journey(game, viewport, progress, {
-  reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  reducedMotion,
+  audio,
+  onEventWarning: () => { try { if (!reducedMotion) navigator.vibrate?.(50); } catch { /* iOS may block vibration. */ } },
   openSource: url => window.open(url, '_blank', 'noopener,noreferrer'),
 }).start();
 
@@ -99,8 +105,8 @@ window.visualViewport?.addEventListener('resize', fitToScreen);
 // Khoá máy hoặc chuyển tab: dừng hẳn vòng lặp. Không dừng thì pin tụt
 // và lúc quay lại game phải chạy bù một cục thời gian.
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) { cancelPointers(); game.stop(); }
-  else game.start();
+  if (document.hidden) { cancelPointers(); game.stop(); audio.suspend(); }
+  else { game.start(); audio.resume(); }
 });
 
 game.start();

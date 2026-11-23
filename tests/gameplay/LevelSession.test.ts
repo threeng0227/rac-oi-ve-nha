@@ -25,6 +25,16 @@ function drop(game: LevelSession, slot: number, binIndex: number, pointer = 1): 
 }
 
 describe('LevelSession — normal pointer entry points', () => {
+  test('âm thanh được báo từ thao tác thật, không phát lặp khi nhặt trùng', () => {
+    const sounds: string[] = [];
+    const game = new LevelSession(new Viewport(), { skipTutorial: true, seed: 1, onSound: sound => sounds.push(sound) });
+    pick(game);
+    expect(sounds).toEqual(['pickup']);
+    const item = game.bag.slots[0]!;
+    const correct = ['recycle', 'food', 'other'].indexOf(item.type.bin);
+    drop(game, 0, correct);
+    expect(sounds).toEqual(['pickup', 'correct']);
+  });
   test('màn đạt sao đổi màu trong hai giây, chỉ mở kết quả sau khi chuyển xong', () => {
     const viewport = new Viewport();
     const game = new LevelSession(viewport, { skipTutorial: true,

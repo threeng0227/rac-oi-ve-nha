@@ -6,13 +6,14 @@ import type { LevelResult } from '../gameplay/ScoreSystem';
 import { HAZARD_TEXT, RESULT_TEXT, vi } from '../i18n/vi';
 import { UI, mix, withAlpha } from './palette';
 
-export type ResultAction = 'replay' | 'map' | 'share' | 'pledge';
+export type ResultAction = 'replay' | 'map' | 'share' | 'download' | 'pledge';
 
 const FONT = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
 const ACTION_LABELS: Record<ResultAction, string> = {
   replay: vi.replay,
   map: RESULT_TEXT.map,
   share: RESULT_TEXT.share,
+  download: RESULT_TEXT.download,
   pledge: RESULT_TEXT.pledge,
 };
 
@@ -26,7 +27,7 @@ export class ResultView {
     const font = this.fontSize;
     const padding = font * 1.2;
     const gap = font * 0.5;
-    const columns = Math.min(this.actions.length, 2);
+    const columns = this.actions.length > 4 ? 3 : Math.min(this.actions.length, 2);
     const rows = Math.ceil(this.actions.length / columns);
     const height = Math.max(font * 2.6, 44 / this.viewport.scale);
     const width = (card.width - padding * 2 - gap * (columns - 1)) / columns;
@@ -45,7 +46,7 @@ export class ResultView {
     });
   }
 
-  render(g: CanvasRenderingContext2D, level: LevelDef, result: LevelResult): void {
+  render(g: CanvasRenderingContext2D, level: LevelDef, result: LevelResult, status = ''): void {
     const l = computeLayout(this.viewport);
     const card = this.cardBounds(l);
     const font = this.fontSize;
@@ -68,31 +69,32 @@ export class ResultView {
     g.fillStyle = UI.textOnDark;
     g.font = `700 ${font * 1.35}px ${FONT}`;
     g.fillText(result.failed ? RESULT_TEXT.failedTitle : RESULT_TEXT.completeTitle,
-      l.centerX, card.y + font * 1.5);
+      l.centerX, card.y + font * 1.3);
     g.font = `400 ${font}px ${FONT}`;
     g.fillStyle = withAlpha(UI.textOnDark, 0.78);
     const nameLines = this.wrap(g, level.name, card.width - font * 2.4);
-    nameLines.forEach((line, index) => g.fillText(line, l.centerX, card.y + font * (2.9 + index * 1.2)));
+    nameLines.forEach((line, index) => g.fillText(line, l.centerX, card.y + font * (2.6 + index * 1.2)));
     const offset = (nameLines.length - 1) * font * 0.9;
     g.fillStyle = UI.warning;
     g.font = `700 ${font * 2.2}px ${FONT}`;
-    g.fillText(RESULT_TEXT.stars(result.stars), l.centerX, card.y + font * 5.1 + offset);
+    g.fillText(RESULT_TEXT.stars(result.stars), l.centerX, card.y + font * 4.4 + offset);
     g.fillStyle = UI.textOnDark;
     g.font = `700 ${font * 1.8}px ${FONT}`;
-    g.fillText(RESULT_TEXT.score(result.score), l.centerX, card.y + font * 7.5 + offset);
+    g.fillText(RESULT_TEXT.score(result.score), l.centerX, card.y + font * 6.4 + offset);
     g.font = `500 ${font}px ${FONT}`;
     g.fillStyle = withAlpha(UI.textOnDark, 0.83);
-    g.fillText(RESULT_TEXT.cleanliness(result.cleanliness), l.centerX, card.y + font * 9.2 + offset);
-    g.fillText(RESULT_TEXT.correct(result.correctCount), l.centerX, card.y + font * 10.6 + offset);
+    g.fillText(RESULT_TEXT.cleanliness(result.cleanliness), l.centerX, card.y + font * 7.8 + offset);
+    g.fillText(RESULT_TEXT.correct(result.correctCount), l.centerX, card.y + font * 9 + offset);
 
     const fact = FACTS.find(fact => fact.id === level.factOnComplete)?.text ?? '';
     const message = result.failed ? RESULT_TEXT.failedHint : result.hazardRemainingCount ? HAZARD_TEXT.pendingAtEnd : fact;
-    this.paragraph(g, message, card, card.y + font * 13.1 + offset, font, UI.textOnDark);
-    if (!result.failed && result.stars === 0) {
-      g.fillStyle = color;
-      g.fillText(RESULT_TEXT.retryHint, l.centerX, card.y + card.height - font * 5.5);
-    }
+    this.paragraph(g, message, card, card.y + font * 10.8 + offset, font, UI.textOnDark);
     for (const action of this.actions) this.button(g, l, action);
+    if (status) {
+      g.fillStyle = UI.warning;
+      g.font = `400 ${font}px ${FONT}`;
+      g.fillText(status, l.centerX, card.y + card.height - font * 0.45);
+    }
     g.restore();
   }
 

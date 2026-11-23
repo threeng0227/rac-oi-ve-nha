@@ -9,6 +9,7 @@ export interface ResultActions {
   replay: () => void;
   map?: () => void;
   share?: () => void;
+  download?: () => void;
   pledge?: () => void;
 }
 
@@ -17,6 +18,7 @@ export class ResultScene implements Scene {
   private readonly view: ResultView;
   private pressed: { pointerId: number; action: ResultAction } | null = null;
   private active = true;
+  private status = '';
 
   constructor(
     private readonly viewport: Viewport,
@@ -34,7 +36,7 @@ export class ResultScene implements Scene {
   update(_dt: number): void {}
 
   render(g: CanvasRenderingContext2D): void {
-    this.view.render(g, this.level, this.result);
+    this.view.render(g, this.level, this.result, this.status);
   }
 
   onPointer(sample: PointerSample): void {
@@ -58,6 +60,7 @@ export class ResultScene implements Scene {
   }
 
   cancelPointers(): void { this.pressed = null; }
+  setStatus(status: string): void { if (this.active) this.status = status; }
 
   exit(): void {
     this.cancelPointers();

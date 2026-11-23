@@ -1,0 +1,29 @@
+Rac Oi Ve Nha original synthesized audio
+
+Files covered
+pickup.webm
+correct.webm
+wrong.webm
+hazard.webm
+event.webm
+win.webm
+lose.webm
+concert.webm
+
+These sound effects, the original concert melody, and their recordings were
+created specifically for this project on 2026-11-20. They use synthesized sine
+waves, envelopes, and original note sequences. No external recordings, sampled
+instruments, existing songs, or third-party audio assets were used.
+
+The project dedicates these audio assets to the public domain under CC0 1.0
+Universal. Anyone may copy, modify, distribute, and perform these assets,
+including for commercial purposes, without asking permission.
+
+CC0 legal text
+https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Source and production
+Original project-generated synthesis, 24 kHz mono PCM encoded with FFmpeg
+libopus into WebM. Short effects use 32 kbit/s Opus. The concert track uses
+24 kbit/s Opus and a twenty-second loop of plucked pentatonic tones with soft
+bass pulses. This license applies to the audio assets listed above.

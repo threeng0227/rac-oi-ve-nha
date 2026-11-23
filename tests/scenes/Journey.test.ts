@@ -8,8 +8,29 @@ import { Journey } from '../../src/scenes/Journey';
 import { MenuScene } from '../../src/scenes/MenuScene';
 import { LevelScene } from '../../src/scenes/LevelScene';
 import { ResultScene } from '../../src/scenes/ResultScene';
+import { PledgeScene } from '../../src/scenes/PledgeScene';
 
 describe('Journey', () => {
+  test('qua màn sáu mở cam kết, chọn rồi quay về kết quả với bản lưu thật', () => {
+    const game = new Game({ requestFrame: () => 1, cancelFrame: () => {} }, () => null);
+    const viewport = new Viewport();
+    const progress = new ProgressStore(new SaveStore(null));
+    for (const level of LEVELS.slice(0, 6)) progress.data.levels[level.id] = { stars: 1, bestScore: 0, cleared: true };
+    const journey = new Journey(game, viewport, progress, { reducedMotion: true, openSource: () => {} });
+    journey.play({ ...LEVELS[5]!, initialTrashCount: 0, spawnRatePerSec: 0, durationSec: 1, events: [] });
+    game.scenes.update(1);
+    expect(game.scenes.current).toBeInstanceOf(PledgeScene);
+    const pledge = game.scenes.current as PledgeScene;
+    for (const action of ['binh-nuoc', 'confirm']) {
+      const bounds = pledge.buttonBounds(action)!;
+      const sample = { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2, id: 1 };
+      pledge.onPointer({ ...sample, phase: 'down' });
+      pledge.onPointer({ ...sample, phase: 'up' });
+    }
+    expect(progress.data.pledges).toEqual(['binh-nuoc']);
+    expect(game.scenes.current).toBeInstanceOf(ResultScene);
+    expect((game.scenes.current as ResultScene).buttonBounds('download')).not.toBeNull();
+  });
   test('menu, màn chơi, lưu kết quả và chơi lại dùng chung luồng scene thực', () => {
     const game = new Game({ requestFrame: () => 1, cancelFrame: () => {} }, () => null);
     const viewport = new Viewport();

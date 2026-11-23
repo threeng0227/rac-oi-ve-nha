@@ -3,9 +3,10 @@ import { computeLayout, type Layout, type Rect } from '../core/Layout';
 import { Random } from '../core/Random';
 import { TweenRunner, easeOutCubic } from '../core/Tween';
 import type { Viewport } from '../core/Viewport';
-import { LEVELS, type LevelDef } from '../data/levels';
+import { LEVELS, type LevelDef, type EventId } from '../data/levels';
 import { TRASH_TYPES, getDecomposeLabel, type TrashId } from '../data/trashTypes';
-import { BIN_TEXT, HAZARD_TEXT, vi } from '../i18n/vi';
+import { BIN_TEXT, EVENT_TEXT, HAZARD_TEXT, vi } from '../i18n/vi';
+import type { SfxId } from '../core/Audio';
 import { Bag } from './Bag';
 import { Bin, NORMAL_BIN_IDS } from './Bin';
 import { Spawner } from './Spawner';
@@ -21,6 +22,8 @@ export interface SessionOptions {
   onComplete?: (result: LevelResult) => void;
   level?: LevelDef;
   onDiscover?: (typeId: TrashId) => void;
+  onSound?: (sound: SfxId) => void;
+  onEventChange?: (eventId: EventId | null) => void;
 }
 
 export interface Feedback {
@@ -56,6 +59,8 @@ export class LevelSession {
   private active = true;
   private readonly onComplete: ((result: LevelResult) => void) | undefined;
   private readonly onDiscover: ((typeId: TrashId) => void) | undefined;
+  private readonly onSound: ((sound: SfxId) => void) | undefined;
+  private readonly onEventChange: ((eventId: EventId | null) => void) | undefined;
   private currentLayout: Layout;
 
   constructor(private readonly viewport: Viewport, options: SessionOptions = {}) {
@@ -66,6 +71,8 @@ export class LevelSession {
     this.events = new EventSystem(this.level.events, this.rng);
     this.onComplete = options.onComplete;
     this.onDiscover = options.onDiscover;
+    this.onSound = options.onSound;
+    this.onEventChange = options.onEventChange;
     this.reducedMotion = options.reducedMotion ?? false;
     this.spawner = new Spawner(this.level, this.rng);
     this.tutorial = options.skipTutorial || this.level.id !== 'ha-noi' ? 'done' : 'pick';
@@ -124,7 +131,9 @@ export class LevelSession {
     this.score.update(step, this.items.filter(item => item.state === 'ground').length);
     this.elapsedSec = elapsed;
     this.collector.update(step, this.bag.slots.some(item => item?.type.bin === 'hazard'));
+    const previousEvent = this.eventId;
     this.events.update(step, elapsed, this);
+    if (this.eventId !== previousEvent) this.onEventChange?.(this.eventId);
     this.addItems(this.spawner.update(step, elapsed, this.layout, this.events.spawnMultiplier));
     if (this.score.failed || elapsed >= this.level.durationSec) this.complete();
   }
@@ -178,6 +187,7 @@ export class LevelSession {
     }
     if (this.tutorial === 'pick') this.tutorial = 'sort';
     else if (this.tutorial === 'done') this.score.pick(item, this.events.pickMultiplier);
+    this.onSound?.('pickup');
     const from = { x: item.x, y: item.y };
     this.flights.set(item, slot);
     this.tweens.add({
@@ -198,6 +208,7 @@ export class LevelSession {
       this.bag.removeDragged(pointerId);
       this.items.splice(this.items.indexOf(item), 1);
       this.score.sort(item, true);
+      this.onSound?.('hazard');
       this.discover(item.type.id);
       this.notify({ text: `${item.type.harm} ${item.type.tip}`, kind: 'success', knowledge: true });
       return;
@@ -207,6 +218,7 @@ export class LevelSession {
       this.bag.removeDragged(pointerId);
       this.items.splice(this.items.indexOf(item), 1);
       this.score.sort(item, true, 2);
+      this.onSound?.('correct');
       this.discover(item.type.id);
       this.veChaiSold++;
       this.notify({ text: vi.sorted(item.label, getDecomposeLabel(item.type)), kind: 'success' });
@@ -217,6 +229,7 @@ export class LevelSession {
     if (!bin || !bin.accepts(item)) {
       this.bag.cancelDrag(pointerId);
       if (bin) {
+        this.onSound?.('wrong');
         this.notify({ text: item.type.bin === 'hazard' ? HAZARD_TEXT.wrongSort : vi.wrongBin(item.label, BIN_TEXT[item.type.bin].name), kind: 'error', binId: bin.id });
         if (this.tutorial === 'done') this.score.sort(item, false);
         if (this.score.failed) this.complete();
@@ -224,6 +237,7 @@ export class LevelSession {
       return;
     }
     this.bag.removeDragged(pointerId);
+    this.onSound?.('correct');
     this.items.splice(this.items.indexOf(item), 1);
     this.notify({ text: vi.sorted(item.label, getDecomposeLabel(item.type)), kind: 'success', binId: bin.id });
     this.discover(item.type.id);
@@ -273,6 +287,7 @@ export class LevelSession {
   addBonus(points: number): void { this.score.addBonus(points); }
   addPollution(amount: number): void { this.score.addPollution(amount); }
   showMessage(text: string): void {
+    if (this.level.events.some(event => EVENT_TEXT[event.eventId] === text)) this.onSound?.('event');
     this.notify({ text, kind: 'info', knowledge: this.eventId === 'CUU_SINH_VAT' && this.events.active?.tapsRemaining === 0 });
   }
   startCollector(): void { this.collector.request(); }
@@ -281,6 +296,7 @@ export class LevelSession {
     if (this.finished) return;
     this.cancelPointers();
     this.result = this.score.finish(this.bag.slots.filter((item): item is TrashItem => item !== null));
+    this.onSound?.(this.result.stars >= 1 ? 'win' : 'lose');
     this.onComplete?.(this.result);
   }
 

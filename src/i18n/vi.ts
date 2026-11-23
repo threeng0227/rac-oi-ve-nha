@@ -234,6 +234,7 @@ export const RESULT_TEXT = {
   retryHint: 'Thử lại để phố sạch hơn nhé',
   map: 'Bản đồ',
   share: 'Chia sẻ',
+  download: 'Tải ảnh',
   pledge: 'Lời cam kết',
   score: (score: number) => `${score} điểm`,
   cleanliness: (value: number) => `Độ sạch ${Math.round(value * 100)}%`,
@@ -282,4 +283,24 @@ export const NAV_TEXT = {
   collected: (count: number) => `Đã sưu tập ${count}/24`,
   page: (page: number, count: number) => `${page}/${count}`,
   stars: (count: number) => '★'.repeat(count) + '☆'.repeat(3 - count),
+} as const;
+
+export const SHARE_TEXT = {
+  share: 'Chia sẻ',
+  download: 'Tải ảnh',
+  sharing: 'Đang chuẩn bị ảnh',
+  downloaded: 'Đã tải ảnh về máy',
+  shared: 'Đã chia sẻ',
+  failed: 'Chưa xuất được ảnh. Thử lại nhé.',
+  pledgeHeading: 'Cam kết của tôi',
+  url: 'https://rac-oi-ve-nha.vercel.app',
+  brandLink: 'rac-oi-ve-nha.vercel.app',
+  message: (level: string) => `Tôi vừa dọn ${level} trong Rác Ơi Về Nhà`,
+} as const;
+
+export const PLEDGE_UI_TEXT = {
+  title: 'Lời cam kết',
+  choose: (count: number) => `Chọn 1–3 lời cam kết · ${count}/3`,
+  confirm: 'Xác nhận',
+  selected: (text: string) => `✓ ${text}`,
 } as const;
