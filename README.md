@@ -1,16 +1,37 @@
 # Rác Ơi Về Nhà
 
-Game web nhặt rác xuyên Việt — tuyên truyền phân loại rác đúng cách.
+**Game nhập vai** về giữ gìn vệ sinh và phân loại rác, bối cảnh khắp Việt Nam.
 
-Chơi trên điện thoại, cầm ngang hay dọc đều được. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
+Vào vai Minh hoặc Lan, đi dọn rác từ phố cổ Hà Nội tới Côn Đảo. Gặp người dân, nhận
+việc, phân loại đúng, thấy nơi mình dọn đẹp dần lên. Chơi được cầm ngang hay dọc.
 Không backend, không tài khoản, không thu thập dữ liệu người chơi.
+
+> ⚠️ **Đặc tả vừa viết lại toàn bộ (bản 2, 23/11/2026).** Bản 1 thiết kế thành game
+> arcade không có nhân vật — hiểu sai ý tác giả, đã bỏ. Xem Mục 19 của `docs/DESIGN.md`
+> để biết phần nào giữ, phần nào bỏ.
 
 ---
 
-## Trạng thái hiện tại — M1 bước 1 đã xong
+## Trạng thái hiện tại — đã triển khai đủ sáu chặng
 
-`npm run dev` chạy được, hiện canvas có nền, tiêu đề, và một vòng tròn bám theo ngón tay
-để kiểm chứng luồng chạm hoạt động trên máy thật.
+`npm run dev` mở menu, bản đồ Việt Nam, 10 màn chơi và sổ tay 24 loại rác.
+Chạm để nhặt, kéo để phân loại vào ba thùng, gom riêng rác nguy hại vào hộp vàng.
+Có điểm, combo, ô nhiễm, sao, tám sự kiện, lưu tiến trình và cảnh đổi từ xám sang màu.
+
+Sau màn 6 có thể chọn 1–3 cam kết. Màn kết quả hỗ trợ Web Share và tải ảnh vuông
+1080×1080. Âm thanh CC0 mặc định tắt, nhạc concert tải riêng. Ảnh Open Graph là
+1200×630. Các quyết định triển khai được ghi ở Mục 15 trong `docs/DESIGN.md`.
+
+**348 test xanh**, gồm mô phỏng 1.000 lượt × 10 màn × 4 khổ máy, phản xạ 400ms.
+Mỗi trường hợp đạt ba sao ở ít nhất 95% lượt. Typecheck sạch, JS **32.10 KB gzip**.
+Bảy SFX tổng 13.983 byte, nhạc concert 84.426 byte.
+
+Đã kiểm tra menu, bản đồ và sổ tay bằng trình duyệt ở cả ngang và dọc. Checklist
+thiết bị thật, Web Share thực tế, Lighthouse, 4G, FPS trên Redmi Note 11 và preview
+Messenger/Zalo còn cần kiểm tra. Chưa xác minh trực tuyến lại các URL nguồn số liệu.
+Chưa deploy trong phiên này.
+
+### Nền M1 bước 1
 
 ### ✅ Đã xong
 
@@ -21,15 +42,15 @@ Không backend, không tài khoản, không thu thập dữ liệu người chơ
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
-| `src/core/Layout.ts` | Bốn dải màn chơi, vị trí thùng/túi/vùng sinh rác, cho cả hai hướng | 11 ✅ |
+| `src/core/Layout.ts` | ⚠️ Của bản arcade — **phải viết lại** thành HUD + panel modal | 11 ⚠️ |
 | `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
-| `index.html` + `global.css` | Lớp phủ "xoay ngang điện thoại" khi cầm dọc | — |
+| `index.html` + `global.css` | Canvas toàn màn hình, chặn cuộn khi kéo | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
 | `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
 | `src/render/palette.ts` | Toàn bộ màu + phép toán màu (mix, desaturate, tương phản) | 24 ✅ |
-| `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
+| `src/scenes/BootScene.ts` | ⚠️ Scene tạm — thay bằng màn nạp dữ liệu thật | — |
 
-**140/140 test xanh, typecheck sạch, build 3.39 KB gzip.** Chạy `npm test` và `npm run typecheck` để kiểm.
+Nền bàn giao có **140/140 test xanh**, typecheck sạch và build khoảng 3.4 KB gzip.
 
 Vài điểm đáng chú ý trong `Game.ts`:
 
@@ -39,18 +60,11 @@ Vài điểm đáng chú ý trong `Game.ts`:
 - `stop()` huỷ khung hình đang chờ, không rò rỉ `requestAnimationFrame`.
 - Đổi scene ngay trong `update()` không làm scene mới bị update luôn trong cùng khung hình.
 
-### ⬜ Chưa có — M1 bước 2 trở đi
+### Kiểm tra trên thiết bị trước phát hành
 
-- `src/core/Audio.ts`
-- `docs/ART.md` — hướng dẫn vẽ (đã hoãn; `palette.ts` đã sẵn chỗ để điền màu thật)
-- `src/gameplay/` — `TrashItem`, `Bag`, `Bin`, `Spawner`, `ScoreSystem`, `EventSystem`
-- `src/data/` — `trashTypes.ts` (24 loại), `levels.ts`, `facts.ts`, `pledges.ts`
-- `src/scenes/` — `MenuScene`, `MapScene`, `LevelScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
-- `src/render/` — `sprites.ts`, `backdrops.ts`, `particles.ts`
-- `src/ui/` — `Button`, `Modal`, `Toast`, `ProgressBar`, `StarRow`, `ShareCard`
-- `scripts/verify-facts.ts`
-
-**Việc kế tiếp:** `LevelScene` với một màn Phố cổ Hà Nội, 8 loại rác đầu tiên, 3 thùng, nhặt bằng chạm và phân loại bằng kéo thả. Xem Mục 5 trong `docs/DESIGN.md`.
+Theo checklist Mục 13 trong đặc tả, chơi đủ màn trên iPhone Safari và Chrome Android,
+thử bỏ pin vào thùng thường, chế độ ẩn danh, khoá máy, tắt mạng, chia sẻ và tải ảnh.
+Đo Lighthouse, FPS và thời gian tải bằng thiết bị hoặc cấu hình tham chiếu đã ghi.
 
 ---
 
@@ -63,7 +77,7 @@ không được vi phạm, sáu chặng theo thứ tự, luật về số liệu
 
 ```bash
 npm install
-npm test          # 140 xanh
+npm test
 npm run typecheck
 npm run dev -- --host   # mở IP mạng LAN trên điện thoại thật
 ```

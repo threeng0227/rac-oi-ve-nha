@@ -1,59 +1,94 @@
-# ĐẶC TẢ KỸ THUẬT — "RÁC ƠI VỀ NHÀ"
+# ĐẶC TẢ — "RÁC ƠI VỀ NHÀ"
 
-> Game web tuyên truyền phân loại rác, hành trình xuyên Việt.
-> Tài liệu này được viết để giao thẳng cho một AI coding agent (Codex) thực thi.
-> Phần nội dung, thông điệp viết bằng tiếng Việt. Tên file / hàm / biến / commit dùng tiếng Anh.
+> Game nhập vai, chủ đề giữ gìn vệ sinh và phân loại rác, bối cảnh khắp Việt Nam.
+> Tài liệu này viết để giao thẳng cho một AI coding agent thực thi.
+> Nội dung và thông điệp bằng tiếng Việt. Tên file / hàm / biến / commit dùng tiếng Anh.
+
+**Phiên bản 2 — 2026-11-23.** Bản 1 thiết kế thành game arcade chạm-và-thả, người chơi
+là "bàn tay" không có nhân vật. Sai với ý ban đầu của tác giả: *"một con game cho mọi
+người **đi** nhặt rác trên khắp Việt Nam"*. Bản này làm đúng cái "đi" đó — có nhân vật,
+có thế giới để bước vào, có người để gặp.
 
 ---
 
 ## 1. Bối cảnh — vì sao làm cái này
 
-Nguyễn Ngọc Nguyên (mobile engineer, TP.HCM) muốn làm một việc cho cộng đồng: tuyên truyền ý thức giữ vệ sinh và **phân loại rác đúng cách** ở Việt Nam.
+Nguyễn Ngọc Nguyên (mobile engineer, TP.HCM) muốn làm một việc cho cộng đồng: tuyên
+truyền ý thức giữ vệ sinh và **phân loại rác đúng cách** ở Việt Nam.
 
-Vấn đề với tuyên truyền kiểu cũ: khẩu hiệu, poster, bài giảng — lớp trẻ lướt qua. Nên thay vì nói, ta cho họ **làm**: một game nhặt rác xuyên Việt, vui trước, thông điệp thấm sau.
+Tuyên truyền kiểu cũ — khẩu hiệu, poster, bài giảng — lớp trẻ lướt qua. Nên thay vì
+nói, ta cho họ **sống thử**: vào vai một người trẻ Việt Nam đi dọn rác từ phố cổ Hà
+Nội tới Côn Đảo, gặp người dân, nhận việc, thấy nơi mình dọn đẹp dần lên.
 
-**Kết quả mong muốn:** một người trẻ mở link trên điện thoại, chơi 5–10 phút, cười được vài lần, và nhớ được ít nhất 3 điều: (1) pin không bỏ vào thùng rác thường, (2) chai nhựa mất ~450 năm để phân hủy, (3) rác phân loại đúng thì mới tái chế được.
+**Kết quả mong muốn:** một người trẻ chơi vài buổi, và nhớ được ít nhất ba điều:
+(1) pin không bỏ vào thùng rác thường, (2) chai nhựa mất khoảng 450 năm để phân hủy,
+(3) rác phân loại đúng thì mới tái chế được.
 
-**Thành công trông như thế nào:** game được share tự nhiên trên Facebook/TikTok vì người chơi muốn khoe kết quả, không phải vì bị kêu gọi chia sẻ.
+**Thành công trông như thế nào:** game được chia sẻ tự nhiên vì người chơi muốn khoe
+nhân vật và nơi mình vừa dọn sạch — không phải vì bị kêu gọi chia sẻ.
 
 ---
 
 ## 2. Mục tiêu / Không phải mục tiêu / Thất bại
 
 ### Mục tiêu
-- Chơi được bằng **hai ngón cái, máy cầm ngang**, không cần hướng dẫn dài.
-- Mỗi màn **60–90 giây**. Hết màn muốn chơi màn tiếp.
+- **Có nhân vật để nhập vai.** Người chơi *đi* trong thế giới, không nhìn nó qua ô cửa.
+- Chơi được bằng **một ngón tay**, cầm máy ngang hay dọc đều được.
 - Kiến thức về rác **gài vào trong lúc chơi**, không phải màn hình text bắt đọc.
-- Có **lý do quay lại**: bản đồ mở khóa dần, sổ tay rác sưu tập dần.
+- **Nơi mình dọn đẹp lên trước mắt** — phần thưởng cảm xúc chính của game.
+- Có lý do quay lại: khu vực mở dần, nhân vật lên cấp, sổ tay rác sưu tập dần.
 - Chạy hoàn toàn trên trình duyệt. **Không backend, không tài khoản, không thu thập dữ liệu người chơi.**
 
 ### Không phải mục tiêu (giai đoạn này)
-- Bảng xếp hạng toàn quốc, tài khoản đăng nhập.
-- Bản đồ điểm thu gom pin ngoài đời thật (dữ liệu khó xác thực, dễ sai, dễ phản tác dụng).
-- Đa ngôn ngữ. Tiếng Việt trước; code phải tách chuỗi ra file riêng để sau thêm tiếng Anh dễ.
+- Chiến đấu, kẻ địch, máu. Đây là game nhập vai **không chiến đấu**.
+- Chơi mạng, bảng xếp hạng toàn quốc, tài khoản đăng nhập.
+- Bản đồ điểm thu gom pin ngoài đời thật — dữ liệu khó xác thực, sai là phản tác dụng.
+- Đa ngôn ngữ. Tiếng Việt trước; chuỗi tách ra file riêng để sau thêm dễ.
 - App native iOS/Android.
+- Thế giới mở liền mạch. Mỗi khu vực là một bản đồ nhỏ riêng, đi vào từ bản đồ Việt Nam.
 
 ### Thất bại (anti-goals) — làm được hết mà vẫn hỏng nếu:
-- **Game có giọng lên lớp.** Nếu người chơi cảm thấy đang bị dạy dỗ, họ đóng tab. Tông phải vui, tưng tửng, tự giễu.
-- **Số liệu sai.** Đây là game tuyên truyền. Một con số sai bị bắt bẻ là mất sạch uy tín. Xem Mục 9.
-- **Tải chậm.** Người ta mở từ link trên 4G. Quá 3 giây là mất một nửa người chơi.
-- **Chơi không đã tay.** Nếu nhịp chơi chán thì kiến thức có hay mấy cũng vô nghĩa.
+- **Game có giọng lên lớp.** Người chơi cảm thấy bị dạy dỗ là họ đóng tab. Tông phải vui, tưng tửng, tự giễu.
+- **Số liệu sai.** Một con số bị bắt bẻ là mất sạch uy tín. Xem Mục 12.
+- **Đi lại thấy nặng nề.** Nhân vật lê bước, chạm không ăn, kẹt vào vật cản — game nhập vai mà đi không sướng thì hỏng từ gốc.
+- **Nhặt rác thành việc vặt.** Nếu chỉ là lặp đi lặp lại không có gì thay đổi thì người chơi bỏ sau mười phút.
+- **Tải chậm.** Mở từ link trên 4G, quá 3 giây là mất một nửa người chơi.
 
 ---
 
-## 3. Các cách đã cân nhắc
+## 3. Thể loại và vòng lặp cốt lõi
 
-| | Mô tả | Vì sao không chọn |
-|---|---|---|
-| **A. Arcade ngắn** | 3 màn, chơi một lèo 5 phút, không lưu | Chơi hết là thôi, không có lý do quay lại. Sổ tay rác không phát huy vì quá ít loại rác. |
-| **C. Game + chiến dịch thật** | Thêm backend, leaderboard, bản đồ điểm thu gom thật | Cần server, cần dữ liệu thật tự đi gom, cần người bảo trì dài hạn. Không ai nuôi thì nửa năm sau hỏng. |
+**Thể loại:** nhập vai nhìn từ trên xuống (top-down), không chiến đấu, có nhiệm vụ và
+tiến trình nhân vật. Gần với *Stardew Valley* ở nhịp điệu — việc nhỏ, làm đều, thấy nơi
+mình sống đẹp dần — hơn là gần game hành động.
 
-### ✅ B. Hành trình xuyên Việt — **đã chọn**
-10 màn theo bản đồ Việt Nam, mở khóa tuần tự. Sổ tay rác sưu tập dần. Lưu tiến trình bằng `localStorage`. Thẻ kết quả chia sẻ được. Không server, không chi phí vận hành.
+### Vòng lặp lớn (một buổi chơi, 10–20 phút)
 
-Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard, bản đồ thật) — nhưng không làm bây giờ.
+```
+Bản đồ Việt Nam → chọn khu vực → vào thế giới
+    ↓
+Gặp NPC → nhận nhiệm vụ ("dọn giúp bác con hẻm này")
+    ↓
+Đi quanh khu vực, nhặt rác vào ba lô
+    ↓
+Ba lô đầy → tới điểm tập kết → PHÂN LOẠI (đây là chỗ dạy)
+    ↓
+Nhận kinh nghiệm + tiền + độ sạch khu vực tăng
+    ↓
+Mua dụng cụ tốt hơn → nhặt nhanh hơn, xa hơn, nhiều hơn
+    ↓
+Độ sạch 100% → khu vực HỒI SINH (xám → có màu) → mở khu vực mới
+```
 
-**Chia 2 chặng:** M1 dựng đúng phần lõi (xem Mục 11) để chơi thử thật trên điện thoại sớm, chỉnh nhịp chơi lúc còn rẻ, rồi mới mở rộng.
+### Vòng lặp nhỏ (10–30 giây, lặp liên tục)
+
+1. Thấy một món rác trên đường
+2. **Chạm vào nó** → nhân vật tự đi tới và nhặt
+3. Dòng chữ nhỏ bay lên: `Ống hút nhựa · ~200 năm`
+4. Ba lô đầy dần — thấy rõ còn mấy chỗ
+
+> **Hai vòng lặp này là trái tim của game.** Vòng nhỏ phải sướng tay trước đã.
+> Nếu đi lại và nhặt không đã thì mọi thứ xây lên trên đều vô nghĩa.
 
 ---
 
@@ -61,388 +96,396 @@ Cấu trúc của B **không cản** việc gắn thêm C về sau (leaderboard,
 
 | Hạng mục | Quyết định | Lý do |
 |---|---|---|
-| Ngôn ngữ | **TypeScript** (strict) | An toàn kiểu, Codex sinh code chính xác hơn |
-| Render | **Canvas 2D API thuần, KHÔNG dùng game engine** | Phaser/PixiJS thêm 200–900KB. Game này chỉ cần chạm & kéo thả — Canvas thuần là đủ và nhẹ |
-| Build | **Vite** | Nhanh, zero-config, output tĩnh |
-| Deploy | **Vercel**, repo riêng `rac-oi-ve-nha` | Tác giả đã dùng Vercel. Repo riêng vì đây là dự án cộng đồng, không nên chôn trong portfolio cá nhân |
+| Ngôn ngữ | **TypeScript** (strict) | An toàn kiểu, agent sinh code chính xác hơn |
+| Render | **Canvas 2D API thuần, KHÔNG dùng game engine** | Phaser/PixiJS thêm 200–900KB. Game này không cần vật lý, không cần shader |
+| Build | **Vite** | Nhanh, output tĩnh |
+| Deploy | **Vercel**, repo `github.com/threeng0227/rac-oi-ve-nha` | Tên miền `rac-oi-ve-nha.vercel.app`, dùng cố định cho `og:url` |
 | Lưu dữ liệu | **`localStorage`**, có version & migration | Không backend. Không thu thập gì của người chơi |
-| Đồ hoạ | **Vẽ bằng code (Canvas path) + SVG**, phong cách phẳng | Không mua asset, sửa màu/hình nhanh, file nhẹ. **Đây là phần tốn công nhất của dự án** |
-| Font | **System font stack**, không tải font ngoài | Tiết kiệm 100–200KB và tránh FOUT. Dự phòng cần font riêng: `Be Vietnam Pro` subset Latin-Ext |
-| Âm thanh | **Chỉ hiệu ứng ngắn (SFX)**, `.webm`, ≤ 20KB/file, tổng ≤ 120KB. **Một bản nhạc nền duy nhất cho màn 5**, tải lười (lazy) *ngoài* ngân sách bundle, ≤ 400KB. Chỉ nguồn CC0. Mặc định **tắt tiếng** | Trình duyệt mobile chặn autoplay, và mặc định tắt nghĩa là đa số người chơi không nghe — không đáng đầu tư nhạc cho cả 10 màn. "Nhạc tăng nhịp" ở `GIO_CAO_DIEM` làm bằng `audio.playbackRate = 1.15`, không cần track thứ hai |
-| Test | **Vitest** cho logic thuần. Không test render | Test canvas rendering tốn công hơn giá trị thu được |
-| Hướng màn hình | **Cả hai. Không ép xoay.** Cầm ngang hay dọc đều chơi được, đều full màn | Nhiều người bật khoá xoay màn hình và không biết tắt ở đâu. Ép xoay là mất người chơi ngay giây đầu, trước khi họ kịp thấy game là cái gì. Bố cục bốn dải ngang không khoá tỉ lệ nên xoay được tự nhiên |
-| Kích thước gốc | **Cạnh NGẮN của khung ảo luôn 720. Cạnh dài co giãn** theo tỉ lệ máy, chặn trong 1100–1800. Cầm ngang: ~1560×720. Cầm dọc: 720×~1560 | Điện thoại hiện đại không còn 16:9. Khung cố định để lại hai dải đen mỗi bên ~230px, trông như chạy giả lập. **Không chiều nào cố định — mọi toạ độ phải qua `computeLayout()`** |
-| **Mức độ đồ hoạ** | **Tối giản.** Mỗi món rác vẽ bằng **3–6 hình cơ bản** (`roundRect`, `ellipse`, `path`), đọc được ở 40px trên điện thoại. Bối cảnh = dải màu gradient + 2–4 silhouette đặc trưng của vùng | Codex vẽ được toàn bộ bằng code, **không cần hoạ sĩ**. `render/` phải tách hẳn khỏi logic để sau thay ảnh minh hoạ xịn vào mà không đụng gameplay |
-| Repo | **`github.com/threeng0227/rac-oi-ve-nha`** — repo riêng, public | Dự án cộng đồng, không chôn trong portfolio cá nhân |
-| Tên miền | **`rac-oi-ve-nha.vercel.app`** (miễn phí) | Dùng cố định cho `og:url`. Sau mua tên miền riêng chỉ cần trỏ DNS, không sửa code |
-| Service worker / PWA | **KHÔNG làm** trong M1–M3 | Yêu cầu "tắt mạng vẫn chơi được" ở Mục 13 chỉ có nghĩa: tab đang mở thì không văng lỗi. Không yêu cầu sống sót qua reload. Thêm service worker sẽ kéo theo chuyện đồng bộ cache-version với migration của `localStorage` — không đáng ở giai đoạn này |
+| Đồ hoạ | **Vẽ bằng code, phong cách phẳng.** Nhân vật và rác là hình khối cơ bản | Không cần hoạ sĩ. `render/` tách hẳn khỏi logic để sau thay ảnh xịn mà không đụng gameplay |
+| Font | **System font stack**, không tải font ngoài | Đã kiểm trên Android: dấu tiếng Việt dựng đúng |
+| Âm thanh | SFX ngắn `.webm` ≤ 20KB/file. **Một bản nhạc nền chung** tải lười, ≤ 400KB. Chỉ nguồn CC0. Mặc định **tắt tiếng** | Trình duyệt mobile chặn autoplay |
+| Test | **Vitest** cho logic thuần. Không test render | Test canvas rendering tốn hơn giá trị thu được |
+| Hướng màn hình | **Cả ngang lẫn dọc. Không ép xoay** | Nhiều người bật khoá xoay và không biết tắt. Ép xoay là mất người chơi ở giây đầu |
+| Kích thước gốc | **Cạnh NGẮN khung ảo luôn 720**, cạnh dài co giãn 1100–1800 | Cầm ngang ~1560×720, cầm dọc 720×~1560. Full màn ở cả hai |
+| Camera | **Bám nhân vật, có vùng chết ở giữa** | Camera giật theo từng bước đi làm chóng mặt |
+| Service worker / PWA | **KHÔNG làm** ở giai đoạn này | Kéo theo đồng bộ cache-version với migration `localStorage`, chưa đáng |
 
 **Ngân sách hiệu năng (bắt buộc đạt):**
-- JS bundle ≤ **250 KB gzip**
+- JS bundle ≤ **300 KB gzip** *(nới từ 250 vì game nhập vai có nhiều hệ thống hơn)*
 - Thời gian đến lúc chơi được ≤ **3 giây** trên 4G giả lập
 - **60 fps** trên Android tầm trung (mốc tham chiếu: Redmi Note 11)
 - Lighthouse Mobile Performance ≥ **90**
 
 ---
 
-## 5. Cơ chế chơi (phần quan trọng nhất — đọc kỹ)
-
-### 5.1 Bố cục màn chơi
-
-Game chơi được **cả khi cầm ngang lẫn cầm dọc**. Bố cục là **bốn dải ngang**
-chồng lên nhau, không dải nào khoá tỉ lệ — nên xoay máy thì dải co giãn theo,
-không cần bố cục thứ hai.
-
-⚠️ **Không chiều nào cố định.** Đừng viết số cho toạ độ ngang *lẫn* dọc.
-Gọi `computeLayout(viewport)` trong `src/core/Layout.ts` và đọc mọi thứ từ đó.
+## 5. Luồng màn hình
 
 ```
-CẦM NGANG  (~1560 × 720)              CẦM DỌC  (720 × ~1560)
-┌──────────────────────────┐          ┌───────────────┐
-│ HUD              cao 90  │          │ HUD    cao 90 │
-├──────────────────────────┤          ├───────────────┤
-│                          │          │               │
-│      KHU CẢNH            │          │               │
-│      cao ~440            │          │   KHU CẢNH    │
-│                          │          │   cao ~1240   │
-├──────────────────────────┤          │               │
-│ TÚI 6 ô          cao 60  │          │               │
-├────────┬────────┬────────┤          │               │
-│ ♻️     │ 🍎     │ 🗑     │ cao 130  ├───────────────┤
-└────────┴────────┴────────┘          │ TÚI    cao 90 │
-                                      ├─────┬────┬────┤
-                                      │ ♻️  │ 🍎 │ 🗑 │ cao 190
-                                      └─────┴────┴────┘
+BootScene ──▶ TitleScene ──▶ CharacterScene ──▶ MapScene ──▶ WorldScene
+             (màn hình        (chọn nam/nữ,       (bản đồ VN,   (chơi thật)
+              bắt đầu)         lần đầu thôi)       chọn vùng)        │
+                                                        ▲            │
+                                                        └────────────┘
+                                                         rời khu vực
 ```
 
-**Mọi toạ độ lấy từ `computeLayout()`, không tự tính:**
+### 5.1 `TitleScene` — màn hình bắt đầu
 
-| Cần | Lấy từ |
-|---|---|
-| Bốn dải | `layout.hud` · `layout.playfield` · `layout.bag` · `layout.bins` — mỗi cái có `y` và `height` |
-| Thùng thứ `i` (0,1,2) | `layout.binX(i)`, rộng `layout.binWidth` |
-| Ô túi thứ `i` (0…5) | `layout.bagSlotX(i)`, cạnh `layout.bagSlotSize` |
-| Tâm màn hình | `layout.centerX` *(không phải `DESIGN_WIDTH / 2`)* |
-| Vùng được sinh rác | `layout.spawnArea` — đã trừ lề an toàn |
-| Mật độ rác | `layout.playfieldArea` — xem ghi chú cân bằng dưới |
-| Đang cầm dọc? | `layout.isPortrait` |
+Thứ đầu tiên người chơi thấy. Phải nói được game này là gì trong ba giây.
 
-Dải HUD cố định 90. Thùng và túi **dày thêm khi cầm dọc** (thùng 130→190, túi
-60→90): màn dài hơn thì ngón cái phải với tới cạnh dưới, vùng chạm mỏng là hụt liên tục.
+```
+┌────────────────────────────────────────────┐
+│                                            │
+│            RÁC ƠI VỀ NHÀ                   │
+│          Hành trình xuyên Việt             │
+│                                            │
+│            ┌──────────────┐                │
+│            │   BẮT ĐẦU    │                │
+│            └──────────────┘                │
+│            ┌──────────────┐                │
+│            │  CHƠI TIẾP   │  ← chỉ hiện khi có bản lưu
+│            └──────────────┘                │
+│                                            │
+│        [ 📖 Sổ tay ]   [ 🔊 ]               │
+│                                            │
+│   nền: silhouette bản đồ VN chuyển động chậm│
+└────────────────────────────────────────────┘
+```
 
-Ba thùng trải hết chiều ngang ở cạnh dưới: hai ngón cái nghỉ ở hai góc dưới,
-với tới thùng trái và thùng phải không phải nhấc tay. Thùng giữa xa hơn một
-chút — đó là lý do nhóm **Thực phẩm** (ít gặp nhất ở phần lớn màn) nằm ở giữa.
+- **BẮT ĐẦU** → `CharacterScene` (xoá bản lưu cũ thì hỏi xác nhận trước)
+- **CHƠI TIẾP** → thẳng vào `MapScene`, chỉ hiện khi `localStorage` có tiến trình
+- **Sổ tay** → `HandbookScene`, xem được cả khi chưa chơi
+- **Nút loa** → bật/tắt tiếng, trạng thái lưu lại
 
-> ### ⚠️ Cân bằng: mật độ rác tính theo DIỆN TÍCH, không theo số tuyệt đối
+### 5.2 `CharacterScene` — chọn nhân vật
+
+Hiện **một lần duy nhất** ở lần chơi đầu. Sau đó đổi được trong phần cài đặt.
+
+```
+┌────────────────────────────────────────────┐
+│          CHỌN NHÂN VẬT CỦA BẠN             │
+│                                            │
+│     ┌──────────┐        ┌──────────┐       │
+│     │          │        │          │       │
+│     │   🧍‍♂️     │        │   🧍‍♀️     │       │
+│     │          │        │          │       │
+│     │   MINH   │        │   LAN    │       │
+│     └──────────┘        └──────────┘       │
+│                                            │
+│       Tên của bạn: [ ____________ ]        │
+│                                            │
+│            ┌──────────────┐                │
+│            │  BẮT ĐẦU ĐI  │                │
+│            └──────────────┘                │
+└────────────────────────────────────────────┘
+```
+
+**Hai nhân vật: Minh (nam) và Lan (nữ).**
+
+> ⚠️ **Hai nhân vật có chỉ số GIỐNG HỆT NHAU.** Khác nhau chỉ ở hình vẽ và màu áo.
 >
-> Khu cảnh cầm dọc rộng gấp khoảng **ba lần** khu cảnh cầm ngang. Rải cùng một
-> số món rác lên hai khu đó cho ra hai game khác hẳn nhau: cầm ngang thì chật
-> cứng, cầm dọc thì thưa thớt và phải quét mắt tìm.
->
-> Nên `initialTrashCount` và `spawnRatePerSec` ở Mục 6.1 là **giá trị cho khu
-> cảnh tham chiếu** (1280×440 = 563.200 đơn vị diện tích). Lúc chạy phải nhân
-> theo tỉ lệ:
->
-> ```
-> hệ số = layout.playfieldArea / 563200
-> số rác thật = số rác trong bảng × hệ số
-> ```
->
-> **Bài mô phỏng cân bằng ở Mục 5.6 phải chạy ở cả bốn trường hợp:**
-> ngang hẹp, ngang rộng, dọc hẹp, dọc dài. Chỉ kiểm một hướng là bỏ sót.
+> Đây là quyết định có chủ ý, không phải lười. Gán "nam khoẻ hơn, nữ nhanh hơn" vào
+> một game tuyên truyền cho học sinh là dạy các em một thứ mình không định dạy. Và nó
+> còn làm việc cân bằng phức tạp gấp đôi mà không đổi lại được gì.
 
-> **Toàn màn hình:** game gọi Fullscreen API ở lần chạm đầu tiên để ẩn thanh địa
-> chỉ trình duyệt. Thanh đó ăn khoảng 130px, làm vùng hiển thị dẹt hơn tỉ lệ thật
-> của máy. iPhone không hỗ trợ Fullscreen API — ở đó chấp nhận còn dải đen hẹp.
+- Ô nhập tên: tối đa 12 ký tự, cho phép tiếng Việt có dấu. Bỏ trống thì lấy tên mặc định (Minh/Lan).
+- Nhân vật đứng **nhúc nhích nhẹ** (thở, chớp mắt) — nhân vật đứng chết trông như ảnh tĩnh.
+- Chạm vào nhân vật nào thì nhân vật đó sáng lên, cái kia mờ đi.
 
-### 5.2 Vòng lặp cốt lõi
-
-1. Rác xuất hiện trong **khu cảnh** (có sẵn từ đầu + spawn thêm theo thời gian).
-2. **Chạm vào một món rác** → nó bay theo đường cong vào **túi** (ô trống đầu tiên). `+5 điểm`.
-3. **Kéo một món từ túi thả vào một trong 3 thùng**:
-   - **Đúng** → `+10 × hệ số combo`, combo +1, thùng nảy lên, hiện dòng chữ nhỏ bay lên: `Ống hút nhựa · 200 năm`
-   - **Sai** → `−15 điểm`, combo về 0, thùng rung lắc đỏ, hiện: `Ống hút nhựa thuộc nhóm KHÁC`, thanh ô nhiễm +8%
-4. **Túi đầy 6 món → không nhặt thêm được nữa.** Đây là nguồn áp lực chính: buộc người chơi vừa nhặt vừa phân loại, không được nhặt bừa.
-5. Hết giờ → tính kết quả.
-
-> **Ghi chú thiết kế cho người implement:** Cơ chế "chạm để nhặt, kéo để phân loại" giữ nguyên ở khổ ngang, nhưng nay chơi bằng **hai ngón cái** — tay trái lo nửa màn trái, tay phải lo nửa phải. Không làm joystick ảo, không làm nhân vật di chuyển. Người chơi là "bàn tay", không phải nhân vật trong màn.
->
-> Hệ quả cần kiểm khi cân bằng: vùng với tới của hai ngón cái ở khổ ngang rộng hơn ở khổ dọc, nên người chơi nhặt nhanh hơn. Bài mô phỏng ở Mục 5.6 phải chạy lại sau khi đổi, đừng bê nguyên con số cũ.
-
-### 5.3 Ba thùng rác — theo đúng pháp luật Việt Nam
-
-Phân loại theo Luật Bảo vệ môi trường 2020 (hiệu lực phân loại tại nguồn từ 01/01/2025), 3 nhóm:
-
-| Thùng | `binId` | Màu | Biểu tượng | Gồm |
-|---|---|---|---|---|
-| **Tái chế** | `recycle` | Xanh dương `#2E7DD1` | ♻️ mũi tên xoay | Chai nhựa PET, lon nhôm, giấy, bìa carton, chai thủy tinh, vỏ hộp sữa |
-| **Thực phẩm** | `food` | Xanh lá `#3DA35D` | 🍎 lá cây | Vỏ chuối, vỏ trái cây, thức ăn thừa, lá cây, bã mía |
-| **Khác** | `other` | Xám `#6B7280` | 🗑 thùng | Túi nilon, hộp xốp, ống hút, tàn thuốc, khẩu trang, tã bỉm, que xiên |
-
-### 5.4 ⭐ Cơ chế dạy quan trọng nhất: RÁC NGUY HẠI KHÔNG THUỘC THÙNG NÀO
-
-Pin, lightstick, bóng đèn, bình xịt → `binId: 'hazard'`.
-
-**Không có thùng nguy hại cố định trong màn chơi.** Khi một món nguy hại xuất hiện:
-
-- Món đó **nhấp nháy viền vàng cảnh báo** trong khu cảnh.
-- Một **"Hộp thu gom pin"** (màu vàng, có khoá) trượt vào từ cạnh phải khu cảnh, ở lại 15 giây.
-- Bỏ đúng vào hộp → `+50 điểm`, combo giữ nguyên, hiện thẻ kiến thức ngay giữa màn hình trong 2 giây.
-- Bỏ vào bất kỳ thùng nào trong 3 thùng kia → `−40 điểm`, combo reset, thanh ô nhiễm **+20%**, hiện: `Pin KHÔNG thuộc thùng nào cả. Pin phải mang tới điểm thu gom riêng.`
-
-> Đây là bài học khó nhất và quan trọng nhất của game. Người chơi phải **thua vì nó một lần** thì mới nhớ. Đừng làm nó dễ.
-
-**Luật chi tiết — bắt buộc đúng từng điểm (chỗ này dễ làm hỏng game nhất):**
-
-| Tình huống | Xử lý |
-|---|---|
-| Chạm rác nguy hại **trước khi** hộp xuất hiện | Nhặt được bình thường, vào túi. Món đó giữ viền vàng nhấp nháy trong túi |
-| Hộp hết 15 giây mà trong túi **vẫn còn** món nguy hại | **Hộp quay lại sau 10 giây.** Lặp lại cho tới hết màn. Không phạt lúc hộp rời đi |
-| Ô túi bị món nguy hại chiếm | **KHÔNG bao giờ khoá vĩnh viễn.** Tối đa 2 món nguy hại cùng lúc trong túi; món nguy hại thứ 3 trở đi không nhặt được (chạm vào hiện gợi ý "Đợi hộp thu gom quay lại") |
-| Hết giờ mà túi còn món nguy hại | `−20 điểm` mỗi món (nặng hơn `BO_LO` thường nhưng không thua màn). Hiện nhắc: "Pin vẫn còn trong túi — ngoài đời cũng vậy, nhiều nhà để pin cũ trong ngăn kéo hàng năm trời." |
-| Rác nguy hại nằm lại trên sàn khi hết giờ | `−20 điểm` mỗi món, **và không tính vào mẫu số độ sạch** (xem 5.6) |
-
-> **Vì sao không khoá túi:** một viên pin không vứt đi được mà chiếm chỗ cả màn sẽ biến "khó" thành "hỏng". Hộp phải luôn quay lại. Áp lực đến từ việc mất chỗ tạm thời, không từ việc bị kẹt.
-
-### 5.5 Tính điểm & combo
-
-```ts
-NHAT_RAC          = +5
-PHAN_LOAI_DUNG    = +10 * comboMultiplier
-PHAN_LOAI_SAI     = -15
-NGUY_HAI_DUNG     = +50
-NGUY_HAI_SAI      = -40
-BO_LO (hết giờ còn trên sàn) = -2 mỗi món
-```
-
-| Chuỗi đúng liên tiếp | Hệ số |
-|---|---|
-| 0–4 | ×1 |
-| 5–11 | ×2 |
-| 12–19 | ×3 |
-| ≥20 | ×4 |
-
-Điểm không bao giờ xuống dưới 0.
-
-### 5.6 Thanh ô nhiễm & điều kiện thắng
-
-**Thanh ô nhiễm** (`pollution`, 0–100%). Chạm 100% → **thua màn**, phải chơi lại.
+### 5.3 `MapScene` — bản đồ Việt Nam
 
 ```
-+8   mỗi lần phân loại sai
-+20  mỗi lần bỏ sai rác nguy hại
-+15  thất bại ở sự kiện CUU_SINH_VAT
-+1/giây  CHỈ KHI có ≥ 8 món rác đang nằm trên sàn   ← áp lực dọn nhanh
-−2/giây  khi có ≤ 3 món trên sàn (tự phục hồi)      ← thưởng cho người chơi sạch
+┌────────────────────────────────────────────┐
+│  👤 Minh  ·  Cấp 3  ·  💰 450đ      [⚙]    │
+├────────────────────────────────────────────┤
+│                   ╭─╮                      │
+│                  ╭╯ ●  Hà Nội      ✅ 100% │
+│                  │                         │
+│                  ╰╮ ●  Hạ Long     🔓 40%  │
+│                   │                        │
+│                   ├ 🔒 Hội An              │
+│                   │           · Hoàng Sa   │
+│                   ╰╮ 🔒 Đà Lạt             │
+│                    │                       │
+│                    ╰╮🔒 TP.HCM             │
+│                     │      · Trường Sa     │
+│                     ╰ 🔒 Cà Mau            │
+└────────────────────────────────────────────┘
 ```
 
-**Độ sạch** — công thức chính xác:
+⚠️ **Bản đồ BẮT BUỘC vẽ đầy đủ lãnh thổ Việt Nam, gồm hai quần đảo Hoàng Sa và
+Trường Sa**, theo đúng chuẩn bản đồ hành chính Việt Nam.
 
-```
-độ sạch = số món phân loại ĐÚNG / mẫu số
+Đây là game do người Việt làm, cho người Việt, về đất nước Việt Nam. Bản đồ thiếu
+Hoàng Sa – Trường Sa sẽ bị chụp màn hình lan truyền — rủi ro ngang với đưa sai số
+liệu, và không sửa được sau khi đã lan.
 
-mẫu số = tổng số món đã xuất hiện
-         − số món sinh ra trong 5 giây cuối màn      (không kịp xử lý, không công bằng)
-         − số món bay ra khỏi màn hình trong GIO_MUA (do sự kiện, không do người chơi)
-         − số món rác nguy hại                        (tính riêng, không trộn vào)
-         + số món còn trong túi lúc hết giờ           (có nhặt mà không phân loại thì vẫn tính)
-```
+Cách vẽ: đường bờ biển path đơn giản hoá (≤ 120 điểm), hai quần đảo vẽ thành cụm chấm
+nhỏ ngoài khơi kèm nhãn chữ.
 
-**Spawner phải giảm dần ở cuối màn:** 10 giây cuối, tốc độ sinh rác giảm tuyến tính về 0. Không có rác mới trong 5 giây cuối.
+**Mỗi khu vực là một chấm trên bản đồ:**
 
-| Sao | Điều kiện |
-|---|---|
-| ⭐ | Độ sạch ≥ 60% |
-| ⭐⭐ | Độ sạch ≥ 80% |
-| ⭐⭐⭐ | Độ sạch ≥ 95% **và** sai ≤ 3 lần **và** không bỏ sai món nguy hại nào |
-
-> **Bắt buộc kiểm chứng bằng số trước khi chốt M1:** viết một bài test mô phỏng người chơi hoàn hảo (phản xạ 400ms) chạy 1000 lượt mỗi màn. **Người chơi hoàn hảo phải đạt 3 sao ≥ 95% số lượt ở mọi màn.** Nếu không đạt, giảm `spawnRatePerSec` chứ **không** hạ ngưỡng sao. Các màn hỗn loạn (5, 6, 8, 10) là chỗ dễ vỡ công thức này nhất.
-
-**Mở khóa màn kế tiếp:** đạt tối thiểu 1 sao.
-
-### 5.7 Phần thưởng cảm xúc — đừng bỏ qua
-
-Khi hoàn thành màn, **khu cảnh phải thay đổi rõ rệt trước mắt người chơi** trong 2 giây: bộ lọc xám (`saturate(0.3)`) chuyển dần sang màu đầy đủ, bầu trời sáng lên, thêm vài chi tiết sống động (chim bay, cá nhảy, người đi bộ). Chuyển bằng `requestAnimationFrame`, không cắt cảnh đột ngột.
-
-Đây là lý do người ta chơi tiếp. Dành thời gian làm cho tử tế.
-
----
-
-## 6. Mười màn chơi
-
-Mỗi màn 75 giây (trừ ghi chú khác). Mở khóa tuần tự trên bản đồ Việt Nam từ Bắc vào Nam.
-
-| # | Màn | Bối cảnh | Rác đặc trưng | Sự kiện |
-|---|---|---|---|---|
-| 1 | **Phố cổ Hà Nội** | Vỉa hè, quán trà đá, nhà ống | cốc trà đá, giấy, vỏ chuối, túi nilon | `NEM_RAC` — *màn hướng dẫn, 90s, chậm, ít rác* |
-| 2 | **Vịnh Hạ Long** | Bãi biển + mặt nước, núi đá vôi | chai nhựa, hộp xốp, lưới đánh cá, phao | `MUA_BAO`, `CUU_SINH_VAT` (rùa) |
-| 3 | **Phố cổ Hội An** | Sông Hoài, đèn lồng, hoa đăng | túi nilon, cốc nhựa, hoa đăng giấy, ống hút | `GIO_MUA` |
-| 4 | **Đà Lạt** | Hồ Xuân Hương, đồi thông | vỏ bắp nướng, ly sữa đậu nành, lon, khẩu trang | `BAC_VE_CHAI` |
-| 5 | ⭐ **ĐÊM NHẠC HỘI** | Sân khấu, biển lightstick, đám đông | cốc nhựa, **lightstick (nguy hại)**, áo mưa giấy, confetti, băng rôn, chai nước | `GIO_CAO_DIEM`, `PIN_ROI` — *60s, nhịp nhanh nhất, có nhạc* |
-| 6 | **Kênh Nhiêu Lộc, TP.HCM** | Kênh, cầu, lục bình | hộp xốp, túi nilon, chai, dép đứt | `BAI_RAC_TU_PHAT` |
-| 7 | **Chợ nổi Cái Răng** | Ghe thuyền, trái cây | vỏ trái cây, lá chuối, bã mía, túi nilon | `GIO_MUA` — *nhiều rác thực phẩm nhất* |
-| 8 | **Giao thừa — phố đi bộ Nguyễn Huệ** | Sau pháo hoa, cờ hoa | lon bia, que xiên, cành đào/mai gãy, giấy, vỏ hạt dưa | `GIO_CAO_DIEM` |
-| 9 | **Ruộng bậc thang Sa Pa** | Núi, ruộng, sương mù | chai nhựa, vỏ bánh kẹo, khẩu trang, **pin máy ảnh** | `MUA_BAO`, `PIN_ROI` |
-| 10 | **Côn Đảo** | Biển, rùa đẻ trứng, rạn san hô | vi nhựa, lưới ma, ống hút, túi nilon | `CUU_SINH_VAT`, `BAI_RAC_TU_PHAT` — *màn cuối, khó nhất* |
-
-Định nghĩa trong `src/data/levels.ts`, không hardcode trong scene:
-
-```ts
-export interface LevelDef {
-  id: string;
-  order: number;
-  name: string;            // 'Vịnh Hạ Long'
-  subtitle: string;        // 'Quảng Ninh'
-  durationSec: number;
-  initialTrashCount: number;
-  spawnRatePerSec: number;
-  trashPool: { typeId: string; weight: number }[];
-  events: { eventId: string; atSec: number }[];
-  palette: { sky: string; ground: string; accent: string; water?: string };
-  backdrop: BackdropId;     // hàm vẽ nền
-  factOnComplete: string;   // id của fact hiện ở màn kết quả
-}
-```
-
-
-### 6.1 Số liệu từng màn — giá trị khởi điểm
-
-> ⚠️ **Đây là giá trị khởi điểm, không phải chân lý.** Bài mô phỏng cân bằng ở Mục 5.6
-> là trọng tài. Màn nào người chơi hoàn hảo không đạt 3 sao ≥95% thì **giảm
-> `spawnRatePerSec` màn đó**, không hạ ngưỡng sao.
-
-**Cách các con số này được chọn:** mỗi món rác tốn hai thao tác (chạm nhặt + kéo phân
-loại). Với phản xạ 400ms và quãng kéo trung bình, người chơi khá xử lý được khoảng
-**0,8 món/giây** trong thời gian ngắn, nhưng không giữ được nhịp đó cả màn. Nên tốc độ
-sinh trung bình giữ dưới **0,55/giây**, phần căng thẳng đến từ **sự kiện dồn rác** chứ
-không từ việc tăng đều — tăng đều chỉ làm người chơi mệt, dồn cục mới làm người chơi nhớ.
-
-| # | Màn | `durationSec` | `initialTrashCount` | `spawnRatePerSec` | Tổng rác ước tính |
-|---|---|---|---|---|---|
-| 1 | Phố cổ Hà Nội | **90** | 4 | 0.25 | ~26 |
-| 2 | Vịnh Hạ Long | 75 | 6 | 0.35 | ~32 |
-| 3 | Phố cổ Hội An | 75 | 6 | 0.40 | ~36 |
-| 4 | Đà Lạt | 75 | 8 | 0.45 | ~42 |
-| 5 | **Đêm nhạc hội** | **60** | 6 | 0.40 | ~46 *(có dồn cục)* |
-| 6 | Kênh Nhiêu Lộc | 75 | 8 | 0.45 | ~58 *(có bãi rác)* |
-| 7 | Chợ nổi Cái Răng | 75 | 8 | 0.50 | ~46 |
-| 8 | Giao thừa Nguyễn Huệ | 75 | 10 | 0.45 | ~56 *(có dồn cục)* |
-| 9 | Ruộng bậc thang Sa Pa | 80 | 8 | 0.45 | ~44 |
-| 10 | **Côn Đảo** | 85 | 10 | 0.50 | ~60 *(hai sự kiện)* |
-
-Màn 1 dài 90 giây nhưng rác thưa nhất — người mới cần thời gian chứ không cần dễ.
-Màn 5 ngắn nhất (60 giây) vì nó là màn dồn dập, kéo dài sẽ thành mệt chứ không còn đã.
-
-### 6.2 Trọng số rác và lịch sự kiện từng màn
-
-Trọng số là số tương đối trong cùng một màn, không phải phần trăm.
-
-| # | `trashPool` (`typeId` : trọng số) | `events` (`eventId` @ giây) |
+| Trạng thái | Hiện ra sao | Chạm vào thì |
 |---|---|---|
-| 1 | `coc-nhua` 30 · `giay-bao` 20 · `vo-chuoi` 20 · `tui-nilon` 15 · `lon-nhom` 5 · `chai-nhua-pet` 5 · `tan-thuoc-la` 3 · `vo-trai-cay` 2 | `NEM_RAC` @ 55 |
-| 2 | `chai-nhua-pet` 30 · `hop-xop` 20 · `tui-nilon` 20 · `luoi-danh-ca` 12 · `chai-thuy-tinh` 10 · `ong-hut-nhua` 8 | `MUA_BAO` @ 20 · `CUU_SINH_VAT` @ 50 *(rùa)* |
-| 3 | `tui-nilon` 25 · `coc-nhua` 20 · `ong-hut-nhua` 20 · `giay-bao` 15 *(variant hoa đăng)* · `vo-trai-cay` 12 · `chai-nhua-pet` 8 | `GIO_MUA` @ 35 |
-| 4 | `coc-nhua` 25 · `lon-nhom` 20 · `vo-trai-cay` 20 *(variant vỏ bắp)* · `khau-trang-y-te` 15 · `chai-nhua-pet` 12 · `giay-bao` 8 | `BAC_VE_CHAI` @ 30 |
-| 5 | `coc-nhua` 35 · `ao-mua-giay` 20 · `chai-nhua-pet` 18 · `giay-bao` 12 *(variant băng rôn)* · `lon-nhom` 10 · `lightstick` 5 | `PIN_ROI` @ 18 · `GIO_CAO_DIEM` @ 40 |
-| 6 | `hop-xop` 28 · `tui-nilon` 25 · `chai-nhua-pet` 18 · `coc-nhua` 15 · `ao-mua-giay` 8 · `bia-carton` 6 | `BAI_RAC_TU_PHAT` @ 30 |
-| 7 | `vo-trai-cay` 30 · `la-chuoi` 20 · `ba-mia` 18 · `tui-nilon` 15 · `thuc-an-thua` 10 · `hop-xop` 7 | `GIO_MUA` @ 40 |
-| 8 | `lon-nhom` 25 · `que-xien-tre` 20 · `vo-hat-dua` 18 · `giay-bao` 15 · `coc-nhua` 10 · `bia-carton` 7 · `bong-den` 5 | `PIN_ROI` @ 20 · `GIO_CAO_DIEM` @ 45 |
-| 9 | `chai-nhua-pet` 28 · `tui-nilon` 22 · `khau-trang-y-te` 20 · `giay-bao` 14 · `lon-nhom` 11 · `pin-aa` 5 | `MUA_BAO` @ 25 · `PIN_ROI` @ 55 |
-| 10 | `tui-nilon` 25 · `ong-hut-nhua` 20 · `chai-nhua-pet` 18 · `luoi-danh-ca` 15 · `hop-xop` 12 · `chai-thuy-tinh` 6 · `pin-aa` 4 | `CUU_SINH_VAT` @ 25 *(rùa)* · `BAI_RAC_TU_PHAT` @ 55 |
+| 🔒 Chưa mở | Chấm xám, có ổ khoá | Hiện "Cần dọn sạch {vùng trước} tới 80%" |
+| 🔓 Đang mở | Chấm sáng, có vòng tiến trình quanh nó | Vào thẳng `WorldScene` |
+| ✅ Đã sạch | Chấm xanh, có dấu tích, vùng xung quanh có màu | Vào lại được, nhặt lai rai, đổi cảnh |
 
-**Ba quy tắc khi chỉnh bảng này:**
+**Mở khoá tuần tự từ Bắc vào Nam.** Dọn vùng hiện tại đạt **80%** thì mở vùng kế tiếp —
+không bắt 100%, vì bắt hoàn hảo mới đi tiếp là cách nhanh nhất làm người chơi chán.
 
-1. **Rác nguy hại không bao giờ quá trọng số 5.** Nó là bài học, không phải vật cản. Gặp hai lần một màn là đủ nhớ, gặp năm lần là ức chế.
-2. **Sự kiện cách nhau tối thiểu 20 giây** và không đặt trong 10 giây cuối — lúc đó `Spawner` đang giảm dần về 0, dồn rác vào đó là phạt oan người chơi.
-3. **Mỗi màn chỉ nên có 4–7 loại rác.** Nhiều hơn thì người chơi không kịp học loại nào ra loại nào, và sổ tay mở quá nhanh mất cảm giác sưu tập.
+Bản đồ cũng là chỗ thấy rõ nhất tiến trình: vùng đã sạch thì **có màu**, vùng chưa thì
+**xám**. Chơi càng lâu, Việt Nam trên bản đồ càng sáng lên.
 
-### 6.3 Màu tạm từng màn
+---
 
-Chưa làm `docs/ART.md`, nên đây là giá trị tạm để `LevelDef.palette` có cái mà điền.
-**Không coi đây là định hướng mỹ thuật** — sẽ thay khi có bảng màu thật.
+## 6. Nhân vật và điều khiển
 
-| # | `sky` | `ground` | `accent` | `water` |
+### 6.1 Di chuyển — chạm để đi, không joystick
+
+**Cách chính: chạm vào đâu thì nhân vật đi tới đó.**
+
+- Chạm **nền đất** → nhân vật đi tới điểm đó rồi dừng
+- Chạm **món rác** → nhân vật đi tới, tự nhặt khi tới nơi
+- Chạm **NPC** → đi tới, tự bắt chuyện khi tới nơi
+- **Giữ và kéo** → nhân vật đi theo ngón tay liên tục (khi cần né hoặc chỉnh vị trí)
+
+> **Vì sao không làm joystick ảo:** joystick ăn một góc màn hình, bắt buộc cầm hai tay,
+> và trên màn cảm ứng luôn kém hơn joystick thật. Chạm-để-đi chơi được bằng một ngón
+> cái, hợp với nhịp chậm rãi của game này.
+
+**Tìm đường:** bản đồ chia ô lưới, ô nào đi được ô nào không. Dùng A* đơn giản. Nhân
+vật phải **tự đi vòng qua vật cản**, không được kẹt vào tường — kẹt một lần là người
+chơi mất lòng tin vào điều khiển.
+
+### 6.2 Chỉ số nhân vật
+
+| Chỉ số | Khởi điểm | Tăng bằng cách |
+|---|---|---|
+| **Cấp độ** | 1 | Kinh nghiệm từ nhặt và phân loại đúng |
+| **Sức chứa ba lô** | 8 món | Mua ba lô tốt hơn |
+| **Tầm với** | 60 đơn vị | Mua kẹp gắp rác |
+| **Tốc độ đi** | 180 đv/giây | Mua giày |
+| **Thể lực** | 100 | Lên cấp |
+
+### 6.3 Thể lực — thay cho đồng hồ đếm ngược
+
+**Không có đồng hồ đếm ngược trong game này.** Đếm ngược tạo áp lực, mà áp lực thì
+chống lại việc khám phá — thứ mà game nhập vai sống nhờ nó.
+
+Thay vào đó: **thể lực**. Mỗi món rác nhặt lên tốn 1 thể lực. Hết thể lực thì nhân vật
+đi chậm lại và không nhặt được nữa, phải:
+
+- Về **điểm tập kết** phân loại rác (hồi 30 thể lực) — khuyến khích đi phân loại thường xuyên thay vì ôm đầy ba lô
+- Hoặc ngồi nghỉ ở **ghế đá / quán nước** (hồi đầy, mất 10 giây thật)
+- Hoặc mua **nước mía** ở cửa hàng (hồi đầy ngay, tốn tiền)
+
+Thể lực hồi đầy mỗi lần vào lại khu vực. Đây là cái phanh nhẹ nhàng, không phải hình phạt.
+
+---
+
+## 7. Thế giới — mười khu vực
+
+Mỗi khu vực là **một bản đồ nhỏ đi lại được**, cỡ khoảng 3–4 màn hình, không phải
+thế giới mở liền mạch.
+
+| # | Khu vực | Mở khi | Bối cảnh đi lại được | Rác đặc trưng |
 |---|---|---|---|---|
-| 1 | `#C9A227` | `#6B5B4A` | `#D96B4A` | — |
-| 2 | `#5FB3D9` | `#3E6B5A` | `#F2E8C9` | `#2E7DA8` |
-| 3 | `#E8A33D` | `#8A5A3B` | `#D94F4F` | `#4A6B7A` |
-| 4 | `#8FC5E8` | `#4A6B3A` | `#E88FB0` | `#3A7A9A` |
-| 5 | `#2A1B4A` | `#1A1030` | `#E84FA0` | — |
-| 6 | `#7AA8C9` | `#5A6B4A` | `#C9D94F` | `#4A7A6B` |
-| 7 | `#E8C97A` | `#8A7A4A` | `#D9734F` | `#6B8A5A` |
-| 8 | `#1B2A4A` | `#2A3A5A` | `#E8C94F` | — |
-| 9 | `#B8D4E8` | `#6B8A4A` | `#D9A84F` | — |
-| 10 | `#4FC9D9` | `#D9C9A8` | `#F2A84F` | `#2E9AB8` |
+| 1 | **Phố cổ Hà Nội** | Từ đầu | Vỉa hè, quán trà đá, ngõ nhỏ, hồ Gươm | cốc trà đá, giấy, vỏ chuối, túi nilon |
+| 2 | **Vịnh Hạ Long** | HN ≥ 80% | Bãi biển, cầu tàu, thuyền, hang | chai nhựa, hộp xốp, lưới đánh cá |
+| 3 | **Phố cổ Hội An** | HL ≥ 80% | Phố đèn lồng, bờ sông Hoài, chợ | túi nilon, cốc nhựa, hoa đăng, ống hút |
+| 4 | **Đà Lạt** | HA ≥ 80% | Hồ Xuân Hương, đồi thông, chợ đêm | vỏ bắp, ly sữa đậu nành, lon, khẩu trang |
+| 5 | **Đêm nhạc hội** ⭐ | ĐL ≥ 80% | Sân khấu, khu khán giả, hậu trường | cốc nhựa, **lightstick**, áo mưa giấy, băng rôn |
+| 6 | **Kênh Nhiêu Lộc** | NH ≥ 80% | Bờ kênh, cầu, công viên, có **thuyền** | hộp xốp, túi nilon, chai, dép đứt |
+| 7 | **Chợ nổi Cái Răng** | NL ≥ 80% | Bến, ghe thuyền, chợ nổi | vỏ trái cây, lá chuối, bã mía |
+| 8 | **Giao thừa Nguyễn Huệ** | CR ≥ 80% | Phố đi bộ sau pháo hoa, sân khấu | lon bia, que xiên, cành mai, vỏ hạt dưa |
+| 9 | **Ruộng bậc thang Sa Pa** | GT ≥ 80% | Ruộng, bản làng, đường núi | chai nhựa, vỏ bánh kẹo, **pin máy ảnh** |
+| 10 | **Côn Đảo** | SP ≥ 80% | Bãi rùa đẻ, rạn san hô, rừng | lưới ma, ống hút, túi nilon, vi nhựa |
 
+### 7.1 Độ sạch khu vực
+
+Mỗi khu vực có một **thanh độ sạch 0–100%**, không reset khi rời đi.
+
+```
+độ sạch = số món đã PHÂN LOẠI ĐÚNG / tổng số món khu vực đó sinh ra
+```
+
+Rác **sinh lại từ từ** (khoảng 1 món mỗi 20 giây, dừng khi đạt 100%) — thế giới sống,
+không phải bãi rác tĩnh. Nhưng tốc độ sinh luôn thấp hơn tốc độ dọn, nên người chơi
+luôn thấy mình tiến lên.
+
+**Khu vực đổi hình theo độ sạch** — đây là phần thưởng cảm xúc chính:
+
+| Độ sạch | Khu vực trông thế nào |
+|---|---|
+| 0–30% | Xám xịt (`desaturate` 0.7), trời âm u, không có người qua lại |
+| 30–60% | Màu nhạt dần lên, vài người đi bộ xuất hiện |
+| 60–80% | Gần đủ màu, có chim, có tiếng động vui |
+| 80–100% | Đủ màu, trời sáng, người bán hàng, trẻ con chơi, hoa nở |
+| 100% | Cảnh "hồi sinh": chuyển trong 3 giây, nhạc nổi lên, NPC vỗ tay |
+
+Chuyển bằng `desaturate()` và `mix()` trên chính bảng màu khu vực — **không làm bộ
+ảnh thứ hai**. Hàm đó đã có sẵn trong `src/render/palette.ts`.
 
 ---
 
-## 7. Tám tình huống bất ngờ (EventSystem)
+## 8. Cơ chế nhặt và phân loại
 
-Mỗi sự kiện **báo trước 2 giây** bằng toast trượt từ trên xuống + rung nhẹ (`navigator.vibrate(50)`, bọc try/catch vì iOS không hỗ trợ).
+### 8.1 Nhặt rác
 
-| `eventId` | Tên hiển thị | Thời lượng | Hành vi |
+1. Món rác nằm trên mặt đất, có **viền sáng nhẹ** khi nhân vật tới gần tầm với
+2. Chạm vào → nhân vật đi tới → nhặt (0.3 giây, có hoạt ảnh cúi xuống)
+3. Rác bay vào ba lô, `+2 kinh nghiệm`, `−1 thể lực`
+4. Dòng chữ nhỏ bay lên: `Ống hút nhựa · ~200 năm`
+5. Ba lô đầy → chạm rác thì hiện "Ba lô đầy rồi — tới điểm tập kết đi"
+
+**Rác nguy hại (pin, lightstick, bóng đèn):** viền **vàng nhấp nháy**. Chưa có găng
+tay thì nhặt được nhưng `−3 thể lực`; có găng tay thì như bình thường.
+
+### 8.2 Điểm tập kết — đây là chỗ DẠY
+
+Mỗi khu vực có **1–2 điểm tập kết** (xe rác, nhà tập kết, thuyền gom rác). Chạm vào
+để mở bảng phân loại.
+
+```
+┌──────────────────────────────────────────────┐
+│  PHÂN LOẠI RÁC                      [✕]      │
+├──────────────────────────────────────────────┤
+│  Ba lô:  🥤 🍌 🔋 🧴 📰 🥫 ( 6/8 )            │
+│          ↑ kéo từng món xuống thùng đúng     │
+├────────────┬────────────┬────────────────────┤
+│ ♻️ TÁI CHẾ │ 🍎 THỰC PHẨM│ 🗑 KHÁC            │
+└────────────┴────────────┴────────────────────┘
+│  ☢️ Hộp rác nguy hại  ← chỉ hiện khi ba lô có │
+└──────────────────────────────────────────────┘
+```
+
+- **Đúng** → `+10 kinh nghiệm`, `+tiền`, độ sạch khu vực tăng, thùng nảy lên
+- **Sai** → `−5 kinh nghiệm`, thùng rung đỏ, hiện ngay: `Ống hút nhựa thuộc nhóm KHÁC`, **món rác quay lại ba lô** để thử lại
+- Phân loại xong hết → `+30 thể lực`, đóng bảng
+
+> **Sai thì không mất rác, chỉ mất điểm.** Game này dạy phân loại — bắt người chơi
+> làm lại cho đúng mới là dạy. Vứt món rác đi là bỏ lỡ đúng khoảnh khắc họ đang chú ý.
+
+### 8.3 ⭐ Rác nguy hại KHÔNG thuộc thùng nào
+
+Ba nhóm thùng theo Luật Bảo vệ môi trường 2020 (phân loại tại nguồn từ 01/01/2025):
+
+| Thùng | `binId` | Màu | Gồm |
 |---|---|---|---|
-| `MUA_BAO` | "Mưa bão ập tới!" | 15s | Lớp mưa phủ màn hình. Rác trên sàn **trôi dạt** theo vector gió đổi hướng mỗi 3s. Khó chạm hơn. Điểm nhặt ×1.5 |
-| `GIO_MUA` | "Gió mùa về!" | 12s | Rác mới **bay ngang màn hình** theo đường sin thay vì rơi xuống. Phải bắt trước khi bay mất |
-| `CUU_SINH_VAT` | "Cứu nó với!" | 10s | Một con vật (rùa/bò/chó tuỳ màn) xuất hiện đang nuốt túi nilon. **Chạm liên tục 5 lần** vào nó để gỡ ra. Thành công `+100` + thẻ kiến thức. Thất bại: ô nhiễm +15%, con vật đi mất với vẻ mặt buồn |
-| `BAC_VE_CHAI` | "Bác ve chai đi ngang" | 12s | Một xe ve chai đi chậm ngang khu cảnh. Kéo rác **tái chế** thả vào xe bác → `điểm ×2` và `+1` vào bộ đếm "đã bán ve chai". Rác khác thả vào → bác lắc đầu, không phạt |
-| `NEM_RAC` | "Ơ kìa!" | 10s | Một người chạy xe máy ngang qua, **ném rác ra đường** mỗi 2s. Chạm vào họ → dừng lại, quay lại nhặt hết rác vừa ném, `+30`. Không chạm → rác nằm lại đó |
-| `GIO_CAO_DIEM` | "Đám đông vừa tan!" | 10s | **Rác đổ xuống ồ ạt** — tốc độ spawn ×5. Dùng cho màn concert & lễ hội. Nhạc tăng nhịp |
-| `PIN_ROI` | "Cẩn thận — rác nguy hại!" | 15s | Sinh ra 2–3 món `hazard`. Hộp thu gom vàng trượt vào. Xem Mục 5.4 |
-| `BAI_RAC_TU_PHAT` | "Bãi rác tự phát!" | 20s | Một đống rác lớn xuất hiện ở vị trí cố định. **Chạm 8 lần** để phá vỡ → bung ra 12–20 món rác cùng lúc. Túi chỉ chứa 6 → phải phân loại cực nhanh |
+| **Tái chế** | `recycle` | Xanh dương `#2e7dd1` | chai nhựa PET, lon nhôm, giấy, bìa carton, chai thủy tinh |
+| **Thực phẩm** | `food` | Xanh lá `#3da35d` | vỏ chuối, vỏ trái cây, thức ăn thừa, lá chuối, bã mía |
+| **Khác** | `other` | Xám `#6b7280` | túi nilon, hộp xốp, ống hút, tàn thuốc, khẩu trang, tã bỉm |
 
-Interface:
+**Pin, lightstick, bóng đèn → `hazard`. Không thuộc ba thùng trên.**
 
-```ts
-export interface GameEvent {
-  id: string;
-  label: string;
-  durationSec: number;
-  onStart(ctx: LevelContext): void;
-  onUpdate(ctx: LevelContext, dt: number): void;
-  onEnd(ctx: LevelContext): void;
-  render?(ctx: LevelContext, g: CanvasRenderingContext2D): void;
-}
-```
+- Hộp thu gom nguy hại màu vàng **chỉ hiện khi trong ba lô có món nguy hại**
+- Bỏ đúng → `+40 kinh nghiệm`, hiện thẻ kiến thức giữa màn hình 2 giây
+- Bỏ vào ba thùng kia → `−20 kinh nghiệm`, hiện: **"Pin KHÔNG thuộc thùng nào cả. Pin phải mang tới điểm thu gom riêng."** Món pin quay lại ba lô.
 
-Mỗi sự kiện là **một file riêng** trong `src/gameplay/events/`. Không bao giờ chạy 2 sự kiện cùng lúc — `EventSystem` xếp hàng, nếu trùng thì lùi sự kiện sau 3 giây.
+> Đây là bài học khó nhất và quan trọng nhất của game. Người chơi phải **làm sai một
+> lần** thì mới nhớ. Đừng làm nó dễ, và đừng bỏ qua nó.
 
 ---
 
-## 8. Sổ tay rác (Handbook)
+## 9. Nhiệm vụ và NPC
 
-24 loại rác. Mỗi loại nhặt-và-phân-loại-đúng lần đầu → mở khoá một thẻ.
+### 9.1 Vì sao cần NPC
 
-**Màn hình sổ tay:** lưới 3 cột. Thẻ chưa mở = bóng đen có dấu `?`. Thanh tiến trình trên cùng: `Đã sưu tập 18/24`.
+Không có NPC thì đây chỉ là nhặt rác trong một thị trấn ma. **Người dân chính là lý do
+dọn rác có nghĩa** — và là cách đưa kiến thức vào mà không thành bài giảng.
 
-**Chạm vào thẻ đã mở → trang chi tiết:**
+Mỗi khu vực có **3–5 NPC**. Chạm vào để nói chuyện.
 
-```
-┌──────────────────────────┐
-│        [ hình rác ]      │
-│      CHAI NHỰA PET       │
-│   ♻️  Thùng TÁI CHẾ       │
-├──────────────────────────┤
-│ ⏳ Phân hủy ngoài môi     │
-│    trường: ~450 năm      │
-├──────────────────────────┤
-│ ⚠️ Tác hại                │
-│ Vỡ vụn thành vi nhựa,    │
-│ cá nuốt phải, rồi quay   │
-│ lại mâm cơm nhà mình.    │
-├──────────────────────────┤
-│ ✅ Làm đúng               │
-│ Đổ hết nước, bóp dẹp,    │
-│ bỏ riêng nắp — nắp làm   │
-│ từ nhựa khác.            │
-├──────────────────────────┤
-│ Nguồn: NOAA Marine Debris│  ← bấm được
-└──────────────────────────┘
-```
+### 9.2 Ba loại nhiệm vụ
 
-### 8.1 Danh sách chính thức 24 loại rác
+| Loại | Ví dụ | Thưởng |
+|---|---|---|
+| **Chính** (1 mỗi khu vực) | "Dọn khu này sạch 80% giúp bác" | Mở khu vực mới |
+| **Phụ** (2–4 mỗi khu vực) | "Tìm giúp cô 5 viên pin cũ, đừng vứt bậy" | Tiền + kinh nghiệm |
+| **Vặt** (sinh ngẫu nhiên) | "Con chó nhà tôi nuốt túi nilon!" | Kinh nghiệm + thẻ sổ tay |
+
+### 9.3 NPC mẫu — khu vực 1, Phố cổ Hà Nội
+
+| NPC | Là ai | Nhiệm vụ | Giọng |
+|---|---|---|---|
+| **Bác Tám** | Tổ trưởng dân phố, ngồi ghế đá | Nhiệm vụ chính: dọn ngõ sạch 80% | Nói nhiều, tốt bụng, hay kể chuyện ngày xưa |
+| **Cô Hoa** | Bán trà đá vỉa hè | Phụ: gom 10 cốc nhựa — "cô bán mà cô cũng ngại" | Thật thà, tự nhận mình cũng có lỗi |
+| **Thằng Tí** | Học sinh cấp 2 | Phụ: thi xem ai nhặt nhanh hơn | Láu cá, trêu người chơi |
+| **Bà ve chai** | Đi bộ quanh khu | Đổi rác tái chế lấy tiền (giá tốt hơn điểm tập kết) | Ít nói, cười hiền |
+
+> **Luật viết thoại:** NPC **không bao giờ giảng đạo**. Họ nhờ vả, than phiền, kể
+> chuyện, trêu chọc. Kiến thức đi ra từ hoàn cảnh của họ, không từ lời khuyên của họ.
+>
+> ❌ "Bạn biết không, túi nilon mất 10–20 năm để phân hủy đấy!"
+> ✅ "Cái cống này tắc suốt. Tháng trước mưa to, nước ngập tới đầu gối. Toàn túi nilon chứ gì nữa."
+
+### 9.4 Sự kiện bất ngờ
+
+Sinh ngẫu nhiên trong lúc chơi, báo trước bằng toast + rung nhẹ.
+
+| `eventId` | Chuyện gì xảy ra | Người chơi làm gì |
+|---|---|---|
+| `MUA_BAO` | Mưa ập xuống, rác trôi dạt theo nước | Nhặt nhanh trước khi trôi mất, điểm ×1.5 |
+| `CUU_SINH_VAT` | Con chó / bò / rùa đang nuốt túi nilon | Chạy tới, chạm liên tục 5 lần để gỡ. `+100 kn` |
+| `BAC_VE_CHAI` | Bà ve chai đi ngang 30 giây | Bán rác tái chế được giá gấp đôi |
+| `NEM_RAC` | Người đi xe máy ném rác ra đường | Đuổi theo chạm vào → họ quay lại nhặt. `+30 kn` |
+| `DAM_DONG_TAN` | Đám đông vừa giải tán (màn 5, 8) | Rác đổ xuống ồ ạt trong 20 giây |
+| `BAI_RAC_TU_PHAT` | Đống rác lớn xuất hiện ở góc khuất | Chạm 8 lần để phá, bung ra 15–20 món |
+| `PIN_ROI` | Ai đó làm rơi hộp pin cũ | 3–4 món nguy hại xuất hiện cùng lúc |
+| `TRE_CON_HOC` | Trẻ con chạy theo bắt chước nhặt rác | Nhặt cùng, tốc độ ×2 trong 30 giây |
+
+`TRE_CON_HOC` là sự kiện mình thích nhất — nó nói đúng điều game muốn nói, mà không
+cần nói ra câu nào.
+
+---
+
+## 10. Tiến trình
+
+### 10.1 Cấp độ
+
+| Nguồn kinh nghiệm | Điểm |
+|---|---|
+| Nhặt một món rác | +2 |
+| Phân loại đúng | +10 |
+| Phân loại đúng rác nguy hại | +40 |
+| Hoàn thành nhiệm vụ phụ | +50 |
+| Hoàn thành nhiệm vụ chính | +200 |
+| Mở thẻ sổ tay mới | +25 |
+
+Cấp `n` cần `100 × n^1.5` kinh nghiệm. Mỗi cấp: `+10` thể lực tối đa.
+
+### 10.2 Tiền và cửa hàng
+
+Tiền từ phân loại đúng (1–3đ mỗi món, rác tái chế được giá hơn) và bán cho bà ve chai.
+
+| Món | Giá | Tác dụng |
+|---|---|---|
+| Găng tay | 100đ | Nhặt rác nguy hại không tốn thêm thể lực |
+| Kẹp gắp rác | 250đ | Tầm với 60 → 110 |
+| Giày tốt | 300đ | Tốc độ đi 180 → 240 |
+| Ba lô lớn | 400đ | Sức chứa 8 → 14 |
+| Xe đẩy | 800đ | Sức chứa 14 → 24, nhưng đi chậm hơn 15% |
+| Nước mía | 20đ | Hồi đầy thể lực ngay |
+
+> **Mỗi món đồ phải đổi được cảm giác chơi, không chỉ đổi con số.** Kẹp gắp làm nhặt
+> đỡ phải đi sát. Xe đẩy đổi tốc độ lấy sức chứa — người chơi phải chọn. Đó là chỗ
+> game nhập vai hay hơn game arcade.
+
+### 10.3 Sổ tay rác
+
+24 loại rác. Nhặt-và-phân-loại-đúng lần đầu → mở một thẻ. Mở đủ 24 thẻ → danh hiệu
+"Người hiểu rác".
+
+Xem đầy đủ ở Mục 11.
+
+---
+
+## 11. Sổ tay rác — 24 loại
+
+Mỗi loại nhặt-và-phân-loại-đúng lần đầu thì mở một thẻ trong sổ tay.
+
+### 11.1 Danh sách chính thức 24 loại rác
 
 Đây là danh sách **duy nhất và đầy đủ**. Mọi `trashPool` trong `levels.ts` chỉ được trỏ tới các `id` dưới đây.
 
@@ -477,57 +520,40 @@ Mỗi sự kiện là **một file riêng** trong `src/gameplay/events/`. Không
 
 **Rác nguy hại chỉ có 3 loại là đủ** — ít mà đậm. Đừng pha loãng bài học quan trọng nhất.
 
-### 8.2 Biến thể hình vẽ (variants) — tránh phình danh sách
+### 11.2 Cổng kiểm chứng số liệu
 
-Mục 6 có nhắc nhiều món đặc thù vùng (cốc trà đá, vỏ bắp nướng, hoa đăng giấy, dép đứt, cành đào gãy, phao, confetti, băng rôn). **Đây KHÔNG phải loại rác mới.** Chúng là **biến thể hình vẽ** của 24 loại trên:
+`scripts/verify-facts.ts` chạy ở `prebuild`. Nó **không chặn loại rác**, nó **chặn con
+số chưa có nguồn**:
 
-```ts
-// trong TrashType
-variants?: { id: string; label: string; sprite: SpriteId }[];
-```
+| Trạng thái | Trong game | Trong sổ tay |
+|---|---|---|
+| `verified: true` | Xuất hiện bình thường | Hiện đầy đủ, có link nguồn |
+| `verified: false` | **Vẫn xuất hiện bình thường** | Ô "Phân hủy" hiện `⏳ Đang xác minh nguồn` thay cho con số |
 
-Ví dụ: `coc-nhua` có variant `coc-tra-da` (Hà Nội), `coc-tra-sua` (Đà Lạt), `coc-bia` (concert) — khác hình, khác nhãn hiển thị, **nhưng chung một thẻ sổ tay và chung một thùng**.
-
-`LevelDef.trashPool` trỏ tới `typeId` + `variantId` tuỳ chọn.
-
-> Quy tắc: **sổ tay luôn đúng 24 thẻ.** Muốn thêm hình thì thêm variant, không thêm type. Thêm type nghĩa là phải sửa lưới sổ tay, sửa cổng kiểm chứng, và tìm thêm một nguồn khoa học nữa.
-
-### 8.3 Kiểu dữ liệu
-
-`src/data/trashTypes.ts`:
+Build **fail** khi và chỉ khi: một `TrashType` có `verified: false` mà vẫn hiển thị
+`decomposeLabel`, **hoặc** có `verified: true` mà `source.url` rỗng / không hợp lệ.
 
 ```ts
 export interface TrashType {
   id: string;
-  name: string;                  // 'Chai nhựa PET'
+  name: string;
   bin: 'recycle' | 'food' | 'other' | 'hazard';
-  decomposeLabel: string;        // '~450 năm'  — LUÔN ghi dạng khoảng/xấp xỉ
-  harm: string;                  // 1–2 câu, nói thẳng, không bi kịch hoá
-  tip: string;                   // hành động cụ thể làm được ngay
+  decomposeLabel: string;        // LUÔN ghi dạng khoảng/xấp xỉ
+  harm: string;                  // 1–2 câu, hậu quả cụ thể, KHÔNG chứa số
+  tip: string;                   // việc làm được trong tuần này, KHÔNG chứa số
   source: { label: string; url: string };
-  verified: boolean;             // false = ẩn con số, hiện "đang xác minh nguồn"
+  verified: boolean;
   sprite: SpriteId;
   size: 'small' | 'medium' | 'large';
   variants?: { id: string; label: string; sprite: SpriteId }[];
 }
 ```
 
-**Luật bắt buộc — `scripts/verify-facts.ts`, chạy ở `prebuild`:**
+> **Biến thể hình vẽ:** cốc trà đá, vỏ bắp nướng, hoa đăng giấy, dép đứt, cành mai gãy…
+> **không phải loại rác mới** — chúng là `variants` của 24 loại trên. Sổ tay luôn đúng
+> 24 thẻ. Muốn thêm hình thì thêm variant, không thêm type.
 
-Cổng kiểm chứng **không chặn loại rác**, nó **chặn con số chưa có nguồn**:
-
-| Trạng thái | Trong game | Trong sổ tay |
-|---|---|---|
-| `verified: true` | Xuất hiện bình thường | Hiện đầy đủ, có link nguồn |
-| `verified: false` | **Vẫn xuất hiện bình thường**, vẫn phân loại được, vẫn mở thẻ | Ô "Phân hủy" hiện `⏳ Đang xác minh nguồn` thay cho con số. Phần tác hại & cách làm đúng vẫn hiện bình thường |
-
-Build **fail** khi và chỉ khi: một `TrashType` có `verified: false` **mà** `decomposeLabel` không rỗng và đang được hiển thị, **hoặc** một `TrashType` có `verified: true` mà `source.url` rỗng / không phải URL hợp lệ.
-
-> Như vậy game phát hành được ngay, và mỗi lần ai đó tìm ra một nguồn gốc thì game lại đúng thêm một chút. Thà hiện "đang xác minh" còn hơn hiện một con số bịa.
-
----
-
-### 8.4 Nội dung 24 thẻ — viết sẵn, dùng nguyên văn
+### 11.3 Nội dung 24 thẻ — viết sẵn, dùng nguyên văn
 
 Đây là **phần tuyên truyền thật sự của game**. Không để người implement tự viết lại.
 
@@ -651,13 +677,15 @@ Build **fail** khi và chỉ khi: một `TrashType` có `verified: false` **mà*
 
 ---
 
-> **Về nguồn:** cổng kiểm chứng ở Mục 8.3 chỉ soi `decomposeLabel`. Câu `harm` và `tip`
+> **Về nguồn:** cổng kiểm chứng ở Mục 11.2 chỉ soi `decomposeLabel`. Câu `harm` và `tip`
 > là mô tả định tính đã được thừa nhận rộng rãi, không cần nguồn cấp một — **nhưng
 > cũng không được chứa con số**. Thấy ai thêm số vào hai trường đó thì chặn lại.
 
 ---
 
-## 9. ⚠️ Quy tắc về số liệu — ĐỌC KỸ, ĐÂY LÀ GAME TUYÊN TRUYỀN
+---
+
+## 12. ⚠️ Quy tắc về số liệu — ĐỌC KỸ, ĐÂY LÀ GAME TUYÊN TRUYỀN
 
 Đã kiểm tra nguồn. Dưới đây là kết luận bắt buộc tuân theo:
 
@@ -696,291 +724,273 @@ Con số "**1,8 triệu tấn rác nhựa/năm, chỉ ~27% được tái chế**
 ### Quy trình cho mọi fact mới
 1. Tìm nguồn cấp một (cơ quan nhà nước, tổ chức quốc tế, bài báo khoa học).
 2. Ghi `source.url` trỏ thẳng tới nguồn đó, không trỏ tới bài báo thuật lại.
-3. Nếu không tìm được → đặt `verified: false`. Loại rác đó **vẫn vào game**, nhưng sổ tay hiện `⏳ Đang xác minh nguồn` thay cho con số (Mục 8.3).
+3. Nếu không tìm được → đặt `verified: false`. Loại rác đó **vẫn vào game**, nhưng sổ tay hiện `⏳ Đang xác minh nguồn` thay cho con số (Mục 11.2).
 4. Thà ít fact mà đúng còn hơn nhiều fact mà sai.
 
 ---
 
-## 10. Kiến trúc mã nguồn
+---
+
+## 13. Kiến trúc mã nguồn
 
 ```
 rac-oi-ve-nha/
 ├─ index.html
-├─ vite.config.ts
-├─ tsconfig.json              # strict: true
-├─ package.json
-├─ public/
-│  ├─ og-image.png            # ảnh preview khi share link
-│  └─ audio/                  # CC0. SFX ≤ 20KB/file; nhạc màn 5 tải lười, ≤ 400KB
-├─ scripts/
-│  └─ verify-facts.ts         # chạy prebuild — luật ở Mục 8.3
+├─ vite.config.ts · tsconfig.json · package.json
+├─ public/og-image.png · public/audio/
+├─ scripts/verify-facts.ts        # cổng kiểm chứng số liệu, chạy prebuild
 └─ src/
-   ├─ main.ts                 # entry: tạo canvas, khởi động Game
-   ├─ core/
-   │  ├─ Game.ts              # vòng lặp fixed-timestep 60Hz + scene manager
-   │  ├─ Scene.ts             # abstract: enter/exit/update/render/onPointer
-   │  ├─ Input.ts             # gộp touch + mouse thành PointerEvent chung
-   │  ├─ Viewport.ts          # map 720×1280 ảo ↔ pixel thật, xử lý DPR & letterbox
-   │  ├─ Renderer.ts          # helper vẽ: roundRect, text có outline, shadow
-   │  ├─ Audio.ts             # preload, play, mute; mặc định mute
-   │  ├─ Storage.ts           # load/save + migration theo version
-   │  ├─ Tween.ts             # easing: easeOutBack, easeOutCubic
-   │  └─ Random.ts            # RNG có seed (để test lặp lại được)
+   ├─ main.ts
+   ├─ core/                       # ✅ ĐÃ XONG, KHÔNG SỬA (trừ Layout)
+   │  ├─ Game.ts                  # vòng lặp fixed-timestep + SceneManager
+   │  ├─ Viewport.ts              # khung ảo co giãn, cả ngang lẫn dọc
+   │  ├─ Input.ts                 # Pointer Events → toạ độ ảo
+   │  ├─ Renderer.ts  Tween.ts  Storage.ts  Random.ts
+   │  ├─ Layout.ts                # ⚠️ VIẾT LẠI: HUD + panel, không còn 4 dải arcade
+   │  ├─ Camera.ts                # 🆕 bám nhân vật, có vùng chết
+   │  └─ Pathfinding.ts           # 🆕 A* trên lưới ô
    ├─ scenes/
-   │  ├─ BootScene.ts         # preload, thanh loading
-   │  ├─ MenuScene.ts         # tên game, nút CHƠI, nút Sổ tay, nút loa
-   │  ├─ MapScene.ts          # bản đồ VN, 10 chấm, chấm chưa mở có ổ khoá
-   │  ├─ LevelScene.ts        # ⭐ màn chơi — file lớn nhất
-   │  ├─ ResultScene.ts       # sao, điểm, fact, nút chia sẻ, nút chơi lại
-   │  ├─ HandbookScene.ts     # sổ tay rác
-   │  └─ PledgeScene.ts       # cam kết, hiện sau khi xong màn 6
-   ├─ gameplay/
-   │  ├─ TrashItem.ts         # thực thể rác: vị trí, vận tốc, state, hitbox
-   │  ├─ Bag.ts               # túi 6 ô, logic kéo thả
-   │  ├─ Bin.ts               # 3 thùng + hộp nguy hại
-   │  ├─ Spawner.ts           # sinh rác theo trọng số từ LevelDef
-   │  ├─ ScoreSystem.ts       # điểm, combo, ô nhiễm, tính sao
-   │  ├─ EventSystem.ts       # xếp lịch & chạy sự kiện
-   │  └─ events/              # 8 file, mỗi file một sự kiện
+   │  ├─ BootScene.ts             # nạp dữ liệu, thanh tiến trình
+   │  ├─ TitleScene.ts            # 🆕 màn hình bắt đầu (Mục 5.1)
+   │  ├─ CharacterScene.ts        # 🆕 chọn Minh/Lan, đặt tên (Mục 5.2)
+   │  ├─ MapScene.ts              # bản đồ VN, chọn khu vực (Mục 5.3)
+   │  ├─ WorldScene.ts            # ⭐ chơi thật — file lớn nhất, CHỈ ĐIỀU PHỐI
+   │  ├─ SortingScene.ts          # bảng phân loại (overlay trên WorldScene)
+   │  ├─ DialogueScene.ts         # hộp thoại NPC (overlay)
+   │  ├─ ShopScene.ts             # cửa hàng dụng cụ
+   │  └─ HandbookScene.ts         # sổ tay rác
+   ├─ world/
+   │  ├─ TileMap.ts               # lưới ô, ô nào đi được
+   │  ├─ Player.ts                # nhân vật: vị trí, hướng, hoạt ảnh, chỉ số
+   │  ├─ Npc.ts  TrashNode.ts  CollectPoint.ts
+   │  ├─ TrashSpawner.ts          # sinh lại rác từ từ
+   │  └─ AreaState.ts             # độ sạch, rác đã dọn, nhiệm vụ của một khu vực
+   ├─ systems/
+   │  ├─ InventorySystem.ts       # ba lô
+   │  ├─ StaminaSystem.ts         # thể lực
+   │  ├─ ProgressSystem.ts        # kinh nghiệm, cấp độ
+   │  ├─ EconomySystem.ts         # tiền, mua bán
+   │  ├─ QuestSystem.ts           # nhận, theo dõi, hoàn thành nhiệm vụ
+   │  ├─ CleanlinessSystem.ts     # độ sạch khu vực
+   │  └─ EventSystem.ts           # 8 sự kiện bất ngờ
    ├─ data/
-   │  ├─ trashTypes.ts        # 24 loại
-   │  ├─ levels.ts            # 10 màn
-   │  ├─ facts.ts             # fact cuối màn
-   │  └─ pledges.ts           # danh sách lời cam kết
+   │  ├─ trashTypes.ts            # 24 loại (Mục 11)
+   │  ├─ areas.ts                 # 10 khu vực: bản đồ ô, NPC, điểm tập kết
+   │  ├─ npcs.ts  quests.ts  dialogues.ts
+   │  ├─ characters.ts            # Minh, Lan
+   │  ├─ shopItems.ts  facts.ts
    ├─ render/
-   │  ├─ sprites.ts           # mọi hàm vẽ rác, ánh xạ SpriteId → hàm
-   │  ├─ backdrops.ts         # 10 hàm vẽ nền (Hạ Long, concert, …)
-   │  └─ particles.ts         # bụi, nước bắn, confetti, mưa
+   │  ├─ palette.ts               # ✅ ĐÃ XONG, KHÔNG SỬA
+   │  ├─ trashSprites.ts  characterSprites.ts  tiles.ts  particles.ts
    ├─ ui/
-   │  ├─ Button.ts  Modal.ts  Toast.ts  ProgressBar.ts  StarRow.ts
-   │  └─ ShareCard.ts         # vẽ ảnh 1080×1080 ra canvas ngoài màn hình
-   ├─ i18n/
-   │  └─ vi.ts                # ⚠️ MỌI chuỗi hiển thị nằm ở đây, không hardcode
+   │  ├─ Button.ts  Panel.ts  Toast.ts  Bar.ts  DialogueBox.ts  ShareCard.ts
+   ├─ i18n/vi.ts                  # ⚠️ MỌI chuỗi hiển thị nằm ở đây
    └─ styles/global.css
 ```
 
 ### Nguyên tắc bắt buộc
-- `LevelScene.ts` **chỉ điều phối**. Logic nằm trong `gameplay/`. Nếu file vượt 400 dòng → tách ra.
-- **Không hardcode chuỗi tiếng Việt** trong scene. Tất cả qua `i18n/vi.ts`.
-- **Không hardcode toạ độ pixel thật.** Mọi thứ theo hệ ảo 720×1280, `Viewport` lo phần quy đổi.
-- Vòng lặp **fixed timestep** (`dt = 1/60`), tách khỏi render. Game không được chạy nhanh hơn trên máy 120Hz.
-- Mọi `requestAnimationFrame` phải huỷ khi rời scene. Không để rò rỉ.
+
+1. **Không chiều nào cố định.** Cạnh ngắn khung ảo là 720, cạnh dài co giãn 1100–1800,
+   **cầm ngang hay dọc đều phải chơi được**. Toạ độ giao diện lấy từ `Layout`, toạ độ
+   thế giới lấy từ `Camera`. Không viết số cứng.
+2. **Không hardcode mã màu.** Lấy từ `src/render/palette.ts`.
+   Kiểm: `grep -rnE '#[0-9a-fA-F]{6}' src --include='*.ts' | grep -v palette.ts` phải không ra gì.
+3. **Mọi chuỗi tiếng Việt nằm ở `src/i18n/vi.ts`.** Kể cả thoại NPC.
+4. **Không thêm game engine, không thêm thư viện.** Canvas 2D thuần.
+5. **`WorldScene.ts` chỉ điều phối.** Logic nằm trong `world/` và `systems/`.
+   Vượt 400 dòng thì tách.
+6. **Mỗi `systems/*` phải test được trên Node**, không phụ thuộc DOM hay canvas.
+7. **Test trước, code sau.** Viết test → chạy cho nó đỏ → rồi mới viết code.
+8. **Mọi `requestAnimationFrame`, tween, listener phải huỷ khi rời scene** (`exit()`).
 
 ### Dữ liệu lưu
 
 ```ts
 export interface SaveData {
-  version: 1;
-  levels: Record<string, { stars: 0|1|2|3; bestScore: number; cleared: boolean }>;
-  handbook: string[];        // id loại rác đã mở
-  pledges: string[];         // id cam kết đã chọn
+  version: 2;
+  player: {
+    characterId: 'minh' | 'lan';
+    name: string;
+    level: number;
+    xp: number;
+    money: number;
+    maxStamina: number;
+    tools: string[];              // id dụng cụ đã mua
+  };
+  areas: Record<string, {
+    unlocked: boolean;
+    cleanliness: number;          // 0–100
+    totalSpawned: number;
+    totalSorted: number;
+  }>;
+  quests: Record<string, {
+    state: 'chua-nhan' | 'dang-lam' | 'xong';
+    progress: number;
+  }>;
+  handbook: string[];             // id loại rác đã mở
   stats: { totalTrash: number; totalCorrect: number; veChaiSold: number };
   settings: { muted: boolean };
 }
 ```
-Key: `racoivenha.save`. Đọc hỏng hoặc `version` lạ → reset về mặc định, **không văng lỗi**. Bọc mọi truy cập `localStorage` trong `try/catch` (chế độ ẩn danh có thể ném lỗi).
+
+Key: `racoivenha.save`. **Bản lưu version 1 (bản arcade) không chuyển đổi được** — cấu
+trúc khác hẳn. Gặp `version: 1` thì bỏ và tạo mới, không cố đoán. Bọc mọi truy cập
+`localStorage` trong `try/catch`.
 
 ---
 
-## 11. Ba chặng thực hiện
+## 14. Năm chặng thực hiện
 
-### M1 — Lõi chơi được (ưu tiên cao nhất)
-Mục tiêu: **cầm điện thoại đưa bạn bè chơi thử được**.
+### Chặng 1 — Dữ liệu và khung màn hình
+- `src/data/trashTypes.ts` — đủ 24 loại, dùng nguyên văn Mục 11
+- `src/data/characters.ts`, `shopItems.ts`, `facts.ts`
+- `scripts/verify-facts.ts` nối vào `prebuild`
+- `TitleScene`, `CharacterScene`, `MapScene` — đi lại được giữa ba màn hình, lưu lựa chọn
 
-- [ ] Dựng dự án: Vite + TS strict + Vitest + cấu hình Vercel
-- [ ] `core/`: Game loop, Scene manager, Viewport, Input, Tween, Storage
-- [ ] `LevelScene` với **1 màn duy nhất (Phố cổ Hà Nội)**
-- [ ] Nhặt (chạm) + phân loại (kéo thả) + túi 6 ô
-- [ ] 3 thùng, 8 loại rác đầu tiên
-- [ ] `ScoreSystem`: điểm, combo, ô nhiễm, sao
-- [ ] `ResultScene` cơ bản: sao + điểm + nút chơi lại
-- [ ] Deploy Vercel, mở được trên điện thoại thật
+**Xong khi:** mở game chọn được nhân vật, đặt tên, thấy bản đồ Việt Nam có Hoàng Sa –
+Trường Sa, chọn khu vực đầu tiên. Chưa cần vào được thế giới.
 
-**🛑 Dừng lại ở đây. Chơi thử. Chỉnh nhịp chơi.** Thời lượng màn, tốc độ spawn, sức chứa túi, số điểm — đều có thể phải đổi. Đừng xây tiếp trên một nhịp chơi chưa vui.
+### Chặng 2 — Thế giới chơi được (quan trọng nhất)
+- `Camera`, `Pathfinding`, `TileMap`, `Player`
+- **Chỉ khu vực 1 (Phố cổ Hà Nội)**
+- Chạm để đi, chạm rác để nhặt, ba lô, thể lực
+- `CollectPoint` + `SortingScene` + độ sạch khu vực
+- Cảnh đổi màu theo độ sạch
 
-### M2 — Hành trình & kiến thức
-- [ ] `MapScene`: bản đồ Việt Nam, mở khoá tuần tự, lưu tiến trình
-- [ ] Thêm 4 màn: Hạ Long, Hội An, Đà Lạt, **Đêm nhạc hội**
-- [ ] `EventSystem` + 4 sự kiện: `NEM_RAC`, `MUA_BAO`, `BAC_VE_CHAI`, `GIO_CAO_DIEM`
-- [ ] Cơ chế **rác nguy hại** + hộp thu gom (Mục 5.4) + sự kiện `PIN_ROI`
-- [ ] Đủ 24 loại rác + `HandbookScene` + `scripts/verify-facts.ts`
-- [ ] Hiệu ứng "cảnh chuyển từ xám sang có màu" khi hoàn thành màn
+**🛑 DỪNG Ở ĐÂY. Báo cho người giao việc chơi thử trước khi đi tiếp.**
+Đây là chỗ duy nhất quyết định game có vui hay không. Đi lại có sướng tay không, nhặt
+có đã không — test không trả lời được, chỉ ngón tay người chơi trả lời được.
 
-### M3 — Đủ bộ & đánh bóng
-- [ ] 5 màn còn lại: Nhiêu Lộc, Cái Răng, Giao thừa, Sa Pa, Côn Đảo
-- [ ] 3 sự kiện còn lại: `GIO_MUA`, `CUU_SINH_VAT`, `BAI_RAC_TU_PHAT`
-- [ ] `ShareCard`: xuất ảnh **1080×1080 (vuông)**, Web Share API + nút tải về
-- [ ] `PledgeScene`: chọn 1–3 cam kết, hiện trên thẻ chia sẻ
-- [ ] Âm thanh (CC0) + nút tắt tiếng, mặc định tắt
-- [ ] Thẻ Open Graph để link share lên Facebook có ảnh đẹp
-- [ ] Tối ưu hiệu năng đạt ngân sách Mục 4
+### Chặng 3 — Người và nhiệm vụ
+- `Npc`, `DialogueScene`, `QuestSystem`
+- 4 NPC + 1 nhiệm vụ chính + 3 nhiệm vụ phụ cho khu vực 1
+- `EventSystem` + 4 sự kiện: `NEM_RAC`, `BAC_VE_CHAI`, `CUU_SINH_VAT`, `TRE_CON_HOC`
 
----
+### Chặng 4 — Tiến trình
+- `ProgressSystem` (kinh nghiệm, cấp độ), `EconomySystem`, `ShopScene`
+- 6 món dụng cụ, mỗi món đổi được cảm giác chơi
+- `HandbookScene` + đủ 24 thẻ
+- Mở khoá khu vực theo độ sạch 80%
 
-## 11b. Ba chi tiết nội dung đã chốt sẵn
-
-### Bản đồ Việt Nam trong `MapScene`
-
-⚠️ **Bắt buộc:** bản đồ phải vẽ đầy đủ lãnh thổ Việt Nam **bao gồm hai quần đảo Hoàng Sa và Trường Sa**, theo đúng chuẩn bản đồ hành chính Việt Nam.
-
-Đây là game do người Việt làm, cho người Việt, về đất nước Việt Nam. Một bản đồ thiếu Hoàng Sa – Trường Sa sẽ bị chụp màn hình và lan truyền — rủi ro ngang với việc đưa sai số liệu, và không sửa được sau khi đã lan.
-
-Cách vẽ: đường bờ biển dạng path đơn giản hoá (≤ 120 điểm), hai quần đảo vẽ thành cụm chấm nhỏ ngoài khơi kèm nhãn chữ `Hoàng Sa` và `Trường Sa`. Màn 10 (Côn Đảo) đặt đúng vị trí địa lý.
-
-### Màn 1 làm hướng dẫn thế nào
-
-Không làm màn hình hướng dẫn riêng, không có nút "Bỏ qua". Dạy bằng cách chơi:
-
-1. Giây 0–3: chỉ có **một** món rác (vỏ chuối), một bàn tay mờ nhấp nháy chỉ vào nó. Game dừng cho tới khi người chơi chạm.
-2. Chạm xong → rác bay vào túi. Thùng **Thực phẩm** sáng lên, bàn tay mờ kéo từ túi sang thùng đó. Game dừng cho tới khi người chơi kéo đúng.
-3. Xong hai bước → gỡ bỏ mọi chỉ dẫn, màn chơi bắt đầu bình thường.
-4. Lần chơi thứ hai trở đi (`localStorage` đã có `levels['ha-noi']`) → **bỏ hoàn toàn phần hướng dẫn**.
-
-Rác nguy hại **không** xuất hiện ở màn 1. Bài học đó để dành cho màn 5 (concert), lúc người chơi đã quen tay.
-
-### Nội dung cam kết — `src/data/pledges.ts`
-
-Hiện sau khi hoàn thành màn 6. Chọn 1–3, hiện lên thẻ chia sẻ. Phải **cụ thể và làm được ngay**, không chung chung:
-
-```ts
-export const PLEDGES = [
-  { id: 'binh-nuoc',   text: 'Tuần này tôi mang bình nước riêng thay vì mua chai nhựa' },
-  { id: 'tui-vai',     text: 'Tôi để sẵn một cái túi vải trong cốp xe' },
-  { id: 'tu-choi-ong-hut', text: 'Tôi nói "không lấy ống hút" khi mua nước' },
-  { id: 'gom-pin',     text: 'Tôi gom pin cũ vào một hộp riêng, không vứt vào thùng rác' },
-  { id: 'phan-loai-nha', text: 'Nhà tôi sẽ có hai thùng rác thay vì một' },
-  { id: 'khong-nem',   text: 'Tôi không ném rác ra đường, dù đang vội' },
-  { id: 'nhac-ban',    text: 'Tôi sẽ nhắc bạn mình một lần, không gắt gỏng' },
-];
-```
-
-Tông chữ: câu khẳng định ngắn, ngôi thứ nhất, không có dấu chấm than, không hô hào.
+### Chặng 5 — Đủ bộ
+- 9 khu vực còn lại + `tiles.ts` cho từng vùng
+- 4 sự kiện còn lại
+- `ShareCard` 1080×1080 — nhân vật + nơi vừa dọn + độ sạch
+- Âm thanh CC0, thẻ Open Graph, tối ưu đạt ngân sách Mục 4
 
 ---
 
-## 12. Yêu cầu khác
+## 15. Tiếp cận và riêng tư
 
-### Tiếp cận (accessibility)
-- Vùng chạm nhỏ nhất **44×44 px thật** (không phải px ảo).
-- Thùng rác phân biệt bằng **màu + biểu tượng + chữ**, không chỉ bằng màu (8% nam giới mù màu).
-- Chữ nhỏ nhất **14px thật**.
-- Tôn trọng `prefers-reduced-motion`: giảm particle, bỏ rung màn hình.
-- Game vẫn chơi được bình thường khi tắt tiếng.
+### Tiếp cận
+- Vùng chạm nhỏ nhất **44×44 px thật**
+- Thùng rác phân biệt bằng **màu + biểu tượng + chữ**, không chỉ bằng màu
+- Chữ nhỏ nhất **14px thật**
+- Tôn trọng `prefers-reduced-motion`: giảm particle, bỏ rung màn hình
+- Game chơi được bình thường khi tắt tiếng
+- **Không có thao tác nào cần hai ngón cùng lúc**
 
 ### Riêng tư
-- **Không analytics, không cookie, không tracking.** Nếu sau này muốn đếm lượt chơi, dùng dịch vụ không theo dõi cá nhân (Plausible/Umami) và ghi rõ trong trang.
-- Không gửi gì ra ngoài. Mọi dữ liệu nằm trong `localStorage`.
+- **Không analytics, không cookie, không tracking.** Mọi dữ liệu nằm trong `localStorage`.
+- Tên người chơi nhập vào **không bao giờ rời khỏi máy họ**.
 
 ### SEO & chia sẻ
-- `<title>`: `Rác Ơi Về Nhà — Game nhặt rác xuyên Việt`
-- `og:image` 1200×630, `og:description`, `twitter:card = summary_large_image`
-- `lang="vi"`
+- `<title>`: `Rác Ơi Về Nhà — Game nhập vai nhặt rác xuyên Việt`
+- `og:image` 1200×630, `twitter:card = summary_large_image`, `lang="vi"`
 
 ---
 
-## 13. Kiểm chứng (bắt buộc làm trước khi nói "xong")
+## 16. Kiểm chứng
 
 ### Test tự động — `npm test`
 Chỉ test logic thuần, không test render:
-- `ScoreSystem`: ngưỡng combo, điểm không âm, ngưỡng sao, tích luỹ ô nhiễm
-- Ánh xạ rác→thùng: mọi `TrashType` phải có `bin` hợp lệ; món `hazard` không khớp với bất kỳ thùng nào trong 3 thùng
-- `Storage`: lưu/đọc khứ hồi, dữ liệu hỏng → trả về mặc định không văng lỗi, migration version
-- `EventSystem`: không bao giờ 2 sự kiện chồng nhau; sự kiện trùng giờ bị lùi
-- `Spawner`: phân bố theo trọng số đúng (RNG có seed, 10.000 lần lấy mẫu); tốc độ sinh giảm về 0 ở 5 giây cuối
-- `verify-facts`: fail đúng theo luật ở Mục 8 (và **chỉ** theo luật đó)
-- **Mô phỏng cân bằng** (quan trọng nhất): người chơi hoàn hảo phản xạ 400ms, 1000 lượt/màn → phải đạt 3 sao ở ≥ 95% số lượt, **mọi màn**. Fail ở màn nào thì giảm `spawnRatePerSec` màn đó
-- `Bag`: không bao giờ kẹt — mọi chuỗi thao tác hợp lệ đều phải còn ít nhất một nước đi
 
-### Chạy thật
-```bash
-npm run dev -- --host     # rồi mở IP mạng LAN trên điện thoại thật
-npm run build && npm run preview
-npx vercel                # deploy preview
-```
+- `InventorySystem`: ba lô không bao giờ kẹt; đầy thì từ chối nhận; món nguy hại quay lại được
+- `StaminaSystem`: không âm; hồi đúng khi phân loại; hết thì chặn nhặt
+- `ProgressSystem`: ngưỡng cấp độ; kinh nghiệm không âm
+- `EconomySystem`: không mua được khi thiếu tiền; mua rồi không mất món
+- `CleanlinessSystem`: độ sạch trong [0,100]; không giảm khi rời khu vực
+- `QuestSystem`: không nhận trùng; hoàn thành đúng điều kiện; lưu/đọc khứ hồi
+- `Pathfinding`: tìm được đường quanh vật cản; **không có đường thì trả về rỗng, không treo**
+- `TrashSpawner`: phân bố đúng trọng số (RNG có seed, 10.000 mẫu); dừng khi đạt 100%
+- Ánh xạ rác→thùng: món `hazard` không khớp bất kỳ thùng nào trong ba thùng
+- `Storage`: migration; dữ liệu hỏng → mặc định, không văng lỗi; **version 1 bị bỏ đúng cách**
+- `verify-facts`: fail đúng theo luật Mục 11, và **chỉ** theo luật đó
 
 ### Checklist thủ công — mỗi chặng đều phải đi qua
-- [ ] Chơi trọn một màn trên **iPhone Safari** thật — kéo thả không bị trình duyệt cuộn trang (`touch-action: none`)
-- [ ] Chơi trọn một màn trên **Chrome Android** thật
-- [ ] Xoay ngang → letterbox đúng, không vỡ layout
-- [ ] Khoá máy giữa màn chơi, mở lại → game tạm dừng, không chạy tiếp ngầm
+- [ ] Chơi trọn một khu vực trên **iPhone Safari** và **Chrome Android** thật
+- [ ] **Cầm dọc chơi được, cầm ngang chơi được**, xoay giữa chừng không vỡ
+- [ ] Nhân vật **không bao giờ kẹt** vào tường hay vật cản
+- [ ] Chạm liên tục nhiều chỗ — nhân vật đổi hướng mượt, không khựng
+- [ ] Khoá máy giữa chừng, mở lại → game tạm dừng, không chạy ngầm
 - [ ] Chế độ ẩn danh (localStorage bị chặn) → vẫn chơi được, không văng lỗi
-- [ ] Tắt mạng sau khi tải xong → vẫn chơi được
-- [ ] **Cố tình bỏ pin vào thùng tái chế** → thông báo rõ ràng, đáng nhớ
-- [ ] Hoàn thành một màn → hiệu ứng xám-sang-màu chạy mượt
-- [ ] Mở sổ tay → mọi thẻ đã mở có nguồn bấm được, link mở đúng
+- [ ] **Cố tình bỏ pin vào thùng tái chế** → thông báo rõ ràng, pin quay lại ba lô
+- [ ] Dọn khu vực lên 100% → cảnh hồi sinh chạy mượt
+- [ ] Mở sổ tay → mọi thẻ đã mở có nguồn bấm được
 - [ ] Dán link vào Messenger/Zalo → hiện ảnh preview đúng
 - [ ] Lighthouse mobile: Performance ≥ 90, Accessibility ≥ 90
 
 ### Đo bằng số
 ```bash
-npm run build && du -sh dist/assets/*.js   # ≤ 250KB gzip
+npm run build && du -sh dist/assets/*.js    # ≤ 300KB gzip
 ```
-Dùng Chrome DevTools → Performance, throttle CPU ×4 → giữ 60fps ở màn concert (màn nặng nhất).
+Chrome DevTools → Performance, throttle CPU ×4 → giữ 60fps ở khu vực đông rác nhất.
 
 ---
 
-## 14. Gợi ý cách giao việc cho Codex
+## 17. Những chỗ để trống — người implement tự quyết
 
-Đừng đưa cả tài liệu này rồi bảo "làm đi". Chia theo chặng:
+Được tự quyết, nhưng **phải ghi lại** vào Mục 18 để người khác soát:
 
-1. **Lần 1:** đưa Mục 4 + 10 → *"Dựng khung dự án và lớp `core/`. Chưa làm gameplay. Phải `npm run dev` chạy được, hiện canvas trống có màu nền, log kích thước viewport."*
-2. **Lần 2:** đưa Mục 5 + 10 → *"Làm `LevelScene` với một màn Phố cổ Hà Nội, 8 loại rác, 3 thùng, nhặt và phân loại."*
-3. **Lần 3:** Mục 5.5–5.7 → điểm, combo, ô nhiễm, `ResultScene`.
-4. **Dừng, chơi thử, chỉnh số.**
-5. Tiếp M2, M3 theo thứ tự Mục 11.
-
-Mỗi lần giao việc **luôn kèm Mục 9 (quy tắc số liệu)** nếu công việc có đụng tới nội dung fact.
-
-Sau mỗi chặng: chạy `npm test`, chạy checklist thủ công Mục 13, rồi mới sang chặng sau.
+- **Thoại chi tiết của NPC.** Mục 9.3 cho nhân thân và giọng; câu chữ cụ thể thì viết
+  theo luật ở Mục 9.3 — NPC nhờ vả và than phiền, không giảng đạo.
+- **Bố cục ô của từng khu vực** — chỗ nào đi được, NPC đứng đâu, điểm tập kết ở đâu.
+- **`facts.ts`** — câu hiện khi dọn xong một khu vực.
+- **Hoạt ảnh nhân vật** — mấy khung hình cho bước đi, cúi nhặt.
+- **Màn hình hết thể lực** — nhắc nhẹ, đừng làm thành hình phạt.
+- **Chơi lại khu vực đã sạch** — gợi ý: rác sinh lại chậm hơn hẳn, chủ yếu để nhặt lai rai.
 
 ---
 
-## 15. Những chỗ tôi (Claude) tự quyết — Nguyên soát lại giúp
+## 18. Những chỗ tôi (Claude) tự quyết — Nguyên soát lại giúp
 
-Bạn chưa nói gì về các điểm này, tôi chốt theo phán đoán. Thấy sai thì sửa, không ảnh hưởng tới phần còn lại:
+1. **Chạm-để-đi thay vì joystick ảo** — chơi được một ngón, hợp nhịp chậm của game.
+2. **Thể lực thay cho đồng hồ đếm ngược** — đếm ngược chống lại việc khám phá.
+3. **Hai nhân vật chỉ số giống hệt nhau**, khác mỗi hình vẽ. Gán "nam khoẻ, nữ nhanh"
+   vào game cho học sinh là dạy một thứ mình không định dạy.
+4. **Phân loại sai thì rác quay lại ba lô**, chỉ mất điểm. Bắt làm lại cho đúng mới là dạy.
+5. **Mở khu vực mới ở 80%, không phải 100%** — bắt hoàn hảo mới đi tiếp là cách nhanh
+   nhất làm người chơi chán.
+6. **Rác sinh lại từ từ** (1 món / 20 giây) — thế giới sống, nhưng luôn chậm hơn tốc độ dọn.
+7. **Chỉ 3 loại rác nguy hại** (pin, lightstick, bóng đèn) — ít mà đậm.
+8. **Mười khu vực, mỗi khu 3–4 màn hình**, không làm thế giới mở liền mạch.
+9. **Ngân sách bundle nới từ 250 lên 300 KB gzip** — game nhập vai nhiều hệ thống hơn.
+10. **Bản lưu version 1 bị bỏ, không chuyển đổi** — cấu trúc khác hẳn, đoán mò còn tệ hơn.
+11. **Sự kiện `TRE_CON_HOC`** (trẻ con chạy theo bắt chước nhặt rác) — tôi tự thêm. Nó
+    nói đúng điều game muốn nói mà không cần nói ra câu nào.
+12. **Bản đồ phải có Hoàng Sa – Trường Sa** — không phải chi tiết nhỏ.
 
-1. **Danh sách 24 loại rác** (Mục 8.1) — tôi tự soạn. Có thể bạn muốn thêm món đặc trưng khác, ví dụ vỏ dừa hay bao xi măng.
-2. **Chỉ 3 loại rác nguy hại** (pin, lightstick, bóng đèn) — ít mà đậm, thay vì dàn trải.
-3. **Hộp thu gom pin luôn quay lại sau 10 giây** — để túi không bao giờ bị kẹt.
-4. **Công thức độ sạch loại trừ** rác sinh ở 5 giây cuối, rác bị gió thổi bay, và rác nguy hại — nếu không thì 3 sao là bất khả thi về mặt toán học ở các màn hỗn loạn.
-5. **Bản đồ phải có Hoàng Sa – Trường Sa** (Mục 11b).
-6. **Chỉ một bản nhạc nền cho màn 5**, các màn khác chỉ có hiệu ứng âm thanh.
-7. **Không làm PWA / service worker** ở giai đoạn này.
-8. **Màn 1 dạy bằng cách chơi**, không có màn hình hướng dẫn riêng; chơi lần hai trở đi thì bỏ luôn.
-9. **Bảy lời cam kết** ở Mục 11b — tôi tự viết, tông cố ý nhẹ và cụ thể.
-10. **Cổng kiểm chứng số liệu chặn con số, không chặn loại rác** — để game phát hành được mà vẫn không bịa số.
+---
 
-### Sửa ngày 2026-11-20: đổi sang khổ ngang
+## 19. Phần nào của bản 1 còn dùng được
 
-Nguyên yêu cầu game chơi ở khổ ngang trên điện thoại. Hệ ảo đổi từ 720×1280
-sang **1280×720**. Kéo theo:
+Bản 1 thiết kế thành game arcade. Đổi sang nhập vai thì:
 
-- Desktop vừa khít 16:9, không còn hai dải đen mỗi bên 656px như bố cục dọc.
-- Cầm dọc trên máy nhỏ (`orientation: portrait` và `max-width: 900px`) thì hiện
-  lớp phủ "Xoay ngang điện thoại" và **vòng lặp dừng hẳn** để đỡ tốn pin.
-  Điều kiện trong `global.css` và trong `main.ts` phải luôn khớp nhau.
-- Mất tính "mở link là chơi ngay": người bật khoá xoay màn hình sẽ phải tự tắt.
-  Lớp phủ nói rõ điều đó thay vì để họ đoán.
-- Thao tác thành **hai ngón cái** thay vì một. Mọi con số cân bằng ở Mục 5.6
-  phải chạy lại bài mô phỏng, không được bê nguyên từ bố cục dọc.
+### ✅ Giữ nguyên, đã có test xanh
+- `src/core/Game.ts` — vòng lặp fixed-timestep + SceneManager
+- `src/core/Viewport.ts` — khung ảo co giãn, chạy cả ngang lẫn dọc
+- `src/core/Input.ts` — Pointer Events → toạ độ ảo
+- `src/core/Tween.ts`, `Storage.ts`, `Random.ts`, `Renderer.ts`
+- `src/render/palette.ts` — bảng màu + `mix`/`desaturate`/`contrastRatio`
+- **Mục 11 và 12 của tài liệu này** — 24 loại rác và quy tắc số liệu, nguyên vẹn
 
-### Bổ sung ngày 2026-11-20: số liệu màn chơi và nội dung sổ tay
+### ⚠️ Viết lại
+- `src/core/Layout.ts` — bốn dải arcade không còn đúng. Giờ cần: HUD phủ lên thế giới,
+  và các panel (phân loại, thoại, cửa hàng) dạng modal.
+- `src/scenes/BootScene.ts` — thành màn nạp dữ liệu thật
 
-Hai chỗ trống nguy hiểm nhất đã được lấp. Thêm vào đó, tôi tự quyết mấy điểm sau:
-
-11. **Số liệu 10 màn** (Mục 6.1–6.2) — tôi tự đặt, dựa trên giả định người chơi khá
-    xử lý được ~0,8 món/giây và tốc độ sinh trung bình giữ dưới 0,55/giây. Căng thẳng
-    đến từ sự kiện dồn rác chứ không từ việc tăng đều. **Bài mô phỏng là trọng tài,
-    không phải bảng này.**
-12. **Rác nguy hại trọng số tối đa 5** — gặp hai lần một màn là đủ nhớ, năm lần là ức chế.
-13. **Mỗi màn 4–7 loại rác** — nhiều hơn thì người chơi không kịp học loại nào ra loại nào.
-14. **Màn 1 dài 90 giây nhưng rác thưa nhất** — người mới cần thời gian, không cần dễ.
-    Màn 5 ngắn nhất 60 giây vì kéo dài màn dồn dập sẽ thành mệt chứ không còn đã.
-15. **Nội dung 24 thẻ sổ tay** (Mục 8.4) — tôi tự viết toàn bộ. Tông cố ý: nói hậu quả
-    cụ thể thay vì "gây ô nhiễm môi trường", và câu khuyên phải làm được trong tuần này.
-16. **`harm` và `tip` không được chứa con số** — chỉ `decomposeLabel` mới qua cổng kiểm
-    chứng, nên số lọt vào hai trường kia là số không ai soi.
-17. **Thẻ chia sẻ đổi sang 1080×1080 vuông** (trước là 1080×1350 dọc) — game đã thành
-    khổ ngang, nhét ảnh ngang vào khung dọc thì hoặc cắt mất hai đầu hoặc thừa hai dải trống.
-    Ảnh vuông lên Facebook và Instagram đều vừa.
-18. **Sửa "một ngón tay" thành "hai ngón cái"** ở Mục 2 — sót lại từ bố cục dọc.
+### ❌ Bỏ hẳn
+- Túi 6 ô kéo-thả-vào-ba-thùng ngay trên màn chơi
+- Màn chơi 60–90 giây có đồng hồ đếm ngược
+- Thanh ô nhiễm, hệ thống sao 1–2–3
+- Bảng số liệu `spawnRatePerSec` của bản 1
