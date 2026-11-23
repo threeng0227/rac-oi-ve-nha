@@ -1,24 +1,35 @@
 # Rác Ơi Về Nhà
 
-Game web nhặt rác xuyên Việt — tuyên truyền phân loại rác đúng cách.
+**Game nhập vai** về giữ gìn vệ sinh và phân loại rác, bối cảnh khắp Việt Nam.
 
-Chơi trên điện thoại, cầm ngang hay dọc đều được. Mười màn từ phố cổ Hà Nội vào tới Côn Đảo.
+Vào vai Minh hoặc Lan, đi dọn rác từ phố cổ Hà Nội tới Côn Đảo. Gặp người dân, nhận
+việc, phân loại đúng, thấy nơi mình dọn đẹp dần lên. Chơi được cầm ngang hay dọc.
 Không backend, không tài khoản, không thu thập dữ liệu người chơi.
+
+> ⚠️ **Đặc tả vừa viết lại toàn bộ (bản 2, 23/11/2026).** Bản 1 thiết kế thành game
+> arcade không có nhân vật — hiểu sai ý tác giả, đã bỏ. Xem Mục 19 của `docs/DESIGN.md`
+> để biết phần nào giữ, phần nào bỏ.
 
 ---
 
-## Trạng thái hiện tại — Chặng 2, chờ chơi thử
+## Trạng thái hiện tại — đã triển khai đủ sáu chặng
 
-`npm run dev` mở thẳng màn Phố cổ Hà Nội. Lượt đầu có hướng dẫn chạm vỏ chuối,
-kéo vào thùng Thực phẩm, rồi bắt đầu màn 90 giây. Túi có 6 ô, ba thùng nhận kéo
-thả, thả sai hoặc huỷ thao tác thì rác trở về ô cũ. Hết giờ có nút chơi lại.
+`npm run dev` mở menu, bản đồ Việt Nam, 10 màn chơi và sổ tay 24 loại rác.
+Chạm để nhặt, kéo để phân loại vào ba thùng, gom riêng rác nguy hại vào hộp vàng.
+Có điểm, combo, ô nhiễm, sao, tám sự kiện, lưu tiến trình và cảnh đổi từ xám sang màu.
 
-Chặng 1 có đủ 24 loại rác, 10 màn, 10 câu cuối màn, 7 cam kết và cổng kiểm chứng
-ở `prebuild`. Các nhãn chưa xác minh được ẩn qua `getDecomposeLabel()`.
+Sau màn 6 có thể chọn 1–3 cam kết. Màn kết quả hỗ trợ Web Share và tải ảnh vuông
+1080×1080. Âm thanh CC0 mặc định tắt, nhạc concert tải riêng. Ảnh Open Graph là
+1200×630. Các quyết định triển khai được ghi ở Mục 15 trong `docs/DESIGN.md`.
 
-**193 test xanh, typecheck sạch.** Đã kiểm tra giao diện
-trình duyệt ở 844×390 và 390×844. Cần chơi thử trên iPhone Safari và Chrome Android
-thật trước khi tiếp tục Chặng 3, theo điểm dừng trong `docs/CODEX-BRIEF.md`.
+**348 test xanh**, gồm mô phỏng 1.000 lượt × 10 màn × 4 khổ máy, phản xạ 400ms.
+Mỗi trường hợp đạt ba sao ở ít nhất 95% lượt. Typecheck sạch, JS **32.10 KB gzip**.
+Bảy SFX tổng 13.983 byte, nhạc concert 84.426 byte.
+
+Đã kiểm tra menu, bản đồ và sổ tay bằng trình duyệt ở cả ngang và dọc. Checklist
+thiết bị thật, Web Share thực tế, Lighthouse, 4G, FPS trên Redmi Note 11 và preview
+Messenger/Zalo còn cần kiểm tra. Chưa xác minh trực tuyến lại các URL nguồn số liệu.
+Chưa deploy trong phiên này.
 
 ### Nền M1 bước 1
 
@@ -31,13 +42,13 @@ thật trước khi tiếp tục Chặng 3, theo điểm dừng trong `docs/CODE
 | `src/core/Storage.ts` | Lưu tiến trình, migration theo version, sống sót chế độ ẩn danh | 12 ✅ |
 | `src/core/Random.ts` | RNG có seed (mulberry32), `int` / `range` / `pick` / `weighted` | 13 ✅ |
 | `src/core/Game.ts` | `FixedTimestep` + `SceneManager` + vòng lặp `Game` | 24 ✅ |
-| `src/core/Layout.ts` | Bốn dải màn chơi, vị trí thùng/túi/vùng sinh rác, cho cả hai hướng | 11 ✅ |
+| `src/core/Layout.ts` | ⚠️ Của bản arcade — **phải viết lại** thành HUD + panel modal | 11 ⚠️ |
 | `src/core/Input.ts` | Pointer Events → `PointerSample`, chặn cuộn trang khi kéo | 12 ✅ |
 | `index.html` + `global.css` | Canvas toàn màn hình, chặn cuộn khi kéo | — |
 | `src/core/Renderer.ts` | Ma trận viewport + xoá khung (kể cả dải letterbox) | 5 ✅ |
 | `src/main.ts` + `index.html` | Điểm vào: canvas, resize, tạm dừng khi ẩn tab | — |
 | `src/render/palette.ts` | Toàn bộ màu + phép toán màu (mix, desaturate, tương phản) | 24 ✅ |
-| `src/scenes/BootScene.ts` | Scene tạm để kiểm chứng core trên máy thật | — |
+| `src/scenes/BootScene.ts` | ⚠️ Scene tạm — thay bằng màn nạp dữ liệu thật | — |
 
 Nền bàn giao có **140/140 test xanh**, typecheck sạch và build khoảng 3.4 KB gzip.
 
@@ -49,17 +60,11 @@ Vài điểm đáng chú ý trong `Game.ts`:
 - `stop()` huỷ khung hình đang chờ, không rò rỉ `requestAnimationFrame`.
 - Đổi scene ngay trong `update()` không làm scene mới bị update luôn trong cùng khung hình.
 
-### Phần tiếp theo sau khi chơi thử
+### Kiểm tra trên thiết bị trước phát hành
 
-- `src/core/Audio.ts`
-- `docs/ART.md` — hướng dẫn vẽ (đã hoãn; `palette.ts` đã sẵn chỗ để điền màu thật)
-- `src/gameplay/` — `ScoreSystem`, `EventSystem`
-- `src/scenes/` — `MenuScene`, `MapScene`, `ResultScene`, `HandbookScene`, `PledgeScene`
-- `src/render/` — mở rộng sprite, `backdrops.ts`, `particles.ts`
-- `src/ui/` — `Button`, `Modal`, `Toast`, `ProgressBar`, `StarRow`, `ShareCard`
-
-**Việc kế tiếp:** người giao việc chơi thử Chặng 2, rồi mới làm điểm số và bộ mô
-phỏng cân bằng ở Chặng 3. Các mục còn lại theo đúng thứ tự bản giao việc.
+Theo checklist Mục 13 trong đặc tả, chơi đủ màn trên iPhone Safari và Chrome Android,
+thử bỏ pin vào thùng thường, chế độ ẩn danh, khoá máy, tắt mạng, chia sẻ và tải ảnh.
+Đo Lighthouse, FPS và thời gian tải bằng thiết bị hoặc cấu hình tham chiếu đã ghi.
 
 ---
 
